@@ -1,0 +1,46 @@
+{
+  "name": "portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@floating-ui/react": "^0.23.1",
+    "@gsap/react": "^2.0.2",
+    "@tanstack/react-ranger": "^0.0.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "next": "15.1.3",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-angle-picker": "^1.0.6",
+    "gsap": "^3.12.2",
+    "gsap-trial": "^3.12.4",
+    "locomotive-scroll": "^4.1.4"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.8.0",
+    "@commitlint/config-conventional": "^17.8.0",
+    "branch-name-lint": "^2.1.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0",
+    "prettier": "^3.4.2",
+    "sass": "^1.83.1",
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.3",
+    "@eslint/eslintrc": "^3",
+    "eslint-config-prettier": "^9.1.0"
+  },
+  "overrides": {
+    "@tanstack/react-ranger": {
+      "react": "^19.0.0"
+    }
+  }
+}

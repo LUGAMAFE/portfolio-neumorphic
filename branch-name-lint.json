@@ -1,0 +1,49 @@
+{
+  "branchNameLinter": {
+    "regex": "^([a-z-]+\\/PP-[0-9]+_[-a-z0-9]+|conflict\\/[-a-z0-9]+_[-a-z0-9]+_[-a-z0-9]+)",
+    "prefixes": [
+      "feature",
+      "bugfix",
+      "task",
+      "subtask",
+      "spike",
+      "test",
+      "epic",
+      "release",
+      "revert",
+      "demo",
+      "conflict"
+    ],
+    "suggestions": {
+      "features": "feature",
+      "feat": "feature",
+      "bug": "bugfix",
+      "fix": "bugfix",
+      "bugs": "bugfix",
+      "tasks": "task",
+      "tk": "task",
+      "subtasks": "subtask",
+      "st": "subtask",
+      "spikes": "spike",
+      "spk": "spike",
+      "tst": "test",
+      "testing": "test",
+      "epics": "epic",
+      "ep": "epic",
+      "conflict": "merge-conflict",
+      "merge-conflict": "conflict",
+      "mc": "conflict",
+      "mergec": "conflict",
+      "releases": "release",
+      "rls": "release",
+      "rev": "revert",
+      "reverts": "revert"
+    },
+    "msgDoesNotMatchRegex": "Branch \"%s\" does not match the allowed pattern: \"%s\"",
+    "separator": "/",
+    "msgBranchDisallowed": "Pushing to \"%s\" is not allowed, use the allowed pattern.",
+    "msgPrefixNotAllowed": "Branch prefix \"%s\" is not allowed.",
+    "msgPrefixSuggestion": "Instead of \"%s\" try \"%s\".",
+    "msgseparatorRequired": "Branch \"%s\" must contain a separator \"%s\"."
+  }
+}

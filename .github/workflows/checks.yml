@@ -1,0 +1,61 @@
+name: Lint and Format
+
+on:
+  pull_request:
+    types:
+      # Default event types
+      - opened
+      - reopened
+      - synchronize
+      # Additional event types for title and label validation
+      - labeled
+      - unlabeled
+      - edited
+
+
+# Cancel any previous workflow that is still running
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Validate PR title with regex
+        # This GitHub action primarily supports the event_name: 'pull_request'
+        # However, with the inclusion of the 'merge_group' event, we ensure this runs only for the 'pull_request' event name
+        if: github.event_name == 'pull_request'
+        uses: deepakputhraya/action-pr-title@master
+        with:
+          regex: \[?(PP)-\d*]?
+        # This ensures the PR title adheres to the desired naming convention.
+
+      - name: Ensure "do not merge" label is absent
+        if: github.event_name == 'pull_request'
+        uses: mheap/github-action-required-labels@v5
+        with:
+          mode: exactly
+          count: 0
+          labels: 'do not merge'
+        # This checks to ensure the "do not merge" label is not present.
+
+      - name: volta-cli/action
+        uses: volta-cli/action@v4.0.0
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run prettier check
+        run: pnpm prettier
+
+      - name: Run lint check
+        run: pnpm lint

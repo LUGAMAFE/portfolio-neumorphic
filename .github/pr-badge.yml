@@ -1,0 +1,30 @@
+- label: "JIRA"
+  message: "$issuePrefix"
+  color: "blue"
+  url: "https://loopcrack.atlassian.net/browse/$issuePrefix"
+  when: "$issuePrefix"
+
+- label: "PR Size"
+  message: "Massive"
+  color: "purple"
+  when: "$additions > 2000"
+
+- label: "PR Size"
+  message: "Extra Large"
+  color: "red"
+  when: "$additions > 1000 && $additions <= 2000"
+
+- label: "PR Size"
+  message: "Large"
+  color: "orange"
+  when: "$additions > 500 && $additions <= 1000"
+
+- label: "PR Size"
+  message: "Medium"
+  color: "yellow"
+  when: "$additions > 100 && $additions <= 500"
+
+- label: "PR Size"
+  message: "Small"
+  color: "green"
+  when: "$additions <= 100"

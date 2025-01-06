@@ -1,0 +1,24 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.stylelint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  // "stylelint.ignoreDisables": true,
+  // "stylelint.reportNeedlessDisables": true,
+  "editor.snippetSuggestions": "top",
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "files.associations": {
+    "*.js": "javascriptreact"
+  },
+  "css.validate": false,
+  "scss.validate": false,
+  "stylelint.validate": ["css", "scss", ".module.css", ".module.scss"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "vue.features.codeActions.enable": false
+}
