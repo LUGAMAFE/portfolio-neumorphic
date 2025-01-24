@@ -1,0 +1,77 @@
+@use '../../../../../styles/sass/ITCSS/01_settings/global' as *;
+@use '../../../../../styles/sass/ITCSS/01_settings/colors' as *;
+@use '../../../../../styles/sass/ITCSS/02_tools/mixins' as *;
+
+.LightSourceSelector {
+  padding: 3px;
+  border-radius: 5px;
+  background-color: $color-background-light-source-selector;
+  @include grid(2, 5px);
+  &_disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  &__arrow {
+    width: 12px;
+    height: 12px;
+    border: $color-border-light-source-selector 1px solid;
+    background-color: transparent;
+
+    &_active {
+      background-color: $color-active-light-source-selector;
+    }
+
+    &:first-child {
+      border-bottom-left-radius: unset;
+      border-bottom-right-radius: 30px;
+      border-top-left-radius: unset;
+      border-top-right-radius: unset;
+
+      &.LightSourceSelector__arrow_active {
+        border-right-color: $color-border-light-source-selector-active;
+        border-bottom-color: $color-border-light-source-selector-active;
+        box-shadow: $base-box-shadow-active-bottom-right;
+      }
+    }
+
+    &:nth-child(2) {
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: unset;
+      border-top-left-radius: unset;
+      border-top-right-radius: unset;
+
+      &.LightSourceSelector__arrow_active {
+        border-bottom-color: $color-border-light-source-selector-active;
+        border-left-color: $color-border-light-source-selector-active;
+        box-shadow: $base-box-shadow-active-bottom-left;
+      }
+    }
+
+    &:nth-child(3) {
+      border-bottom-left-radius: unset;
+      border-bottom-right-radius: unset;
+      border-top-left-radius: unset;
+      border-top-right-radius: 30px;
+
+      &.LightSourceSelector__arrow_active {
+        border-top-color: $color-border-light-source-selector-active;
+        border-right-color: $color-border-light-source-selector-active;
+        box-shadow: $base-box-shadow-active-top-right;
+      }
+    }
+
+    &:nth-child(4) {
+      border-bottom-left-radius: unset;
+      border-bottom-right-radius: unset;
+      border-top-left-radius: 30px;
+      border-top-right-radius: unset;
+
+      &.LightSourceSelector__arrow_active {
+        border-top-color: $color-active-light-source-selector;
+        border-left-color: $color-active-light-source-selector;
+        box-shadow: $base-box-shadow-active-top-left;
+      }
+    }
+  }
+}

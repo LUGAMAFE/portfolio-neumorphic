@@ -1,0 +1,19 @@
+@use '../01_settings/global' as *;
+// /* ==========================================================================
+//    #SHARED
+//    ========================================================================== */
+
+fieldset,
+legend {
+  margin-bottom: $spacing-sm;
+}
+
+caption,
+th {
+  text-align: left;
+}
+
+th,
+td {
+  padding: $spacing-sm $spacing-lg;
+}

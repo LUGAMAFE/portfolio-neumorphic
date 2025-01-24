@@ -1,0 +1,62 @@
+@use 'sass:math';
+@use '../01_settings/sizes' as *;
+/* ==========================================================================
+   #Breakpoints
+   ========================================================================== */
+
+//Mobile First Breakpoints
+
+@mixin device($size) {
+  @media (min-width: $size) {
+    @content;
+  }
+}
+
+// 280px / 16
+@mixin fold {
+  @media (min-width: $bp-fold) {
+    @content;
+  }
+}
+
+// 350px / 16
+@mixin phone {
+  @media (min-width: $bp-phone) {
+    @content;
+  }
+}
+
+// 490px / 16
+@mixin phoneXL {
+  @media (min-width: $bp-phoneXL) {
+    @content;
+  }
+}
+
+// 768px / 16
+@mixin tablet {
+  @media (min-width: $bp-tablet) {
+    @content;
+  }
+}
+
+// 1024px / 16
+@mixin desktop {
+  @media (min-width: $bp-desktop) {
+    @content;
+  }
+}
+
+// 1200px / 16
+@mixin desktopXL {
+  @media (min-width: $bp-desktopXL) {
+    @content;
+  }
+}
+
+// 1900px / 16
+@mixin desktopXXL {
+  @media (min-width: $bp-desktopXXL) {
+    @content;
+  }
+}

@@ -1,0 +1,97 @@
+@use '../../styles/sass/ITCSS/01_settings/colors' as *;
+@use '../../styles/sass/ITCSS/01_settings/fonts' as *;
+@use '../../styles/sass/ITCSS/02_tools/breakpoints' as *;
+
+.Navbar {
+  position: fixed;
+  z-index: 999;
+  right: 0px;
+  left: 0px;
+  display: flex;
+  height: 90px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+
+  @include phone {
+    height: 9vh;
+    justify-content: center;
+    gap: 38vw;
+  }
+  @include tablet {
+    height: 90px;
+    gap: 38vh;
+  }
+  @include desktop {
+    height: 90px;
+    justify-content: space-around;
+    gap: 0px;
+  }
+  &__logo {
+    display: flex;
+    align-items: center;
+    color: $color-white;
+    font-family: 'Roboto Condensed';
+
+    font-style: normal;
+    font-weight: $weight-bold;
+    letter-spacing: 0.1px;
+    line-height: 0px;
+    text-align: center;
+    @include phone {
+      font-size: 24px;
+    }
+    @include tablet {
+      font-size: 28px;
+    }
+    @include desktop {
+      font-size: 28px;
+    }
+  }
+  &__menuToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__button {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--light-color);
+    border-radius: 16px;
+    cursor: none;
+    @include phone {
+      width: 47px;
+      height: 47px;
+    }
+    @include tablet {
+      width: 56px;
+      height: 56px;
+    }
+    @include desktop {
+      width: 56px;
+      height: 56px;
+    }
+  }
+  &__hamburger {
+    width: 100%;
+    height: 100%;
+  }
+  &__bottomNeon {
+    position: absolute;
+    top: 73px;
+    width: 100%;
+    height: 7px;
+    background: $color-gradient-pink-linear-horizontal;
+    box-shadow: 0px 0px 18px $color-box-shadow-neon-pink;
+    @include phone {
+      top: 9vh;
+    }
+    @include tablet {
+      top: 82px;
+    }
+    @include desktop {
+      top: 82px;
+    }
+  }
+}

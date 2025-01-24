@@ -9,8 +9,11 @@
   // "stylelint.ignoreDisables": true,
   // "stylelint.reportNeedlessDisables": true,
   "editor.snippetSuggestions": "top",
-  "javascript.preferences.importModuleSpecifier": "relative",
-  "typescript.preferences.importModuleSpecifier": "relative",
+  "javascript.preferences.importModuleSpecifier": "shortest",
+  "typescript.preferences.importModuleSpecifier": "shortest",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore",
   "files.associations": {
@@ -20,5 +23,10 @@
   "scss.validate": false,
   "stylelint.validate": ["css", "scss", ".module.css", ".module.scss"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "vue.features.codeActions.enable": false
+  "path-intellisense.mappings": {
+    "@": "${workspaceRoot}/src"
+  },
+  "inlineFold.autoFold": false,
+  "cSpell.words": ["GSAP", "Neumorphic"],
+  "cssModules.camelCase": true
 }

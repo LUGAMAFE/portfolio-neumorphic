@@ -1,0 +1,66 @@
+@use './colors' as *;
+/* ==========================================================================
+   #GLOBAL
+   ========================================================================== */
+
+/* #BRAND
+   ========================================================================== */
+
+/* Font */
+
+// $brand-font-secondary: Montserrat, sans-serif;
+
+/* #BASE
+   ========================================================================== */
+
+/* Font */
+
+$base-font-size: 16px;
+$base-line-height: 1.5;
+
+/* Spacing */
+$spacing-base: 16px;
+$spacing-xs: 0.25 * $spacing-base; // 0.25rem = 4px / 16
+$spacing-sm: 0.5 * $spacing-base; // 0.5rem = 8px / 16
+$spacing-md: 1 * $spacing-base; // 1rem = 16px / 16
+$spacing-lg: 1.5 * $spacing-base; // 1.5rem = 24px / 16
+$spacing-xl: 2 * $spacing-base; // 2rem = 32px / 16
+
+/* Shadows */
+
+//Text shadows
+
+$base-text-shadow-title: 0 0 3.5px $color-middle-white;
+$base-text-shadow-contact-information: 0px 0px 2px $color-light-blue-text-shadow,
+  0px 4px 4px $color-black-text-shadow, 0px 6px 4px $color-black-text-shadow;
+$base-text-shadow-title-intro: 0px 0px 4px $color-gray-text-shadow,
+  0px 4px 4px $color-black-text-shadow;
+$base-text-shadow-sub-title: 0px 4px 4px $color-gray-text-shadow,
+  0px 4px 4px $color-gray-text-shadow, 0px 0px 0.8px $color-light-blue-text-shadow;
+$base-text-shadow-abilities: 0px 0px 2px $color-light-blue-text-shadow,
+  0px 4px 4px $color-black-text-shadow 0px 6px 4px $color-black-text-shadow;
+$base-text-shadow-description-project: 0px 0px 5px $color-white;
+$base-text-shadow-neon: 0px 0px 4px $color-box-shadow-neon-pink;
+$base-text-shadow-neon-number: 0px 0px 4px $color-box-shadow-neon-pink-number;
+//Box-shadows
+
+$base-box-shadow-neon: 0px 0px 18px 0px $color-box-shadow-neon-pink;
+$base-box-shadow-image-comparator: 0px 0px 10px $color-white;
+$base-box-shadow-gray: 0px 0px 3px $color-light-gray-text-shadow;
+$base-box-shadow-toggle-switch: inset 2px 2px 8px $color-box-shadow-color-switcher;
+$base-box-shadow-toggle-switch-before: 0 0 0 1px $color-box-shadow-color-switcher-before;
+$base-box-shadow-inputs-configuration: 1px 1px 1px $color-box-shadow-inputs-configuration,
+  0px 0px 1px $color-box-shadow-inputs-configuration;
+$base-box-shadow-inputs-configuration-intensity: 1px 1px 1px $color-black,
+  0px 0px 1px $color-box-shadow-inputs-configuration-intensity;
+$base-box-shadow-inputs-configuration-checkbox: 0 0 0 1px var(--textColorOpposite);
+$base-box-shadow-neon-pink-button: -6px -6px 15px 0px $color-box-shadow-button-illustration,
+  6px 6px 15px 0px $color-box-shadow-button-illustration-secondary;
+$base-box-shadow-carrousel-projects: 12px 12px 15px 0px $color-box-shadow-carrousel-projects inset;
+$base-box-shadow-carrousel-projects-text-container: 5px 5px 20px 0px
+    $color-box-shadow-text-container-carrousel-projects,
+  -5px -5px 20px 0px $color-white;
+$base-box-shadow-active-bottom-right: 2px 2px 3px 2px $color-box-shadow-light-source-selector-active;
+$base-box-shadow-active-bottom-left: -2px 2px 3px 2px $color-box-shadow-light-source-selector-active;
+$base-box-shadow-active-top-right: 2px -2px 3px 2px $color-box-shadow-light-source-selector-active;
+$base-box-shadow-active-top-left: -2px -2px 3px 2px $color-box-shadow-light-source-selector-active;

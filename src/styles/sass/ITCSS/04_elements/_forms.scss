@@ -1,0 +1,19 @@
+@use '../01_settings/global' as *;
+@use '../01_settings/fonts' as *;
+/* ==========================================================================
+   #FORMS
+   ========================================================================== */
+
+/* Label */
+
+label {
+  display: inline-block;
+  font-weight: $weight-bold;
+
+  /* Checkbox or Radio Button */
+
+  [type='checkbox'],
+  [type='radio'] {
+    margin-right: $spacing-sm;
+  }
+}

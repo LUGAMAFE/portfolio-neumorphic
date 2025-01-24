@@ -1,0 +1,185 @@
+@use '../../styles/sass/ITCSS/01_settings/fonts' as *;
+@use '../../styles/sass/ITCSS/01_settings/global' as *;
+@use '../../styles/sass/ITCSS/02_tools/breakpoints' as *;
+
+.SidebarMenu {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  display: flex;
+  width: 0;
+  height: 100%;
+  flex-direction: column;
+  background-color: #111;
+
+  overflow-x: hidden;
+  transition: 0.5s;
+
+  &_button {
+    width: 56px;
+    height: 56px;
+    border: 1px solid var(--light-color);
+    border-radius: 16px;
+    margin: 10px;
+    cursor: none;
+
+    @include phone {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      margin: 5px;
+    }
+    @include desktop {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      margin: 10px;
+    }
+  }
+
+  &_menuSVG {
+    width: 75%;
+    height: 75%;
+    color: white;
+  }
+
+  &_neuContainer {
+    display: flex;
+    width: 300px;
+    height: 170px;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 26px;
+    cursor: none;
+
+    @include phone {
+      width: 150px;
+      height: 85px;
+      margin: 13px;
+    }
+    @include desktop {
+      width: 300px;
+      height: 170px;
+      margin: 26px;
+    }
+  }
+
+  &_radio {
+    width: 40px;
+    height: 37px;
+    border: 1px solid var(--light-color);
+    border-radius: 50%;
+    margin-right: 5px;
+    cursor: none;
+
+    @include phone {
+      width: 20px;
+      height: 18.5px;
+      margin-right: 2.5px;
+    }
+    @include desktop {
+      width: 40px;
+      height: 37px;
+      margin-right: 5px;
+    }
+  }
+
+  &_esButtonText,
+  &_listElementText {
+    font-size: 22px;
+    letter-spacing: 0.1px;
+    line-height: 30px;
+
+    @include phone {
+      font-size: 11px;
+      letter-spacing: 0.05px;
+    }
+    @include desktop {
+      font-size: 18px;
+
+      letter-spacing: 0.1px;
+      line-height: 30px;
+    }
+  }
+
+  &_esButtonText {
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  &_sectionsContainer {
+    display: flex;
+    width: 170px;
+    height: 435px;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-left: 20px;
+    gap: 10px;
+
+    @include phone {
+      width: 85px;
+      height: 217.5px;
+      margin-top: 10px;
+      margin-left: 10px;
+      gap: 5px;
+    }
+    @include desktop {
+      width: 170px;
+      height: 435px;
+      margin-top: 20px;
+      margin-left: 20px;
+      gap: 10px;
+    }
+  }
+
+  &_listElement {
+    display: flex;
+    width: 240px;
+    height: 50px;
+    @include phone {
+      width: 120px;
+      height: 25px;
+      gap: 10px;
+    }
+    @include desktop {
+      width: 240px;
+      height: 50px;
+      gap: 0px;
+    }
+  }
+
+  &_imageContainer,
+  &_listImage {
+    width: 50px;
+    height: 50px;
+
+    @include phone {
+      width: 17px;
+      height: 17px;
+    }
+    @include desktop {
+      width: 26px;
+      height: 26px;
+    }
+  }
+
+  &_divider {
+    width: 85%;
+    height: 2px;
+    border-radius: 16px;
+    background: gray;
+    opacity: 70%;
+
+    @include phone {
+      border-radius: 8px;
+    }
+    @include desktop {
+      border-radius: 16px;
+    }
+  }
+  &_listSVG {
+    width: 100%;
+    height: 100%;
+  }
+}

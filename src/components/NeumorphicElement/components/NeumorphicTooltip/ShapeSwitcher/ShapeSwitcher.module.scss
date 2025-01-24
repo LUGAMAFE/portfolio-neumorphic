@@ -1,0 +1,32 @@
+@use '../../../styles/shared' as shared;
+
+.ShapeSwitcher {
+  display: flex;
+  overflow: hidden;
+  flex-grow: 1;
+  border-radius: 3px;
+  &__row {
+    @include shared.row;
+  }
+  &__button {
+    flex-grow: 1;
+    border: none;
+    background: var(--textColorOpposite);
+    color: var(--textColor);
+    cursor: pointer;
+    opacity: 0.9;
+    outline: 0;
+    &_active {
+      opacity: 1;
+    }
+  }
+  &__icon {
+    width: 30px;
+    height: 30px;
+    pointer-events: none;
+    stroke: var(--textColor);
+  }
+  &__label {
+    @include shared.label;
+  }
+}

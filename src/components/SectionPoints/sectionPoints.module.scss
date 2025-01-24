@@ -1,0 +1,34 @@
+.SectionPoints {
+  position: fixed;
+  z-index: 999;
+  right: 0;
+  display: flex;
+  width: 60px;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  &___projects {
+    z-index: 998;
+    top: 415px;
+    right: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+  }
+  &_second {
+    position: fixed;
+    z-index: 998;
+    top: 440px;
+    right: 25px;
+    display: flex;
+    width: 10px;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 10px;
+  }
+}

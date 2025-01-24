@@ -1,0 +1,23 @@
+{
+  "extends": "../../../../stylelint.config.cjs",
+  "rules": {
+    "itcss/no-at-important": [
+      true,
+      {
+        "ignoreLayers": ["07_utilities"]
+      }
+    ],
+    "itcss/no-variable-declaration": [
+      true,
+      {
+        "ignoreLayers": ["01_settings", "03_generic"]
+      }
+    ],
+    "itcss/no-mixin-declaration": [
+      true,
+      {
+        "ignoreLayers": ["02_tools"]
+      }
+    ]
+  }
+}

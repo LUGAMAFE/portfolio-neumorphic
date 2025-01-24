@@ -1,0 +1,48 @@
+/* ==========================================================================
+   #MAIN
+   ========================================================================== */
+
+/**
+ * TABLE OF CONTENTS
+ *
+ * 01. SETTINGS
+ * used with preprocessors and contain font, colors definitions, etc.
+ *
+ * 02. TOOLS
+ * globally used mixins and functions. It’s important not to output any CSS in the first 2 layers.
+ *
+ * 03. GENERIC
+ * reset and/or normalize styles, box-sizing definition, root css variables etc. This is the first layer which generates actual CSS.
+ *
+ * 04. ELEMENTS
+ * styling for bare HTML elements (like H1, A, etc.). These come with default styling from the browser so we can redefine them here.
+ *
+ * 05. OBJECTS
+ * class-based selectors which define undecorated design patterns.
+ *
+ * 06. COMPONENTS
+ * specific UI components. This is where majority of our work takes place and our UI components are often composed of Objects and Components
+ *
+ * 07. UTILITIES
+ * utilities and helper classes with ability to override anything which goes before in the triangle, eg. hide helper class
+ */
+
+/* #SETTINGS
+   ========================================================================== */
+@use './ITCSS/01_settings/__index.scss' as *;
+
+/* #TOOLS
+   ========================================================================== */
+@use './ITCSS/02_tools/__index.scss' as *;
+
+/* #GENERIC
+   ========================================================================== */
+@use './ITCSS/03_generic/__index.scss' as *;
+
+/* #ELEMENTS
+   ========================================================================== */
+@use './ITCSS/04_elements/__index.scss' as *;
+
+/* #OBJECTS
+   ========================================================================== */
+@use './ITCSS/05_objects/__index.scss' as *;

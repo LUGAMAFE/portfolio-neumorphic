@@ -1,0 +1,103 @@
+/* ==========================================================================
+   #MIXINS
+   ========================================================================== */
+@use 'sass:math';
+@use 'sass:color';
+@use '../01_settings/fonts' as *;
+@use '../01_settings/colors' as *;
+/**
+ * Clearfix: contain floats.
+ *
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    `contenteditable` attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that receive the `clearfix` class.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+
+@mixin clearfix {
+  &::before,
+  &::after {
+    display: table; /* 2 */
+    content: ' '; /* 1 */
+  }
+
+  &::after {
+    clear: both;
+  }
+}
+
+/**
+ * Set font size with a relative line height.
+ *
+ * The `$font-size` argument should be specified in `rem` units.
+ * The `$line-height` argument, if specified, should be unitless.
+ */
+
+@mixin font-size($font-size, $line-height: auto, $important: false) {
+  /* stylelint-disable-next-line itcss/no-variable-declaration */
+  $important-suffix: if($important, '!important', null);
+
+  font-size: $font-size #{$important-suffix};
+
+  @if ($line-height == 'auto') {
+    /* stylelint-disable-next-line scss/operator-no-newline-after */
+    line-height: mat.ceil($font-size / $base-line-height) *
+      ($base-line-height / $font-size)
+      #{$important-suffix};
+  } @else {
+    line-height: $line-height #{$important-suffix};
+  }
+}
+
+@mixin grid($columns, $gap) {
+  display: grid;
+  gap: $gap;
+  grid-template-columns: repeat($columns, 1fr);
+}
+
+@mixin flex-columns(
+  $columns,
+  $column-gap,
+  $row-gap,
+  $items-max-height: none,
+  $justify: center,
+  $align-content: flex-start
+) {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: $justify;
+  /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+  column-gap: $column-gap;
+  row-gap: $row-gap;
+  > * {
+    max-height: $items-max-height;
+    flex-basis: calc((100% - $column-gap * ($columns - 1)) / $columns);
+  }
+}
+
+@mixin fluid-text($min, $max, $wished-size: 6vw) {
+  font-size: clamp($min, $wished-size, $max);
+}
+
+@mixin btn($textColor, $bgColor, $textHover, $bgHover) {
+  padding: 1.5rem 2rem;
+  border: none;
+  border-radius: 1rem;
+  background-color: $bgColor;
+  color: $textColor;
+  font-size: 1.8rem;
+  font-weight: $weight-bold;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 300ms;
+
+  &:hover {
+    background-color: $bgHover;
+    color: $textHover;
+    // cursor: pointer;
+  }
+}

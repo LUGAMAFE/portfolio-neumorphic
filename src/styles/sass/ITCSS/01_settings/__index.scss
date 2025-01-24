@@ -1,0 +1,16 @@
+/**
+ * TABLE OF CONTENTS
+ *
+ * 01. SETTINGS
+ *
+ * used with preprocessors as sass and contain font, colors definitions, etc.
+ *
+ * Global..............Unique brand identity values.
+ * Colors..............The color palette.
+ * Fonts...............Font family, sizing and weights.
+ * Sizes.......... Breakpoints Sizes for media queries.
+ **/
+@forward './global';
+@forward './colors';
+@forward './fonts';
+@forward './sizes';

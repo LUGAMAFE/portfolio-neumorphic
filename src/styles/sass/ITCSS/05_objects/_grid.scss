@@ -1,0 +1,34 @@
+@use '../01_settings/global' as *;
+
+/* ==========================================================================
+   #GRID
+   ========================================================================== */
+
+.grid {
+  width: 100%;
+  clear: both;
+
+  + .grid {
+    margin-top: $spacing-lg;
+  }
+}
+
+/* Row */
+
+.grid__row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: -$spacing-lg;
+  margin-left: -$spacing-lg;
+
+  + .grid__row {
+    margin-top: 0;
+  }
+}
+
+/* Column */
+
+.grid__col {
+  padding-top: $spacing-lg;
+  padding-left: $spacing-lg;
+}

@@ -1,0 +1,91 @@
+@use 'sass:color';
+/* ==========================================================================
+   #COLORS
+   ========================================================================== */
+
+/* Page */
+
+//Page Main Color Palette
+$color-primary-black-mode: #26292e;
+$color-middle-white: #e4ebf2;
+$color-white: #ffffff;
+
+/* Neon */
+
+//Pink
+$color-first-gradient-neon-pink: #ff6161;
+$color-secondary-gradient-neon-pink: #f6d;
+
+/* Text Main color palette*/
+
+//Secondary color Text
+$color-light-gray: #d2dae4;
+
+//Text shadow
+$color-black-text-shadow: #00000040;
+$color-light-blue-text-shadow: #94b8da;
+$color-gray-text-shadow: #515151;
+$color-light-gray-text-shadow: #ffffff9c;
+
+/* Gradients*/
+
+$color-gradient-soft-title-project: linear-gradient(180deg, #30343a 0%, #292c31 100%);
+$color-gradient-pink-linear-vertical: linear-gradient(
+  180deg,
+  $color-first-gradient-neon-pink 0%,
+  $color-secondary-gradient-neon-pink 100%
+);
+$color-gradient-pink-linear-horizontal: linear-gradient(
+  90deg,
+  $color-first-gradient-neon-pink 0%,
+  $color-secondary-gradient-neon-pink 100%
+);
+
+$color-color-switcher-before: linear-gradient(to bottom, $color-white 0%, $color-white 100%);
+
+/* Elements and properties */
+
+//Inputs
+$color-placeholder-contact-input-text-area: #9c9c9c;
+$color-border-inputs-configuration: #010101;
+
+//Buttons
+$color-configuration-copy-button: #3b843c;
+$color-normal-state-color-switcher-button: #13141633;
+$color-checked-state-color-switcher-button: #56c080;
+
+//Box-shadow
+$color-box-shadow-carrousel-projects: #a4b7c9;
+$color-box-shadow-text-container-carrousel-projects: #b9bbbc;
+$color-box-shadow-button-illustration: #2d3035;
+$color-box-shadow-button-illustration-secondary: #1a1b1d;
+$color-box-shadow-neon-pink: #ffb9bfc0;
+$color-box-shadow-neon-pink-number: rgba(255, 185, 191, 0.412);
+$color-box-shadow-color-switcher: #04040599;
+$color-box-shadow-color-switcher-before: #00000080;
+$color-box-shadow-light-source-selector-active: #ffff0099;
+$color-box-shadow-inputs-configuration: #30302f;
+$color-box-shadow-inputs-configuration-intensity: #0d0d0d;
+//Light-source
+$color-border-light-source-selector: #e0e0e0;
+$color-background-light-source-selector: #3a3e41;
+$color-active-light-source-selector: #ffff00;
+$color-border-light-source-selector-active: #ffff00bf;
+
+/* Neutral */
+
+$color-black: #000000;
+$color-gray: #999;
+$color-gray-90: color.adjust($color-black, $lightness: 10%);
+$color-gray-80: color.adjust($color-black, $lightness: 25%);
+$color-gray-70: color.adjust($color-black, $lightness: 30%);
+$color-gray-60: color.adjust($color-black, $lightness: 40%);
+$color-gray-50: color.adjust($color-black, $lightness: 50%);
+$color-gray-40: color.adjust($color-black, $lightness: 60%);
+$color-gray-20: color.adjust($color-black, $lightness: 80%);
+$color-gray-10: color.adjust($color-black, $lightness: 90%);
+$color-gray-05: color.adjust($color-black, $lightness: 95%);
+
+/* Utility */
+
+// Define the background color sequence for ::after pseudo-elements

@@ -1,0 +1,16 @@
+/* stylelint-disable plugin/selector-bem-pattern */
+.softShadow {
+  background: linear-gradient(var(--angle), var(--firstGradientColor), var(--secondGradientColor));
+  box-shadow: var(--positionX) var(--positionY) var(--blur) var(--darkColor),
+    var(--positionXOpposite) var(--positionYOpposite) var(--blur) var(--lightColor);
+
+  &.pressed {
+    box-shadow: inset var(--positionX) var(--positionY) var(--blur) var(--darkColor),
+      inset var(--positionXOpposite) var(--positionYOpposite) var(--blur) var(--lightColor);
+  }
+}
+.svgInnerShadow {
+  background: none;
+  filter: drop-shadow(var(--positionX) var(--positionY) var(--blur) var(--darkColor))
+    drop-shadow(var(--positionXOpposite) var(--positionYOpposite) var(--blur) var(--lightColor));
+}

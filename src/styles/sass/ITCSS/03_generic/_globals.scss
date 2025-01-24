@@ -1,0 +1,22 @@
+@use '../01_settings/global' as *;
+@use '../01_settings/colors' as *;
+@use '../01_settings/fonts' as *;
+
+html {
+  height: 100%;
+  overflow-scrolling: touch;
+  overflow-y: scroll;
+  color: $color-middle-white;
+  font-family: 'Roboto';
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+  scroll-behavior: smooth;
+}
+
+body {
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: visible;
+  min-height: 100vh;
+  cursor: none;
+}

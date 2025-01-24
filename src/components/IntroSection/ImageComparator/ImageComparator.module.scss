@@ -1,0 +1,112 @@
+@use '../../../styles/sass/ITCSS/01_settings/__index' as *;
+@use '../../../styles/sass/ITCSS/02_tools/breakpoints' as *;
+
+.ImageComparator {
+  display: flex;
+  align-items: center;
+  @include phone {
+    position: absolute;
+    top: 32.5svmax;
+    left: 0px;
+  }
+  @include tablet {
+    position: absolute;
+    top: 34svmax;
+    left: 0px;
+  }
+
+  @include desktop {
+    position: absolute;
+    top: 500px;
+    left: 0px;
+  }
+
+  @include desktopXL {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 44%;
+  }
+  &__imageComparer {
+    position: unset;
+    left: -300px;
+    display: flex;
+    width: 875px;
+    height: 604px;
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: 0px 299px 299px 0px;
+    @include phone {
+      width: 308px;
+      height: 32vh;
+      padding-right: 20px;
+    }
+    @include tablet {
+      top: 0px;
+      left: 0px;
+      width: 500px;
+      height: 32vh;
+    }
+    @include desktop {
+      top: 0px;
+      left: 0px;
+      width: 500px;
+      height: 417px;
+    }
+    @include desktopXL {
+      top: 0px;
+      left: 0px;
+      width: 500px;
+      height: 32vh;
+    }
+
+    @include desktopXL {
+      position: relative;
+      left: 0px;
+      width: 700px;
+      height: 604px;
+      justify-content: flex-end;
+      padding: 8px;
+      padding-right: 30px;
+      margin-top: 0px;
+    }
+    @include desktopXXL {
+      left: 0px;
+      width: 875px;
+      height: 604px;
+      padding: 8px;
+      padding-right: 30px;
+      margin-top: 0px;
+    }
+  }
+  &__circle {
+    overflow: hidden;
+    height: 94%;
+    border: 6px solid $color-middle-white;
+    border-radius: 50%;
+    filter: drop-shadow($base-box-shadow-image-comparator);
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1 / 1;
+  }
+  &__backImage {
+    width: 100%;
+    object-fit: cover;
+    position: absolute;
+    user-select: none;
+    pointer-events: none;
+    &::selection {
+      background: transparent;
+    }
+  }
+  &__dragger {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    background: $color-middle-white;
+    box-shadow: $base-box-shadow-image-comparator;
+  }
+  &__clipped {
+    filter: saturate(0) contrast(1.5);
+  }
+}

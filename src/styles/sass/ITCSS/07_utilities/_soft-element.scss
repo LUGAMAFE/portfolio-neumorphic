@@ -1,0 +1,9 @@
+.soft-element {
+  display: flex;
+  width: var(--size);
+  height: var(--size);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  text-align: center;
+}

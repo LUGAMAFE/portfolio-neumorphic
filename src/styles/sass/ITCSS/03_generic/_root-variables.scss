@@ -1,0 +1,15 @@
+@use '../01_settings/global' as *;
+@use '../01_settings/fonts' as *;
+@use '../01_settings/colors' as *;
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  font-synthesis: none;
+  font-weight: $weight-normal;
+  line-height: $base-line-height;
+  text-rendering: optimizeLegibility;
+  --main-color: #26292e;
+  --main-color-neon: linear-gradient(90deg, #ff6161 0%, #f6d 100%);
+}
