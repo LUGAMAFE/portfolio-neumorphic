@@ -89,22 +89,89 @@
     position: relative;
     aspect-ratio: 1 / 1;
   }
-  &__backImage {
-    width: 100%;
-    object-fit: cover;
+  &__clipWrapper {
     position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    transform-origin: center;
+  }
+  &__image {
+    height: 100%;
+    width: 100%;
+    max-width: none;
+    object-fit: cover;
     user-select: none;
     pointer-events: none;
+    transform-origin: center;
     &::selection {
       background: transparent;
     }
   }
+  &__backgroundImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: center;
+  }
   &__dragger {
     position: absolute;
-    width: 10px;
+    width: 6px;
     height: 100%;
     background: $color-middle-white;
     box-shadow: $base-box-shadow-image-comparator;
+    z-index: 2;
+    @include tablet {
+      width: 10px;
+    }
+  }
+  &__draggerHandle {
+    position: absolute;
+    width: 12px;
+    height: 25px;
+    background: $color-middle-white;
+    box-shadow: $base-box-shadow-image-comparator;
+    top: 50%;
+    left: -50%;
+    border-radius: 20%;
+    transform: translateY(-50%);
+    @include tablet {
+      width: 20px;
+      height: 30px;
+    }
+  }
+  //style n 3 dragger dots
+  &__draggerDot {
+    position: absolute;
+    width: 5px;
+    height: 1px;
+    background: $color-background-light-source-selector;
+    box-shadow: $base-box-shadow-image-comparator;
+    border-radius: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    @include tablet {
+      width: 9px;
+      height: 2px;
+    }
+  }
+  &__draggerDot_1 {
+    top: calc(30% - 1px);
+  }
+  &__draggerDot_2 {
+    top: calc(50% - 1px);
+  }
+  &__draggerDot_3 {
+    top: calc(70% - 1px);
   }
   &__clipped {
     filter: saturate(0) contrast(1.5);

@@ -1,4 +1,6 @@
 export type Styles = {
+  'flare-move': string;
+  'move-gradient': string;
   Navbar: string;
   Navbar__bottomNeon: string;
   Navbar__button: string;
