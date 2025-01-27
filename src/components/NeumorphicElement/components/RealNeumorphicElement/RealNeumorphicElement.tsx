@@ -31,7 +31,7 @@ export const RealNeumorphicElement = ({
   style,
   onClick,
   ...rest
-}: NeumorphicElementProps) => {
+}: NeumorphicElementProps<'div'>) => {
   const { contextConfig, setContextConfig } = useNeumorphicContext();
 
   const defaultProps: MakeRequired<

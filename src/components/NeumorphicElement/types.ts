@@ -28,7 +28,6 @@ export type NeumorphicElementProps<T extends React.ElementType> = {
     distance?: number;
     blur?: number;
     'data-testid'?: string | number;
-    type?: string;
   };
 
 export interface InputNeumorphicProps extends React.InputHTMLAttributes<HTMLInputElement> {
