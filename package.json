@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@floating-ui/react": "^0.23.1",
+    "@floating-ui/react": "0.24.0",
     "@gsap/react": "^2.0.2",
     "@tanstack/react-ranger": "^0.0.4",
     "@types/lodash": "^4.17.14",

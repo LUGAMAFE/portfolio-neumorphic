@@ -1,6 +1,4 @@
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
@@ -14,7 +12,6 @@ import {
   getIntFormValue,
 } from '../../utils';
 import { MakeRequired } from '../../utils/type-utils';
-import { NeumorphicTooltip } from '../NeumorphicTooltip';
 import styles from './RealNeumorphicElement.module.scss';
 
 export const RealNeumorphicElement = ({
@@ -29,7 +26,6 @@ export const RealNeumorphicElement = ({
   distance,
   blur,
   style,
-  onClick,
   ...rest
 }: NeumorphicElementProps<'div'>) => {
   const { contextConfig, setContextConfig } = useNeumorphicContext();
@@ -75,20 +71,9 @@ export const RealNeumorphicElement = ({
       lightGradientColor: lightGradientColorContext,
     },
   } = useNeumorphicStylesContext();
-
-  const [refElement, setRefElement] = useState<HTMLElement | null>(null);
-  const [tooltipReferenceProps, setTooltipReferenceProps] = useState({});
   const [classesToApply, setClassesToApply] = useState<string>(styles.softShadow);
   const [defaultCssVariables, setDefaultCssVariables] = useState({});
-  const neuRef = useRef<HTMLElement | null>(null);
-  useGSAP(() => {
-    gsap.to(neuRef.current, {
-      // value: endValue, // Valor final
-      // duration: 2, // Duración de la animación
-      // ease: "power1.inOut", // Suavizado
-      // onUpdate: () => setValues([sliderValue.current.value]), // Actualiza el estado en cada paso
-    });
-  }, []);
+
   useEffect(() => {
     if (!mainColorContext) return;
     if (contextConfig.form == null) {
@@ -192,22 +177,10 @@ export const RealNeumorphicElement = ({
   return (
     <>
       <Element
-        ref={(node: HTMLElement | null) => {
-          setRefElement(node);
-          neuRef.current = node; // Asigna el nodo a neuRef.current también.
-        }}
         style={{ ...defaultCssVariables, ...style }}
         className={`neuElement ${styles.softShadow} ${classesToApply} ${className}`}
-        {...tooltipReferenceProps}
         {...rest}
       />
-      {editorMode && (
-        <NeumorphicTooltip
-          refElement={refElement}
-          setRefProps={setTooltipReferenceProps}
-          onClick={onClick}
-        />
-      )}
     </>
   );
 };
