@@ -87,11 +87,11 @@ export const NeumorphicStylesProvider = ({
   const [ctrlButton, setCtrlButton] = useState(true);
   const [currentTheme, setCurrentTheme] = useState(ThemePreset.Dark);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setEditorMode(true);
-    }, 1200);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setEditorMode(true);
+  //   }, 10000);
+  // }, []);
 
   useEffect(() => {
     const mainColor = obtainMainClass('--main-color').trim();

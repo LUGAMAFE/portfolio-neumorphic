@@ -27,6 +27,7 @@ export type NeumorphicElementProps<T extends React.ElementType> = {
     lightSource?: number;
     distance?: number;
     blur?: number;
+    allowClicks?: boolean;
     'data-testid'?: string | number;
   };
 
