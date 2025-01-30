@@ -32,7 +32,7 @@ export const TooltipWrapper = ({ children, open, setOpen }: TooltipWrapperProps)
     shift(),
   ];
   return (
-    <Tooltip open={open} onOpenChange={setOpen} middlewares={middleWares}>
+    <Tooltip open={open} onOpenChange={setOpen} middlewares={middleWares} nested>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent style={{ zIndex: 1000 }}>
         <Configuration />

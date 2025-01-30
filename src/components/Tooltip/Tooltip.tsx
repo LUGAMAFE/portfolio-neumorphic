@@ -19,6 +19,7 @@ interface TooltipOptions {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   middlewares?: Array<Middleware | null | undefined | false>;
+  nested?: boolean;
 }
 
 export function useTooltip({
@@ -27,9 +28,9 @@ export function useTooltip({
   open: controlledOpen,
   onOpenChange: setControlledOpen,
   middlewares,
+  nested = false,
 }: TooltipOptions) {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(initialOpen);
-
   const open = controlledOpen ?? uncontrolledOpen;
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
 
@@ -59,10 +60,11 @@ export function useTooltip({
     () => ({
       open,
       setOpen,
+      nested,
       ...interactions,
       ...data,
     }),
-    [open, setOpen, interactions, data]
+    [open, setOpen, nested, interactions, data]
   );
 }
 
@@ -90,30 +92,85 @@ export function Tooltip({ children, ...options }: React.PropsWithChildren<Toolti
 export const TooltipTrigger = React.forwardRef<
   HTMLElement,
   React.HTMLProps<HTMLElement> & { asChild?: boolean }
->(function TooltipTrigger({ children, asChild = false, ...props }, propRef) {
+>(function TooltipTrigger({ children, asChild = false, onClick, ...props }, propRef) {
   const context = useTooltipContext();
+  const { open, setOpen, nested } = context;
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const childrenRef = (children as any).ref;
+  const childrenRef = (children as any)?.ref;
   const ref = useMergeRefs([context.refs.setReference, propRef, childrenRef]);
 
-  // `asChild` allows the user to pass any element as the anchor
+  const handleClickNested = React.useCallback(
+    (ev: React.MouseEvent<HTMLElement>) => {
+      const current = ev.currentTarget;
+      const target = ev.target as HTMLElement;
+      const closestContainer = target.closest('[data-tooltip-container]');
+      if (closestContainer && closestContainer !== current /*el padre*/) {
+        setOpen(false);
+        return;
+      }
+      setOpen(!open);
+    },
+    [open, setOpen]
+  );
+
+  const handleClick = React.useCallback(
+    (ev: React.MouseEvent<HTMLElement>) => {
+      // Llamar siempre a onClick del hijo y del propio TooltipTrigger:
+      if (typeof children?.props?.onClick === 'function') {
+        children.props.onClick(ev);
+      }
+      if (typeof onClick === 'function') {
+        onClick(ev);
+      }
+
+      if (!nested) {
+        // Si no es "nested", haz la lógica normal (ej. toggle a tu gusto)
+        setOpen(!open);
+        return;
+      }
+
+      // Ahora, si es nested:
+      const current = ev.currentTarget; // Trigger del padre
+      const target = ev.target as HTMLElement;
+      const closestContainer = target.closest('[data-tooltip-container]');
+
+      if (closestContainer === current) {
+        // => Click en este contenedor (en mi trigger)
+        setOpen(!open);
+      } else if (closestContainer) {
+        // => Click en un contenedor hijo => cierro mi tooltip
+        setOpen(false);
+      } else {
+        // => No hay contenedor => click completamente "fuera"
+        //   Normalmente, let useDismiss handle it.
+        //   O si quieres cerrar inmediatamente:
+        // setOpen(false);
+      }
+    },
+    [onClick, children, nested, open, setOpen]
+  );
+
+  // `asChild` -> clonamos el hijo para inyectar props
   if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(
-      children,
-      context.getReferenceProps({
-        ref,
-        ...props,
-        ...(children.props as object),
-        'data-state': context.open ? 'open' : 'closed',
-      })
-    );
+    return React.cloneElement(children, {
+      ref,
+      ...props,
+      ...context.getReferenceProps({
+        'data-tooltip-container': nested ? 'true' : undefined,
+        'data-state': open ? 'open' : 'closed',
+        onClick: handleClick,
+      }),
+    });
   }
 
+  // Versión sin asChild
   return (
     <button
       ref={ref}
-      // The user can style the trigger based on the state
-      data-state={context.open ? 'open' : 'closed'}
+      data-tooltip-container={nested ? 'true' : undefined}
+      data-state={open ? 'open' : 'closed'}
+      onClick={handleClick}
       {...context.getReferenceProps(props)}
     >
       {children}
