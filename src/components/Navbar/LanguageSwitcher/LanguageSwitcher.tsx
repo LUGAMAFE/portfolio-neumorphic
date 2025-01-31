@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useNeumorphicStylesContext } from '../../../providers/NeumorphicStylesProvider';
 
 import { NeumorphicElement } from '@/components/NeumorphicElement';
 import { FormShape } from '@/components/NeumorphicElement/types';
+import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { LanguageButtonProps } from '../LanguageButton';
 import style from './languageSwitcher.module.scss';
 
 export const LanguageSwitcher = () => {
-  const { initialMainColorNeon, initialColorNeonSVG } = useNeumorphicStylesContext();
+  const { currentNeonColor, neonSVGColors } = useNeonColorsContext();
 
   const initialButtonConfigs: Omit<LanguageButtonProps, 'clickHandler'>[] = [
     {
@@ -46,8 +46,8 @@ export const LanguageSwitcher = () => {
             ...config,
             style: {
               ...config.style,
-              backgroundImage: initialMainColorNeon,
-              textShadow: `0px 0px 18px ${initialColorNeonSVG.gradientColorBoxShadow}`,
+              backgroundImage: currentNeonColor,
+              textShadow: `0px 0px 18px ${neonSVGColors.gradientColorBoxShadow}`,
             },
           };
         } else {
@@ -55,7 +55,7 @@ export const LanguageSwitcher = () => {
         }
       })
     );
-  }, [initialColorNeonSVG.gradientColorBoxShadow, initialMainColorNeon]);
+  }, [neonSVGColors.gradientColorBoxShadow, currentNeonColor]);
 
   const handleButtonClick = (id: string | number) => {
     setButtonConfigs((prev) =>

@@ -1,4 +1,5 @@
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
+import { useUIStateContext } from '@/providers/UIStateProvider';
 import { arrow, flip, offset, shift } from '@floating-ui/react';
 import { PropsWithChildren, useRef } from 'react';
 import {
@@ -28,8 +29,9 @@ export const TooltipWrapper = ({ children, open, setOpen, allowClicks }: Tooltip
 
   const {
     styles: { mainColor },
-    editorMode,
   } = useNeumorphicStylesContext();
+
+  const { editorMode } = useUIStateContext();
 
   const middleWares = [
     offset(ARROW_HEIGHT),

@@ -1,6 +1,6 @@
 'use client';
 import { CustomCursor } from '@/components/CustomCursor';
-import { NeumorphicStylesProvider } from '@/providers/NeumorphicStylesProvider';
+import { AppProviders } from '@/providers/AppProviders';
 import '@/styles/sass/style.scss';
 import gsap from 'gsap';
 import ScrollSmoother from 'gsap-trial/ScrollSmoother';
@@ -15,7 +15,7 @@ gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
 export const Portfolio = () => {
   const [isSidebarMenuOpen, setIsSidebarMenuOpen] = useState(false);
   return (
-    <NeumorphicStylesProvider>
+    <AppProviders>
       <CustomCursor />
       <Navbar setIsSidebarMenuOpen={setIsSidebarMenuOpen} />
       <SectionPoints />
@@ -25,6 +25,6 @@ export const Portfolio = () => {
           <IntroSection />
         </div>
       </div>
-    </NeumorphicStylesProvider>
+    </AppProviders>
   );
 };

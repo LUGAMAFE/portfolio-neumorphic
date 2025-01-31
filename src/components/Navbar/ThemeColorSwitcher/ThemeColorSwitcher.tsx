@@ -1,8 +1,6 @@
+import { ThemePreset } from '@/providers/AppProviders';
 import { ChangeEvent } from 'react';
-import {
-  ThemePreset,
-  useNeumorphicStylesContext,
-} from '../../../providers/NeumorphicStylesProvider';
+import { useNeumorphicStylesContext } from '../../../providers/NeumorphicStylesProvider';
 import style from './themeColorSwitcher.module.scss';
 
 export const ThemeColorSwitcher = () => {
@@ -10,9 +8,9 @@ export const ThemeColorSwitcher = () => {
 
   const handleThemeColorSwitcher = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked === true) {
-      handleChangeTheme(ThemePreset.Light);
+      handleChangeTheme(ThemePreset.LIGHT);
     } else {
-      handleChangeTheme(ThemePreset.Dark);
+      handleChangeTheme(ThemePreset.DARK);
     }
   };
 

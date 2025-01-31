@@ -1,4 +1,6 @@
-import { ThemePreset, useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
+import { ThemePreset } from '@/providers/AppProviders';
+import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
+import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { NeumorphicElement } from '../NeumorphicElement';
@@ -12,7 +14,8 @@ interface NavbarProps {
 }
 
 export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
-  const { initialMainColorNeon, initialColorNeonSVG, currentTheme } = useNeumorphicStylesContext();
+  const { currentTheme } = useNeumorphicStylesContext();
+  const { currentNeonColor } = useNeonColorsContext();
 
   const initialButtonConfigs: NeumorphicElementProps<'button'>[] = [
     {
@@ -49,18 +52,32 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
         : prevButtonConfig
     );
   };
+
+  const neumorphicOptionsContainer =
+    currentTheme === ThemePreset.LIGHT
+      ? {
+          form: FormShape.Level,
+          color: '#ebebeb',
+          size: 10,
+          intensity: 0.01,
+          lightSource: 3,
+          distance: 2,
+          blur: 1,
+        }
+      : {
+          form: FormShape.Pressed,
+          size: 196,
+          intensity: 0.42,
+          lightSource: 3,
+          distance: 20,
+          blur: 40,
+        };
+
   return (
     <NeumorphicElement
       className={style.Navbar}
       data-testid="navbar"
-      neumorphicOptions={{
-        form: FormShape.Pressed,
-        size: currentTheme == ThemePreset.Light ? 196 : 196,
-        intensity: currentTheme == ThemePreset.Light ? 0.17 : 0.51,
-        lightSource: 3,
-        distance: currentTheme == ThemePreset.Light ? 20 : 23,
-        blur: currentTheme == ThemePreset.Light ? 39 : 46,
-      }}
+      neumorphicOptions={neumorphicOptionsContainer}
     >
       <div className={style.Navbar__logo}>
         <p>{'<LUGAMAFE/>'}</p>
@@ -88,7 +105,7 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
       <div
         className={style.Navbar__bottomNeon}
         style={{
-          backgroundImage: initialMainColorNeon,
+          backgroundImage: currentNeonColor,
         }}
       ></div>
     </NeumorphicElement>

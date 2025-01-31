@@ -1,4 +1,4 @@
-import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
+import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import style from '../styles/Point.module.scss';
 
 interface SectionPointProps {
@@ -7,7 +7,7 @@ interface SectionPointProps {
 }
 
 export const SectionPoint = ({ classPointer, index }: SectionPointProps) => {
-  const { initialColorNeonSVG } = useNeumorphicStylesContext();
+  const { neonSVGColors } = useNeonColorsContext();
   return (
     <button className={style.Point} name={`${classPointer}`}>
       <svg
@@ -63,8 +63,8 @@ export const SectionPoint = ({ classPointer, index }: SectionPointProps) => {
             y2="28"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stopColor={`${initialColorNeonSVG.firstGradientColor}`} />
-            <stop offset="1" stopColor={`${initialColorNeonSVG.secondGradientColor}`} />
+            <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
+            <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
           </linearGradient>
         </defs>
       </svg>

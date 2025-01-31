@@ -221,7 +221,9 @@ const Configuration = () => {
           disabled={contextConfig.form === 'flat'}
         />
 
-        <div style={{ minWidth: '34px' }}>{`${angle}°`}</div>
+        <div
+          style={{ minWidth: '34px', display: 'flex', justifyContent: 'center' }}
+        >{`${angle}°`}</div>
         <LightSourceSelector
           lightSource={contextConfig.lightSource ?? 1}
           onDirectionChanged={handleDirection}

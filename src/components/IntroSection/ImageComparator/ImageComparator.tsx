@@ -6,7 +6,8 @@ import { useRef } from 'react';
 
 import { NeumorphicElement } from '@/components/NeumorphicElement';
 import { FormShape } from '@/components/NeumorphicElement/types';
-import { ThemePreset, useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
+import { ThemePreset } from '@/providers/AppProviders';
+import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import style from './ImageComparator.module.scss';
 
 gsap.registerPlugin(ScrollTrigger, Draggable);
@@ -187,18 +188,30 @@ export const ImageComparator = () => {
     { scope: containerRef }
   );
 
+  const neumorphicOptions =
+    currentTheme === ThemePreset.LIGHT
+      ? {
+          form: FormShape.Pressed,
+          size: 125,
+          intensity: 0.09,
+          lightSource: 2,
+          distance: 13,
+          blur: 25,
+        }
+      : {
+          form: FormShape.Concave,
+          size: 168,
+          intensity: 0.25,
+          lightSource: 1,
+          distance: 20,
+          blur: 45,
+        };
+
   return (
     <div ref={containerRef} className={style.ImageComparator}>
       <NeumorphicElement
         className={style.ImageComparator__imageComparer}
-        neumorphicOptions={{
-          form: FormShape.Concave,
-          size: currentTheme == ThemePreset.Light ? 378 : 165,
-          intensity: currentTheme == ThemePreset.Light ? 0.28 : 0.9,
-          lightSource: 1,
-          distance: currentTheme == ThemePreset.Light ? 38 : 17,
-          blur: currentTheme == ThemePreset.Light ? 16 : 33,
-        }}
+        neumorphicOptions={neumorphicOptions}
       >
         <div className={style.ImageComparator__circle}>
           <div className={style.ImageComparator__clipWrapper}>

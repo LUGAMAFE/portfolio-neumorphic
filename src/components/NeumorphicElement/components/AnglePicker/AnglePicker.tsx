@@ -1,5 +1,4 @@
-import React, { Component, MouseEventHandler, createRef } from 'react';
-import style from './AnglePicker.module.scss';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Border } from './Border';
 import { Circle } from './Circle';
 import { Line } from './Line';
@@ -9,10 +8,9 @@ export interface Point {
   x: number;
   y: number;
 }
+
 const BORDER_WIDTH: number = 1;
-
 const WIDTH: number = 30;
-
 const CIRCLE_WIDTH: number = 6;
 
 export interface PickerProps {
@@ -24,168 +22,158 @@ export interface PickerProps {
   value?: number;
   borderStyle?: string;
   borderWidth?: number;
-
-  angle: number;
-
+  angle?: number;
   onChange?: (newValue?: number) => void;
-
   onAfterChange?: (interactiveValue: number) => void;
-
   preventDefault?: boolean;
+  disabled?: boolean;
 }
 
-interface PickerState {
-  angle: number;
-}
+export const AnglePicker = (props: PickerProps) => {
+  const {
+    pointerColor = '#000',
+    pointerWidth = CIRCLE_WIDTH,
+    width = WIDTH,
+    borderWidth = BORDER_WIDTH,
+    onChange,
+    onAfterChange,
+    preventDefault = false,
+    disabled = false,
+    value,
+    borderColor,
+    borderStyle,
+    id,
+  } = props;
 
-export class AnglePicker extends Component<PickerProps, PickerState> {
-  constructor(props: PickerProps) {
-    super(props);
-    this.state = {
-      angle: props.value || 0,
-    };
+  const [angle, setAngle] = useState(value ?? 0);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
-    this.mousemove = this.mousemove.bind(this);
-    this.mouseup = this.mouseup.bind(this);
-    this.getStartPoint = this.getStartPoint.bind(this);
-    this.getCenter = this.getCenter.bind(this);
-    this.getRotatedPosition = this.getRotatedPosition.bind(this);
-    this.getNewAngleByEvent = this.getNewAngleByEvent.bind(this);
-  }
+  const onChangeRef = useRef(onChange);
+  const onAfterChangeRef = useRef(onAfterChange);
+  const preventDefaultRef = useRef(preventDefault);
+  const disabledRef = useRef(disabled);
 
-  wrapperRef = createRef<HTMLDivElement>();
+  useEffect(() => {
+    onChangeRef.current = onChange;
+    onAfterChangeRef.current = onAfterChange;
+    preventDefaultRef.current = preventDefault;
+    disabledRef.current = disabled;
+  }, [onChange, onAfterChange, preventDefault, disabled]);
 
-  static getDerivedStateFromProps(props: PickerProps, state: PickerState) {
-    if (typeof props.value === 'number' && state.angle !== props.value) {
-      return {
-        angle: props.value,
+  useEffect(() => {
+    if (typeof value === 'number' && value !== angle) {
+      setAngle(value);
+    }
+  }, [value]);
+
+  const center = useMemo(() => getCenter(width, borderWidth), [width, borderWidth]);
+
+  const startPoint = useMemo(
+    () => getStartPoint(width, pointerWidth, borderWidth),
+    [width, pointerWidth, borderWidth]
+  );
+
+  const getRotatedPosition = useCallback(
+    (angle: number) => {
+      const theta = (angle / 180) * Math.PI;
+      const x =
+        (startPoint.x - center.x) * Math.cos(theta) -
+        (startPoint.y - center.y) * Math.sin(theta) +
+        center.x;
+      const y =
+        (startPoint.x - center.x) * Math.sin(theta) +
+        (startPoint.y - center.y) * Math.cos(theta) +
+        center.y;
+      return { x, y };
+    },
+    [center, startPoint]
+  );
+
+  const getNewAngleByEvent = useCallback(
+    (e: MouseEvent) => {
+      const wrapperEl = wrapperRef.current;
+      if (e && wrapperEl) {
+        const rect = wrapperEl.getBoundingClientRect();
+        const centerP = {
+          x: rect.left + center.x,
+          y: rect.top + center.y,
+        };
+        const nx = e.clientX - centerP.x;
+        const ny = e.clientY - centerP.y;
+        const radian = Math.atan2(ny, nx);
+        return radianToAngle(radian);
+      }
+      return null;
+    },
+    [center]
+  );
+
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (disabledRef.current) return;
+      e.preventDefault();
+
+      const angle = getNewAngleByEvent(e.nativeEvent);
+      if (typeof angle !== 'number') return;
+
+      setAngle(angle);
+      onChangeRef.current?.(angle);
+
+      const onMouseMove = (e: MouseEvent) => {
+        if (disabledRef.current) return;
+        if (preventDefaultRef.current) e.preventDefault();
+
+        const newAngle = getNewAngleByEvent(e);
+        if (typeof newAngle !== 'number') return;
+
+        setAngle(newAngle);
+        onChangeRef.current?.(newAngle);
       };
-    }
-    return null;
-  }
 
-  getCenter(): Point {
-    const { width = WIDTH, borderWidth = BORDER_WIDTH } = this.props;
-    return getCenter(width, borderWidth);
-  }
+      const onMouseUp = (e: MouseEvent) => {
+        if (preventDefaultRef.current) e.preventDefault();
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
 
-  getStartPoint() {
-    const { width = WIDTH, pointerWidth = CIRCLE_WIDTH, borderWidth = BORDER_WIDTH } = this.props;
-    return getStartPoint(width, pointerWidth, borderWidth);
-  }
+        const finalAngle = getNewAngleByEvent(e);
+        if (typeof finalAngle !== 'number') return;
 
-  getRotatedPosition(angle: number) {
-    const center = this.getCenter();
-    const startPoint = this.getStartPoint();
-    const theta = (angle / 180) * Math.PI;
-    const x =
-      (startPoint.x - center.x) * Math.cos(theta) -
-      (startPoint.y - center.y) * Math.sin(theta) +
-      center.x;
-    const y =
-      (startPoint.x - center.x) * Math.sin(theta) +
-      (startPoint.y - center.y) * Math.cos(theta) +
-      center.y;
-    return { x, y };
-  }
+        onAfterChangeRef.current?.(finalAngle) ?? onChangeRef.current?.(finalAngle);
+      };
 
-  getNewAngleByEvent = (e: MouseEvent) => {
-    const wrapperEl = this.wrapperRef && this.wrapperRef.current;
-    if (e && wrapperEl) {
-      const center = this.getCenter();
-      const { clientX, clientY } = e;
-      const rect = wrapperEl.getClientRects()[0];
-      const { x, y } = rect;
-      const centerP = { x: x + center.x, y: y + center.y };
-      const nx = clientX - centerP.x;
-      const ny = clientY - centerP.y;
-      const radian = Math.atan2(ny, nx);
-      return radianToAngle(radian);
-    }
-    return null;
-  };
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    },
+    [getNewAngleByEvent]
+  );
 
-  mousedown: MouseEventHandler<HTMLDivElement> = (e: React.MouseEvent<HTMLDivElement>) => {
-    const angle = this.getNewAngleByEvent(e.nativeEvent);
-    if (typeof angle === 'number') {
-      this.setState({ angle });
-      if (this.props.onChange) {
-        this.props.onChange(angle);
-      }
-      this.addMouseListeners();
-    }
-  };
+  const rotatedPosition = getRotatedPosition(angle);
 
-  addMouseListeners() {
-    document.addEventListener('mousemove', this.mousemove);
-    document.addEventListener('mouseup', this.mouseup);
-  }
-
-  removeMouseListeners() {
-    document.removeEventListener('mousemove', this.mousemove);
-    document.removeEventListener('mouseup', this.mouseup);
-  }
-
-  mousemove(e: MouseEvent) {
-    if (this.props.preventDefault) {
-      e.preventDefault();
-    }
-    const angle = this.getNewAngleByEvent(e);
-    if (typeof angle === 'number') {
-      this.setState({ angle });
-      if (this.props.onChange) {
-        this.props.onChange(angle);
-      }
-    }
-  }
-
-  mouseup(e: MouseEvent) {
-    if (this.props.preventDefault) {
-      e.preventDefault();
-    }
-    this.removeMouseListeners();
-    const angle = this.getNewAngleByEvent(e);
-    if (typeof angle === 'number') {
-      this.setState({ angle });
-      if (this.props.onAfterChange) {
-        this.props.onAfterChange(angle);
-      } else if (this.props.onChange) {
-        this.props.onChange(angle);
-      }
-    }
-  }
-
-  render() {
-    const { angle } = this.state;
-    const { pointerColor, pointerWidth, width, borderColor, borderStyle, borderWidth } = this.props;
-    const { getRotatedPosition, mousedown } = this;
-
-    const rotatedPosition = getRotatedPosition(angle);
-
-    return (
-      <Border
-        ref={this.wrapperRef}
-        onMouseDown={mousedown}
-        width={width}
-        borderColor={borderColor}
-        borderStyle={borderStyle}
-        borderWidth={borderWidth}
-      >
-        <div className={style.Center}></div>
-        <Circle
-          x={rotatedPosition.x}
-          y={rotatedPosition.y}
-          color={pointerColor}
-          width={pointerWidth}
-        />
-        <Line
-          x={rotatedPosition.x}
-          y={rotatedPosition.y}
-          color={pointerColor}
-          width={pointerWidth}
-          angle={angle}
-        />
-      </Border>
-    );
-  }
-}
+  return (
+    <Border
+      ref={wrapperRef}
+      onMouseDown={handleMouseDown}
+      width={width}
+      borderColor={borderColor}
+      borderStyle={borderStyle}
+      borderWidth={borderWidth}
+      id={id}
+    >
+      <Circle
+        x={rotatedPosition.x}
+        y={rotatedPosition.y}
+        color={pointerColor}
+        width={pointerWidth}
+        disabled={disabled}
+      />
+      <Line
+        x={rotatedPosition.x}
+        y={rotatedPosition.y}
+        color={pointerColor}
+        width={pointerWidth}
+        angle={angle}
+        disabled={disabled}
+      />
+    </Border>
+  );
+};

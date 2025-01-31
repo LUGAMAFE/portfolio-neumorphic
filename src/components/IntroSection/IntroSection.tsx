@@ -5,14 +5,17 @@ import TextPlugin from 'gsap-trial/TextPlugin';
 import { useRef } from 'react';
 import useIsMobile from '../../hooks/useIsMobile';
 
-import { ThemePreset, useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
+import { ThemePreset } from '@/providers/AppProviders';
+import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
+import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { NeumorphicElement } from '../NeumorphicElement';
 import { FormShape } from '../NeumorphicElement/types';
 import { ImageComparator } from './ImageComparator';
 import style from './IntroSection.module.scss';
 gsap.registerPlugin(SplitText, TextPlugin);
 export const IntroSection = () => {
-  const { initialMainColorNeon, initialColorNeonSVG, currentTheme } = useNeumorphicStylesContext();
+  const { currentTheme } = useNeumorphicStylesContext();
+  const { neonSVGColors, currentNeonColor } = useNeonColorsContext();
   const splitTextElement = useRef(null);
   const isMobile = useIsMobile();
 
@@ -29,18 +32,30 @@ export const IntroSection = () => {
     });
   }, []);
 
+  const neumorphicOptions =
+    currentTheme === ThemePreset.LIGHT
+      ? {
+          form: FormShape.Flat,
+          size: 44,
+          intensity: 0.47,
+          lightSource: 3,
+          distance: 4,
+          blur: 39,
+        }
+      : {
+          form: FormShape.Flat,
+          size: 500,
+          intensity: 0.65,
+          lightSource: 3,
+          distance: 45,
+          blur: 90,
+        };
+
   return (
     <NeumorphicElement
       id="seccion0"
       className={`${style.Intro} section`}
-      neumorphicOptions={{
-        form: FormShape.Flat,
-        size: currentTheme == ThemePreset.Light ? 44 : 500,
-        intensity: currentTheme == ThemePreset.Light ? 0.47 : 0.65,
-        lightSource: 3,
-        distance: currentTheme == ThemePreset.Light ? 4 : 45,
-        blur: currentTheme == ThemePreset.Light ? 39 : 90,
-      }}
+      neumorphicOptions={neumorphicOptions}
     >
       <ImageComparator />
       <div className={style.Intro__myIntroduction}>
@@ -52,16 +67,16 @@ export const IntroSection = () => {
           <div className={style.Intro__lines}>
             <div
               style={{
-                background: initialMainColorNeon,
-                boxShadow: `0px 0px 18px ${initialColorNeonSVG.gradientColorBoxShadow}`,
+                background: currentNeonColor,
+                boxShadow: `0px 0px 18px ${neonSVGColors.gradientColorBoxShadow}`,
               }}
               className={style.Intro__line1}
             ></div>
             {!isMobile && (
               <div
                 style={{
-                  background: initialMainColorNeon,
-                  boxShadow: `0px 0px 18px ${initialColorNeonSVG.gradientColorBoxShadow}`,
+                  background: currentNeonColor,
+                  boxShadow: `0px 0px 18px ${neonSVGColors.gradientColorBoxShadow}`,
                 }}
                 className={style.Intro__line2}
               ></div>
@@ -471,8 +486,8 @@ export const IntroSection = () => {
                   y2="288.205"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stopColor={`${initialColorNeonSVG.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${initialColorNeonSVG.secondGradientColor}`} />
+                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
+                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
                 </linearGradient>
                 <linearGradient
                   id="paint1_linear_54_154"
@@ -482,8 +497,8 @@ export const IntroSection = () => {
                   y2="138.335"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stopColor={`${initialColorNeonSVG.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${initialColorNeonSVG.secondGradientColor}`} />
+                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
+                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
                 </linearGradient>
                 <linearGradient
                   id="paint2_linear_54_154"
@@ -493,8 +508,8 @@ export const IntroSection = () => {
                   y2="138.335"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stopColor={`${initialColorNeonSVG.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${initialColorNeonSVG.secondGradientColor}`} />
+                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
+                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
                 </linearGradient>
                 <linearGradient
                   id="paint3_linear_54_154"
@@ -504,8 +519,8 @@ export const IntroSection = () => {
                   y2="45.5959"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stopColor={`${initialColorNeonSVG.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${initialColorNeonSVG.secondGradientColor}`} />
+                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
+                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
                 </linearGradient>
                 <linearGradient
                   id="paint4_linear_54_154"
@@ -515,8 +530,8 @@ export const IntroSection = () => {
                   y2="212.776"
                   gradientUnits="userSpaceOnUse"
                 >
-                  <stop stopColor={`${initialColorNeonSVG.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${initialColorNeonSVG.secondGradientColor}`} />
+                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
+                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
                 </linearGradient>
                 <clipPath id="clip0_54_154">
                   <rect width="370" height="303" fill="white" />

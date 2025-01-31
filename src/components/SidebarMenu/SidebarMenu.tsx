@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import useDeviceType from '../../hooks/useDeviceType';
 
-import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
+import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { NeumorphicElement } from '../NeumorphicElement';
 import { FormShape, NeumorphicElementProps } from '../NeumorphicElement/types';
 import {
@@ -17,7 +17,7 @@ interface SidebarMenuProps {
 }
 
 export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
-  const { handleChangeColorNeon, initialColorNeonSVG } = useNeumorphicStylesContext();
+  const { handleChangeColorNeon, neonSVGColors } = useNeonColorsContext();
   const { isMobile } = useDeviceType();
 
   const initialButtonCloseConfig: NeumorphicElementProps<'button'> = {
@@ -179,7 +179,7 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
               ...config.style,
               backgroundImage: 'linear-gradient(90deg, #ff6161 0%, #f6d 100%)',
               WebkitTextFillColor: 'transparent',
-              textShadow: `0px 0px 18px ${initialColorNeonSVG.gradientColorBoxShadow}`,
+              textShadow: `0px 0px 18px ${neonSVGColors.gradientColorBoxShadow}`,
             },
           };
         } else {

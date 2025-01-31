@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
-import { NeumorphicElementProps, NeumorphicOptions } from '../../types';
+import { FormShape, NeumorphicElementProps, NeumorphicOptions } from '../../types';
 import {
   angleGradient,
   colorLuminance,
@@ -11,8 +11,16 @@ import {
   getIfGradient,
   getIntFormValue,
 } from '../../utils';
-import { MakeRequired } from '../../utils/type-utils';
 import styles from './RealNeumorphicElement.module.scss';
+
+const defaultConfig = {
+  form: FormShape.Convex,
+  size: 55,
+  intensity: 0.14,
+  lightSource: 1,
+  distance: 5,
+  blur: 15,
+};
 
 export const RealNeumorphicElement = ({
   element: Element = 'div',
@@ -28,41 +36,11 @@ export const RealNeumorphicElement = ({
   style,
   ...rest
 }: NeumorphicElementProps<'div'>) => {
+  // 1. Tomamos el contexto
   const { contextConfig, setContextConfig } = useNeumorphicContext();
-
-  const defaultProps: MakeRequired<
-    NeumorphicOptions,
-    'size' | 'intensity' | 'lightSource' | 'distance' | 'blur'
-  > = {
-    form: undefined,
-    color: undefined,
-    size: 100,
-    intensity: 0.15,
-    lightSource: 1,
-    distance: 45,
-    blur: 90,
-  };
-
-  const options: NeumorphicOptions = useMemo(
-    () => ({
-      form: form ?? (neumorphicOptions.form || defaultProps.form),
-      color: color ?? (neumorphicOptions.color || defaultProps.color),
-      size: size ?? (neumorphicOptions.size || defaultProps.size),
-      intensity: intensity ?? (neumorphicOptions.intensity || defaultProps.intensity),
-      lightSource: lightSource ?? (neumorphicOptions.lightSource || defaultProps.lightSource),
-      distance: distance ?? (neumorphicOptions.distance || defaultProps.distance),
-      blur: blur ?? (neumorphicOptions.blur || defaultProps.blur),
-    }),
-    [form, color, size, intensity, lightSource, distance, blur, neumorphicOptions]
-  );
-
-  useDeepCompareEffect(() => {
-    setContextConfig(options);
-  }, [options]);
-
+  // 2. Tomamos los colores del tema neumórfico
   const {
     colorDifference,
-    editorMode,
     styles: {
       darkColor: darkColorContext,
       mainColor: mainColorContext,
@@ -71,99 +49,124 @@ export const RealNeumorphicElement = ({
       lightGradientColor: lightGradientColorContext,
     },
   } = useNeumorphicStylesContext();
-  const [classesToApply, setClassesToApply] = useState<string>(styles.softShadow);
-  const [defaultCssVariables, setDefaultCssVariables] = useState({});
 
-  useEffect(() => {
-    if (!mainColorContext) return;
-    if (contextConfig.form == null) {
-      throw new Error('Form for neumorphic element not provided');
+  /**
+   * 3. Construimos nuestro objeto "propsConfig" usando:
+   *    1) props directas (form, color, size, etc.)
+   *    2) si no hay prop directa, usar la key correspondiente de neumorphicOptions
+   *    3) si no hay ni en prop ni en neumorphicOptions, usar defaultConfig
+   */
+  const propsConfig: NeumorphicOptions = useMemo(
+    () => ({
+      form: form ?? neumorphicOptions.form ?? defaultConfig.form,
+      color: color ?? neumorphicOptions.color ?? mainColorContext,
+      size: size ?? neumorphicOptions.size ?? defaultConfig.size,
+      intensity: intensity ?? neumorphicOptions.intensity ?? defaultConfig.intensity,
+      lightSource: lightSource ?? neumorphicOptions.lightSource ?? defaultConfig.lightSource,
+      distance: distance ?? neumorphicOptions.distance ?? defaultConfig.distance,
+      blur: blur ?? neumorphicOptions.blur ?? defaultConfig.blur,
+    }),
+    [form, color, size, intensity, lightSource, distance, blur, neumorphicOptions, mainColorContext]
+  );
+
+  useDeepCompareEffect(() => {
+    setContextConfig(propsConfig);
+  }, [propsConfig]);
+
+  /**
+   * 5. A la hora de renderizar, ***SIEMPRE*** usamos `contextConfig`.
+   *    Así podemos reflejar modificaciones hechas por el tooltip
+   *    (o por cualquier otro) en el contexto.
+   */
+  const finalStyle = useMemo(() => {
+    // Si el contexto aún no tiene algo usable, devolvemos base
+    if (!mainColorContext || contextConfig.form == null) {
+      return {
+        cssVars: {},
+        dynamicClasses: styles.softShadow,
+      };
     }
 
-    let colorToUse: string, usingContextColor: boolean;
-    if (contextConfig.color != null) {
-      usingContextColor = false;
-      colorToUse = contextConfig.color;
-    } else {
-      usingContextColor = true;
-      colorToUse = mainColorContext;
-    }
+    const colorToUse = contextConfig.color ?? mainColorContext;
 
+    // Determinamos si la intensidad coincide con la del tema
+    // y no pasaron color en props => reasumimos lo del contexto
+    const usingSameIntensity =
+      contextConfig.intensity === colorDifference && !color && !neumorphicOptions.color;
+
+    // Calculamos colores
     let darkColor: string;
     let lightColor: string;
     let darkGradientColor: string;
     let lightGradientColor: string;
 
-    if (usingContextColor && contextConfig.intensity == colorDifference) {
+    if (usingSameIntensity) {
       darkColor = darkColorContext;
       lightColor = lightColorContext;
       darkGradientColor = darkGradientColorContext;
       lightGradientColor = lightGradientColorContext;
     } else {
-      darkColor = colorLuminance(colorToUse, contextConfig.intensity! * -1);
+      darkColor = colorLuminance(colorToUse, -contextConfig.intensity!);
       lightColor = colorLuminance(colorToUse, contextConfig.intensity!);
       darkGradientColor = colorLuminance(colorToUse, -0.1);
       lightGradientColor = colorLuminance(colorToUse, 0.07);
     }
-    const shapeId = getIntFormValue(contextConfig.form);
-    const gradient = getIfGradient(shapeId);
 
-    if (shapeId == 4) {
+    // Forma y gradientes
+    const shapeId = getIntFormValue(contextConfig.form);
+    const isGradient = getIfGradient(shapeId);
+
+    if (shapeId === 4) {
+      // Forzar transparente
       darkColor = '#00000000';
       lightColor = '#00000000';
     }
+
     const firstGradientColor =
-      gradient && shapeId !== 1
+      isGradient && shapeId !== 1
         ? shapeId === 3
           ? lightGradientColor
           : darkGradientColor
         : colorToUse;
     const secondGradientColor =
-      gradient && shapeId !== 1
+      isGradient && shapeId !== 1
         ? shapeId === 2
           ? lightGradientColor
           : darkGradientColor
         : colorToUse;
 
-    let finalDistance = contextConfig.distance;
-    let finalBlur = contextConfig.blur;
+    // Distancia, blur
+    const finalDistance = contextConfig.distance ?? defaultConfig.distance;
+    const finalBlur = contextConfig.blur ?? defaultConfig.blur;
 
-    finalDistance = Math.round(size ? size : defaultProps.size * 0.1);
-    finalBlur = Math.round(size ? size : defaultProps.size * 0.2);
-
-    if (contextConfig.distance) {
-      finalDistance = contextConfig.distance;
-      finalBlur = blur ? blur : defaultProps.blur * 2;
-    }
-    if (contextConfig.blur) {
-      finalBlur = contextConfig.blur;
-    }
+    // Posición de luz
     const { positionX, positionY, angle } = angleGradient(
-      contextConfig.lightSource ? contextConfig.lightSource : defaultProps.lightSource,
+      contextConfig.lightSource ?? defaultConfig.lightSource,
       finalDistance
     );
 
-    setDefaultCssVariables({
+    // Variables CSS
+    const cssVars: React.CSSProperties = {
       '--positionX': `${positionX}px`,
-      '--positionXOpposite': `${positionX * -1}px`,
+      '--positionXOpposite': `${-positionX}px`,
       '--positionY': `${positionY}px`,
-      '--positionYOpposite': `${positionY * -1}px`,
+      '--positionYOpposite': `${-positionY}px`,
       '--angle': `${angle}deg`,
       '--blur': `${finalBlur}px`,
-      '--textColor': `${getContrast(colorToUse)}`,
-      '--textColorOpposite': `${colorToUse}`,
-      '--mainColor': `${colorToUse}`,
-      '--darkColor': `${darkColor}`,
-      '--lightColor': `${lightColor}`,
-      '--firstGradientColor': `${firstGradientColor}`,
-      '--secondGradientColor': `${secondGradientColor}`,
-    });
+      '--textColor': getContrast(colorToUse),
+      '--textColorOpposite': colorToUse,
+      '--mainColor': colorToUse,
+      '--darkColor': darkColor,
+      '--lightColor': lightColor,
+      '--firstGradientColor': firstGradientColor,
+      '--secondGradientColor': secondGradientColor,
+    };
 
-    if (shapeId == 0) {
-      setClassesToApply(`${styles.pressed}`);
-    } else {
-      setClassesToApply('');
-    }
+    // Clase dinamica (shapeId=0 => pressed)
+    const dynamicClasses =
+      shapeId === 0 ? `${styles.softShadow} ${styles.pressed}` : styles.softShadow;
+
+    return { cssVars, dynamicClasses };
   }, [
     contextConfig,
     mainColorContext,
@@ -172,15 +175,18 @@ export const RealNeumorphicElement = ({
     darkGradientColorContext,
     lightGradientColorContext,
     colorDifference,
+    color,
+    neumorphicOptions.color,
   ]);
 
+  /**
+   * 6. Render final
+   */
   return (
-    <>
-      <Element
-        style={{ ...defaultCssVariables, ...style }}
-        className={`neuElement ${styles.softShadow} ${classesToApply} ${className}`}
-        {...rest}
-      />
-    </>
+    <Element
+      {...rest}
+      className={`neuElement ${finalStyle.dynamicClasses} ${className}`}
+      style={{ ...finalStyle.cssVars, ...style }}
+    />
   );
 };
