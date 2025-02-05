@@ -1,20 +1,31 @@
-import { useState } from 'react';
-import { RealNeumorphicElement } from './components/RealNeumorphicElement';
+import { createIntrinsicElements } from '@/utils/createIntrinsicElements';
+import { JSX, useState } from 'react';
+
+import {
+  NeumorphicElementRenderer,
+  NeumorphicElementRendererProps,
+} from './components/NeumorphicElementRenderer';
 import { TooltipWrapper } from './components/TooltipWrapper';
 import { NeumorphicProvider } from './providers/NeumorphicProvider';
-import { NeumorphicElementProps } from './types';
+import { NeumorphicProps } from './types';
 
-export const NeumorphicElement = <T extends React.ElementType>(
-  props: NeumorphicElementProps<T>
-) => {
+const NeuElements = createIntrinsicElements<NeumorphicProps>((tag, props) => (
+  <NeumorphicElementWrapper<keyof JSX.IntrinsicElements> tag={tag} {...props} />
+));
+
+function NeumorphicElementWrapper<Tag extends keyof JSX.IntrinsicElements>(
+  props: NeumorphicElementRendererProps<Tag>
+) {
   const { allowClicks = true } = props;
   const [open, setOpen] = useState(false);
 
   return (
     <NeumorphicProvider>
       <TooltipWrapper open={open} setOpen={setOpen} allowClicks={allowClicks}>
-        <RealNeumorphicElement {...props} />
+        <NeumorphicElementRenderer {...props} />
       </TooltipWrapper>
     </NeumorphicProvider>
   );
-};
+}
+
+export const NeumorphicElement = NeuElements;

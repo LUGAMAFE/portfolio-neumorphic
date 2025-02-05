@@ -3,8 +3,9 @@ import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useState } from 'react';
+import { NeonElement } from '../NeonElement';
 import { NeumorphicElement } from '../NeumorphicElement';
-import { FormShape, NeumorphicElementProps } from '../NeumorphicElement/types';
+import { FormShape } from '../NeumorphicElement/types';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import style from './navbar.module.scss';
 import { ThemeColorSwitcher } from './ThemeColorSwitcher';
@@ -15,24 +16,20 @@ interface NavbarProps {
 
 export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
   const { currentTheme } = useNeumorphicStylesContext();
-  const { currentNeonColor } = useNeonColorsContext();
+  const { currentNeonColor, neonColors } = useNeonColorsContext();
 
-  const initialButtonConfigs: NeumorphicElementProps<'button'>[] = [
-    {
-      id: 'externalButton',
-      className: style.Navbar__button,
-      neumorphicOptions: {
-        form: FormShape.Flat,
-        size: 43,
-        intensity: 0.45,
-        lightSource: 1,
-        distance: 4,
-        blur: 9,
-      },
+  const [buttonConfig, setButtonConfig] = useState({
+    id: 'externalButton',
+    className: style.Navbar__button,
+    neumorphicOptions: {
+      formShape: FormShape.Flat,
+      size: 43,
+      intensity: 0.45,
+      lightSource: 1,
+      distance: 4,
+      blur: 9,
     },
-  ];
-
-  const [buttonConfig, setButtonConfig] = useState(initialButtonConfigs[0] || null);
+  });
 
   const handleButtonClick = (id: string | number) => {
     setIsSidebarMenuOpen((prevIsSidebarMenuOpen) => !prevIsSidebarMenuOpen);
@@ -42,8 +39,8 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
             ...prevButtonConfig,
             neumorphicOptions: {
               ...prevButtonConfig.neumorphicOptions,
-              form: prevButtonConfig.neumorphicOptions
-                ? prevButtonConfig.neumorphicOptions.form === FormShape.Concave
+              formShape: prevButtonConfig.neumorphicOptions
+                ? prevButtonConfig.neumorphicOptions.formShape === FormShape.Concave
                   ? FormShape.Pressed
                   : FormShape.Concave
                 : FormShape.Concave,
@@ -56,7 +53,7 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
   const neumorphicOptionsContainer =
     currentTheme === ThemePreset.LIGHT
       ? {
-          form: FormShape.Level,
+          formShape: FormShape.Level,
           color: '#ebebeb',
           size: 10,
           intensity: 0.01,
@@ -65,7 +62,7 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
           blur: 1,
         }
       : {
-          form: FormShape.Pressed,
+          formShape: FormShape.Pressed,
           size: 196,
           intensity: 0.42,
           lightSource: 3,
@@ -74,7 +71,7 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
         };
 
   return (
-    <NeumorphicElement
+    <NeumorphicElement.div
       className={style.Navbar}
       data-testid="navbar"
       neumorphicOptions={neumorphicOptionsContainer}
@@ -85,9 +82,8 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
       <ThemeColorSwitcher />
       <LanguageSwitcher />
       <div className={style.Navbar__menuToggle}>
-        <NeumorphicElement
+        <NeumorphicElement.button
           key={buttonConfig.id}
-          element={'button'}
           onClick={() => handleButtonClick(buttonConfig.id ? buttonConfig.id : '')}
           neumorphicOptions={buttonConfig.neumorphicOptions}
           className={buttonConfig.className}
@@ -100,14 +96,14 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
             alt="hamburger"
             className={style.Navbar__hamburger}
           />
-        </NeumorphicElement>
+        </NeumorphicElement.button>
       </div>
-      <div
+      <NeonElement.div
         className={style.Navbar__bottomNeon}
-        style={{
-          backgroundImage: currentNeonColor,
-        }}
-      ></div>
-    </NeumorphicElement>
+        showFlare
+        color1={neonColors.firstGradientColor}
+        color2={neonColors.secondGradientColor}
+      ></NeonElement.div>
+    </NeumorphicElement.div>
   );
 };

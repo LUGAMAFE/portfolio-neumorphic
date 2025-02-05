@@ -27,6 +27,6 @@
     "@": "${workspaceRoot}/src"
   },
   "inlineFold.autoFold": false,
-  "cSpell.words": ["GSAP", "Neumorphic"],
+  "cSpell.words": ["GSAP", "Neumorphic", "usar"],
   "cssModules.camelCase": true
 }

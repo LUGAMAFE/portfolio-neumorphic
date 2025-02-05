@@ -1,0 +1,188 @@
+@use '../../../../../styles/sass/ITCSS/01_settings/colors' as *;
+@use '../../../../../styles/sass/ITCSS/01_settings/fonts' as *;
+@use '../../../../../styles/sass/ITCSS/01_settings/global' as *;
+
+@use '../../../styles/shared' as shared;
+
+.ConfigurationRange {
+  &__row {
+    @include shared.row;
+  }
+  &__label {
+    @include shared.label;
+  }
+  &__input {
+    position: relative;
+    width: 100%;
+    height: 0;
+    margin: 10px 0;
+    -webkit-appearance: none;
+    background-color: transparent;
+
+    @media only screen and (max-width: 410px) {
+      position: unset;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 4px;
+      border-radius: 3px;
+      animate: 0.2s;
+      background: var(--textColorOpposite);
+    }
+
+    @mixin slider-thumb {
+      width: 12px;
+      height: 12px;
+      border: 1px solid $color-black;
+      border-radius: 50%;
+      margin-top: -5px;
+      -webkit-appearance: none;
+      background: var(--textColorOpposite);
+      box-shadow: $base-box-shadow-inputs-configuration;
+    }
+
+    &::-webkit-slider-thumb {
+      @include slider-thumb();
+    }
+
+    &::-moz-range-thumb {
+      @include slider-thumb();
+    }
+
+    &:hover,
+    &:active,
+    &:focus,
+    &:focus-within {
+      &::after {
+        position: absolute;
+        top: 50%;
+        left: 105%;
+        padding: 5px;
+        border-radius: 3px;
+        background: var(--textColorOpposite);
+        color: var(--textColor);
+        content: attr(value) 'px';
+        font-size: 12px;
+        transform: translateY(-50%);
+
+        @media only screen and (max-width: 410px) {
+          top: 15px;
+          right: 15px;
+          left: unset;
+          transform: unset;
+        }
+      }
+
+      &::before {
+        position: absolute;
+        z-index: 222;
+        top: 50%;
+        left: 103%;
+        width: 0;
+        height: 0;
+        border-top: 10px solid transparent;
+        border-right: 7px solid var(--textColorOpposite);
+        border-bottom: 10px solid transparent;
+        content: ' ';
+        transform: translateY(-50%);
+
+        @media only screen and (max-width: 410px) {
+          display: none;
+        }
+      }
+    }
+
+    &[name='angle'] {
+      &:hover,
+      &:active,
+      &:focus {
+        &::after {
+          content: attr(value) 'deg';
+        }
+      }
+    }
+
+    &[name='speed'] {
+      &:hover,
+      &:active,
+      &:focus {
+        &::after {
+          content: attr(value) 's';
+        }
+      }
+    }
+
+    &[name='intensity'] {
+      &:hover,
+      &:active,
+      &:focus {
+        &::after {
+          content: attr(value);
+        }
+      }
+    }
+
+    &[name='size'] {
+      &:hover,
+      &:active,
+      &:focus {
+        &::after {
+          content: attr(value) '%';
+        }
+      }
+    }
+
+    &:focus {
+      &::-ms-fill-lower,
+      &::-ms-fill-upper,
+      &::-webkit-slider-runnable-track {
+        background: var(--textColorOpposite);
+      }
+    }
+
+    &::-moz-range-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 1.3px;
+      animate: 0.2s;
+      background: var(--textColorOpposite);
+    }
+
+    &::-moz-range-thumb,
+    &::-ms-thumb {
+      width: 12px;
+      height: 12px;
+      border: 1px solid $color-black;
+      border-radius: 50%;
+      background: var(--textColorOpposite);
+      box-shadow: $base-box-shadow-inputs-configuration;
+    }
+
+    &::-ms-track {
+      width: 100%;
+      height: 6px;
+      border-width: 16px 0;
+      border-color: transparent;
+      animate: 0.2s;
+      background: transparent;
+      color: transparent;
+    }
+
+    &::-ms-fill-lower,
+    &::-ms-fill-upper {
+      border: 0.2px solid $color-border-inputs-configuration;
+      border-radius: 2.6px;
+      box-shadow: $base-box-shadow-inputs-configuration-intensity;
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      none-events: none;
+    }
+  }
+}

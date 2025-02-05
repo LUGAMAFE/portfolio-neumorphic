@@ -8,6 +8,7 @@ import useIsMobile from '../../hooks/useIsMobile';
 import { ThemePreset } from '@/providers/AppProviders';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
+import { NeonElement } from '../NeonElement';
 import { NeumorphicElement } from '../NeumorphicElement';
 import { FormShape } from '../NeumorphicElement/types';
 import { ImageComparator } from './ImageComparator';
@@ -15,7 +16,7 @@ import style from './IntroSection.module.scss';
 gsap.registerPlugin(SplitText, TextPlugin);
 export const IntroSection = () => {
   const { currentTheme } = useNeumorphicStylesContext();
-  const { neonSVGColors, currentNeonColor } = useNeonColorsContext();
+  const { neonColors } = useNeonColorsContext();
   const splitTextElement = useRef(null);
   const isMobile = useIsMobile();
 
@@ -52,7 +53,7 @@ export const IntroSection = () => {
         };
 
   return (
-    <NeumorphicElement
+    <NeumorphicElement.div
       id="seccion0"
       className={`${style.Intro} section`}
       neumorphicOptions={neumorphicOptions}
@@ -65,21 +66,25 @@ export const IntroSection = () => {
             Luis martinez
           </p>
           <div className={style.Intro__lines}>
-            <div
-              style={{
-                background: currentNeonColor,
-                boxShadow: `0px 0px 18px ${neonSVGColors.gradientColorBoxShadow}`,
-              }}
+            <NeonElement.div
               className={style.Intro__line1}
-            ></div>
+              showFlare
+              color1={neonColors.firstGradientColor}
+              color2={neonColors.secondGradientColor}
+              speed={3}
+              intensity={1.2}
+              blur={4}
+            ></NeonElement.div>
             {!isMobile && (
-              <div
-                style={{
-                  background: currentNeonColor,
-                  boxShadow: `0px 0px 18px ${neonSVGColors.gradientColorBoxShadow}`,
-                }}
+              <NeonElement.div
                 className={style.Intro__line2}
-              ></div>
+                showFlare
+                color1={neonColors.firstGradientColor}
+                color2={neonColors.secondGradientColor}
+                speed={4}
+                intensity={1.2}
+                blur={4}
+              ></NeonElement.div>
             )}
           </div>
           <p className={style.Intro__textDescription}>
@@ -177,23 +182,26 @@ export const IntroSection = () => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <g clipPath="url(#clip0_54_154)">
-                <path
+                <NeonElement.path
+                  color1={neonColors.firstGradientColor}
+                  color2={neonColors.secondGradientColor}
+                  blur={4}
                   d="M296.444 303C333.509 303 363.556 296.196 363.556 287.802C363.556 279.408 333.509 272.604 296.444 272.604C259.38 272.604 229.333 279.408 229.333 287.802C229.333 296.196 259.38 303 296.444 303Z"
-                  fill="url(#paint0_linear_54_154)"
-                />
+                ></NeonElement.path>
                 <path
                   d="M302.667 298.53C339.731 298.53 369.778 291.726 369.778 283.332C369.778 274.938 339.731 268.134 302.667 268.134C265.602 268.134 235.556 274.938 235.556 283.332C235.556 291.726 265.602 298.53 302.667 298.53Z"
                   stroke="#646876"
                   strokeMiterlimit="10"
                 />
-                <path
-                  d="M194 149.454C201.364 149.454 207.333 143.45 207.333 136.044C207.333 128.637 201.364 122.633 194 122.633C186.636 122.633 180.667 128.637 180.667 136.044C180.667 143.45 186.636 149.454 194 149.454Z"
-                  fill="url(#paint1_linear_54_154)"
-                />
-                <path
-                  d="M247.778 149.454C255.142 149.454 261.111 143.45 261.111 136.044C261.111 128.637 255.142 122.633 247.778 122.633C240.414 122.633 234.444 128.637 234.444 136.044C234.444 143.45 240.414 149.454 247.778 149.454Z"
-                  fill="url(#paint2_linear_54_154)"
-                />
+
+                <NeonElement.g
+                  color1={neonColors.firstGradientColor}
+                  color2={neonColors.secondGradientColor}
+                  blur={2}
+                >
+                  <path d="M194 149.454C201.364 149.454 207.333 143.45 207.333 136.044C207.333 128.637 201.364 122.633 194 122.633C186.636 122.633 180.667 128.637 180.667 136.044C180.667 143.45 186.636 149.454 194 149.454Z"></path>
+                  <path d="M247.778 149.454C255.142 149.454 261.111 143.45 261.111 136.044C261.111 128.637 255.142 122.633 247.778 122.633C240.414 122.633 234.444 128.637 234.444 136.044C234.444 143.45 240.414 149.454 247.778 149.454Z"></path>
+                </NeonElement.g>
                 <path
                   d="M301.556 149.454C308.919 149.454 314.889 143.45 314.889 136.044C314.889 128.637 308.919 122.633 301.556 122.633C294.192 122.633 288.222 128.637 288.222 136.044C288.222 143.45 294.192 149.454 301.556 149.454Z"
                   fill="#FFA363"
@@ -210,10 +218,12 @@ export const IntroSection = () => {
                   d="M13.5556 10.4352C14.2919 10.4352 14.8889 9.83477 14.8889 9.09414C14.8889 8.35352 14.2919 7.75313 13.5556 7.75313C12.8192 7.75313 12.2222 8.35352 12.2222 9.09414C12.2222 9.83477 12.8192 10.4352 13.5556 10.4352Z"
                   fill="#8BCC55"
                 />
-                <path
+                <NeonElement.path
+                  color1={neonColors.firstGradientColor}
+                  color2={neonColors.secondGradientColor}
+                  blur={4}
                   d="M121.333 29.8799H29.7778V58.4882H121.333V29.8799Z"
-                  fill="url(#paint3_linear_54_154)"
-                />
+                ></NeonElement.path>
                 <path
                   d="M162 4.62409H0.222222V101.177H162V4.62409Z"
                   stroke="#646876"
@@ -270,10 +280,12 @@ export const IntroSection = () => {
                   d="M50.8889 177.615C51.6253 177.615 52.2222 177.015 52.2222 176.274C52.2222 175.533 51.6253 174.933 50.8889 174.933C50.1525 174.933 49.5556 175.533 49.5556 176.274C49.5556 177.015 50.1525 177.615 50.8889 177.615Z"
                   fill="#8BCC55"
                 />
-                <path
+                <NeonElement.path
+                  color1={neonColors.firstGradientColor}
+                  color2={neonColors.secondGradientColor}
                   d="M158.667 197.06H67.1111V225.668H158.667V197.06Z"
-                  fill="url(#paint4_linear_54_154)"
-                />
+                  blur={4}
+                ></NeonElement.path>
                 <path
                   d="M199.333 191.472V268.357H37.5556V171.804H169.111"
                   stroke="#646876"
@@ -478,61 +490,6 @@ export const IntroSection = () => {
                 />
               </g>
               <defs>
-                <linearGradient
-                  id="paint0_linear_54_154"
-                  x1="229.333"
-                  y1="290.516"
-                  x2="363.562"
-                  y2="288.205"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
-                </linearGradient>
-                <linearGradient
-                  id="paint1_linear_54_154"
-                  x1="180.667"
-                  y1="138.438"
-                  x2="207.342"
-                  y2="138.335"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
-                </linearGradient>
-                <linearGradient
-                  id="paint2_linear_54_154"
-                  x1="234.444"
-                  y1="138.438"
-                  x2="261.12"
-                  y2="138.335"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
-                </linearGradient>
-                <linearGradient
-                  id="paint3_linear_54_154"
-                  x1="29.7778"
-                  y1="46.7384"
-                  x2="121.351"
-                  y2="45.5959"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
-                </linearGradient>
-                <linearGradient
-                  id="paint4_linear_54_154"
-                  x1="67.1111"
-                  y1="213.918"
-                  x2="158.684"
-                  y2="212.776"
-                  gradientUnits="userSpaceOnUse"
-                >
-                  <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
-                  <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
-                </linearGradient>
                 <clipPath id="clip0_54_154">
                   <rect width="370" height="303" fill="white" />
                 </clipPath>
@@ -541,6 +498,6 @@ export const IntroSection = () => {
           </div>
         </div>
       </div>
-    </NeumorphicElement>
+    </NeumorphicElement.div>
   );
 };

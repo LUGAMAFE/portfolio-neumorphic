@@ -1,0 +1,196 @@
+/* stylelint-disable plugin/selector-bem-pattern */
+@property --neon-position-1 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+@property --neon-position-2 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 100%;
+}
+
+@property --neon-conic-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.stop1 {
+  animation-name: move-gradient1;
+  animation-duration: calc(var(--neon-speed) * 2);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+
+  @keyframes move-gradient1 {
+    0% {
+      stop-color: var(--neon-first-color);
+    }
+    25% {
+      stop-color: var(--neon-first-color);
+    }
+    50% {
+      stop-color: var(--neon-first-color);
+    }
+    75% {
+      stop-color: var(--neon-second-color);
+    }
+    100% {
+      stop-color: var(--neon-first-color);
+    }
+  }
+}
+
+.stop2 {
+  animation-name: move-gradient2;
+  animation-duration: calc(var(--neon-speed) * 2);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  @keyframes move-gradient2 {
+    0% {
+      stop-color: var(--neon-second-color);
+    }
+    25% {
+      stop-color: var(--neon-first-color);
+    }
+    50% {
+      stop-color: var(--neon-second-color);
+    }
+    75% {
+      stop-color: var(--neon-second-color);
+    }
+    100% {
+      stop-color: var(--neon-second-color);
+    }
+  }
+}
+
+.neon {
+  position: relative;
+  background-image: linear-gradient(
+    var(--neon-angle),
+    var(--neon-first-color) var(--neon-position-1),
+    var(--neon-second-color) var(--neon-position-2)
+  );
+  animation-name: move-gradient;
+  animation-duration: var(--neon-speed);
+  animation-iteration-count: infinite;
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: linear-gradient(
+      var(--neon-angle),
+      var(--neon-first-color) var(--neon-position-1),
+      var(--neon-second-color) var(--neon-position-2)
+    );
+    padding: 2px;
+    border-radius: inherit;
+    filter: blur(var(--neon-blur));
+    animation-name: move-gradient, flicker;
+    animation-duration: var(--neon-speed), calc(var(--neon-flare-speed));
+    animation-iteration-count: infinite, infinite;
+    animation-direction: normal, alternate;
+  }
+  &_conic {
+    background-image: conic-gradient(
+      from var(--neon-conic-angle),
+      var(--neon-first-color),
+      var(--neon-second-color),
+      var(--neon-first-color)
+    );
+    &::before {
+      background-image: conic-gradient(
+        from var(--neon-conic-angle),
+        var(--neon-first-color),
+        var(--neon-second-color),
+        var(--neon-first-color)
+      );
+      animation-name: neon-spin;
+      animation-duration: var(--neon-speed);
+      animation-iteration-count: infinite;
+      animation-direction: normal;
+      animation-timing-function: linear;
+    }
+    animation-name: neon-spin;
+    animation-duration: var(--neon-speed);
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-timing-function: linear;
+    @keyframes neon-spin {
+      from {
+        --neon-conic-angle: 0deg;
+      }
+      to {
+        --neon-conic-angle: 360deg;
+      }
+    }
+  }
+  &_flare {
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(
+        ellipse at 50% center,
+        rgba(255, 255, 255, 0.8),
+        transparent 50%
+      );
+      filter: blur(calc(var(--neon-blur) * 2));
+      animation-name: flare-move;
+      animation-duration: var(--neon-flare-speed);
+      animation-iteration-count: infinite;
+      animation-direction: normal;
+      animation-timing-function: ease-in-out;
+      animation-direction: alternate;
+    }
+  }
+  @keyframes move-gradient {
+    0% {
+      --neon-position-1: calc(-50% * var(--neon-intensity));
+      --neon-position-2: 100%;
+    }
+
+    50% {
+      --neon-position-1: 0%;
+      --neon-position-2: calc(100% + (50% * var(--neon-intensity)));
+    }
+    100% {
+      --neon-position-1: calc(-50% * var(--neon-intensity));
+      --neon-position-2: 100%;
+    }
+  }
+  @keyframes flare-move {
+    0% {
+      left: -20%;
+      opacity: 1;
+    }
+    100% {
+      left: 25%;
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes flicker {
+    0% {
+      opacity: 1;
+    }
+    20% {
+      opacity: 0.8;
+    }
+    40% {
+      opacity: 0.95;
+    }
+    60% {
+      opacity: 0.75;
+    }
+    80% {
+      opacity: 0.9;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}

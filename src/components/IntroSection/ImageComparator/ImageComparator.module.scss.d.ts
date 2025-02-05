@@ -2,6 +2,7 @@ export type Styles = {
   ImageComparator: string;
   ImageComparator__backgroundImage: string;
   ImageComparator__circle: string;
+  ImageComparator__circle2: string;
   ImageComparator__clipped: string;
   ImageComparator__clipWrapper: string;
   ImageComparator__dragger: string;

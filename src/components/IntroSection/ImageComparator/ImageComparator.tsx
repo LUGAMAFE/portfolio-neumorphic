@@ -2,12 +2,16 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Draggable from 'gsap-trial/Draggable';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 
+import { NeonElement } from '@/components/NeonElement';
+import { GradientType } from '@/components/NeonElement/types';
 import { NeumorphicElement } from '@/components/NeumorphicElement';
 import { FormShape } from '@/components/NeumorphicElement/types';
 import { ThemePreset } from '@/providers/AppProviders';
+import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
+import chroma from 'chroma-js';
 import style from './ImageComparator.module.scss';
 
 gsap.registerPlugin(ScrollTrigger, Draggable);
@@ -51,6 +55,7 @@ const addTouchEvents = (dragger: HTMLElement, parentDragger: Draggable[]) => {
 export const ImageComparator = () => {
   const { currentTheme } = useNeumorphicStylesContext();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { neonColors } = useNeonColorsContext();
 
   useGSAP(
     () => {
@@ -191,7 +196,7 @@ export const ImageComparator = () => {
   const neumorphicOptions =
     currentTheme === ThemePreset.LIGHT
       ? {
-          form: FormShape.Pressed,
+          FormShape: FormShape.Pressed,
           size: 125,
           intensity: 0.09,
           lightSource: 2,
@@ -199,7 +204,7 @@ export const ImageComparator = () => {
           blur: 25,
         }
       : {
-          form: FormShape.Concave,
+          FormShape: FormShape.Concave,
           size: 168,
           intensity: 0.25,
           lightSource: 1,
@@ -207,12 +212,29 @@ export const ImageComparator = () => {
           blur: 45,
         };
 
+  const mixedColor = useMemo(() => {
+    const mix1 = chroma.mix(neonColors.firstGradientColor, '#ffffff', 0.1);
+    const mix2 = chroma.mix(neonColors.secondGradientColor, '#ffffff', 0.1);
+    return {
+      firstGradientColor: mix1.hex(),
+      secondGradientColor: mix2.hex(),
+    };
+  }, [neonColors.firstGradientColor, neonColors.secondGradientColor]);
+
   return (
     <div ref={containerRef} className={style.ImageComparator}>
-      <NeumorphicElement
+      <NeumorphicElement.div
         className={style.ImageComparator__imageComparer}
         neumorphicOptions={neumorphicOptions}
       >
+        <NeonElement.div
+          className={style.ImageComparator__circle2}
+          showFlare={currentTheme === ThemePreset.DARK}
+          intensity={0.5}
+          blur={8}
+          color1={currentTheme === ThemePreset.DARK ? '#e4ebf2' : mixedColor.firstGradientColor}
+          color2={currentTheme === ThemePreset.DARK ? '#eff3f7' : mixedColor.secondGradientColor}
+        ></NeonElement.div>
         <div className={style.ImageComparator__circle}>
           <div className={style.ImageComparator__clipWrapper}>
             <img
@@ -228,8 +250,25 @@ export const ImageComparator = () => {
             alt="programmer luis image"
             draggable="false"
           />
-          <div className={style.ImageComparator__dragger}>
-            <div className={style.ImageComparator__draggerHandle}>
+          <NeonElement.div
+            className={style.ImageComparator__dragger}
+            showFlare={currentTheme === ThemePreset.DARK}
+            intensity={0.5}
+            blur={8}
+            color1={currentTheme === ThemePreset.DARK ? '#e4ebf2' : mixedColor.firstGradientColor}
+            color2={currentTheme === ThemePreset.DARK ? '#eff3f7' : mixedColor.secondGradientColor}
+            gradientType={GradientType.CONIC}
+          >
+            <NeonElement.div
+              className={style.ImageComparator__draggerHandle}
+              showFlare={currentTheme === ThemePreset.DARK}
+              intensity={0.5}
+              blur={8}
+              color1={currentTheme === ThemePreset.DARK ? '#e4ebf2' : mixedColor.firstGradientColor}
+              color2={
+                currentTheme === ThemePreset.DARK ? '#eff3f7' : mixedColor.secondGradientColor
+              }
+            >
               <div
                 className={`${style.ImageComparator__draggerDot} ${style.ImageComparator__draggerDot_1}`}
               />
@@ -239,10 +278,10 @@ export const ImageComparator = () => {
               <div
                 className={`${style.ImageComparator__draggerDot} ${style.ImageComparator__draggerDot_3}`}
               />
-            </div>
-          </div>
+            </NeonElement.div>
+          </NeonElement.div>
         </div>
-      </NeumorphicElement>
+      </NeumorphicElement.div>
     </div>
   );
 };

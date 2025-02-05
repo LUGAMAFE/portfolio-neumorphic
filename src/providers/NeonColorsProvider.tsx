@@ -2,7 +2,7 @@
 
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
-interface NeonColorSVG {
+interface NeonColors {
   firstGradientColor: string;
   secondGradientColor: string;
   gradientColorBoxShadow: string;
@@ -10,7 +10,7 @@ interface NeonColorSVG {
 
 interface NeonColorsContextValue {
   currentNeonColor: string; // el valor actual de la var --main-color-neon o tu gradient
-  neonSVGColors: NeonColorSVG;
+  neonColors: NeonColors;
   handleChangeColorNeon: (option: number) => void;
 }
 
@@ -20,7 +20,7 @@ export const NeonColorsProvider = ({ children }: PropsWithChildren) => {
   // Guarda el valor inicial de la variable CSS --main-color-neon
   const [currentNeonColor, setCurrentNeonColor] = useState('');
   // Guarda los valores para SVG
-  const [neonSVGColors, setNeonSVGColors] = useState<NeonColorSVG>({
+  const [neonColors, setNeonColors] = useState<NeonColors>({
     firstGradientColor: '#FF6161',
     secondGradientColor: '#FF66DD',
     gradientColorBoxShadow: '#ffb9bf',
@@ -39,7 +39,7 @@ export const NeonColorsProvider = ({ children }: PropsWithChildren) => {
   // Cambia la variable CSS --main-color-neon y los colores del SVG
   const handleChangeColorNeon = (option: number) => {
     let newNeonColorValue = '';
-    let newSVGColors: NeonColorSVG = {
+    let newSVGColors: NeonColors = {
       firstGradientColor: '',
       secondGradientColor: '',
       gradientColorBoxShadow: '',
@@ -79,7 +79,7 @@ export const NeonColorsProvider = ({ children }: PropsWithChildren) => {
       document.documentElement.style.setProperty('--main-color-neon', newNeonColorValue);
       // Actualiza el estado
       setCurrentNeonColor(newNeonColorValue);
-      setNeonSVGColors(newSVGColors);
+      setNeonColors(newSVGColors);
     }
   };
 
@@ -87,7 +87,7 @@ export const NeonColorsProvider = ({ children }: PropsWithChildren) => {
     <NeonColorsContext.Provider
       value={{
         currentNeonColor,
-        neonSVGColors,
+        neonColors,
         handleChangeColorNeon,
       }}
     >

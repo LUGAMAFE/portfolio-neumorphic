@@ -128,6 +128,7 @@
     visibility: hidden;
     &:checked + .ThemeColorSwitcher_toggleSwitch {
       background: $color-checked-state-color-switcher-button;
+      box-shadow: 0 0 0 1px #7ce7a7;
       &:before {
         left: 25px;
         @include phone {

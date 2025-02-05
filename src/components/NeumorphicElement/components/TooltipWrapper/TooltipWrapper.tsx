@@ -8,10 +8,10 @@ import {
   TooltipArrow,
   TooltipContent,
   TooltipTrigger,
-} from '../../Tooltip/Tooltip';
-import { useNeumorphicContext } from '../providers/NeumorphicProvider';
-import { getContrast } from '../utils';
-import Configuration from './NeumorphicTooltip/Configuration/Configuration';
+} from '../../../Tooltip/Tooltip';
+import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
+import { getContrast } from '../../utils';
+import Configuration from '../NeumorphicTooltip/Configuration/Configuration';
 
 const ARROW_HEIGHT = 10;
 const ARROW_WIDTH = 16;

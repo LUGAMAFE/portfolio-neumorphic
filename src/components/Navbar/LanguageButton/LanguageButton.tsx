@@ -17,9 +17,8 @@ export const LanguageButton = ({
   textClassName,
   clickHandler,
 }: LanguageButtonProps) => {
-  <NeumorphicElement
+  <NeumorphicElement.button
     key={id}
-    element={'button'}
     onClick={() => clickHandler(id)}
     neumorphicOptions={neumorphicOptions}
     className={className}
@@ -27,5 +26,5 @@ export const LanguageButton = ({
     <p className={textClassName} style={style}>
       {text}
     </p>
-  </NeumorphicElement>;
+  </NeumorphicElement.button>;
 };

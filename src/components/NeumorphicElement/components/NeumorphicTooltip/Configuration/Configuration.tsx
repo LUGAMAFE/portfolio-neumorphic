@@ -87,7 +87,7 @@ const Configuration = () => {
 
   const handleShape = useCallback(
     (name: FormShape) => {
-      updateContextConfigProp('form', name);
+      updateContextConfigProp('formShape', name);
     },
     [updateContextConfigProp]
   );
@@ -136,7 +136,7 @@ const Configuration = () => {
         onChange: handleSizeChange,
         min: 10,
         max: maxSize,
-        disabled: contextConfig.form === 'flat',
+        disabled: contextConfig.formShape === FormShape.Flat,
       },
       {
         label: 'Distance',
@@ -145,7 +145,7 @@ const Configuration = () => {
         onChange: handleDistanceChange,
         min: 2,
         max: 50,
-        disabled: contextConfig.form === 'flat',
+        disabled: contextConfig.formShape === FormShape.Flat,
       },
       {
         label: 'Intensity',
@@ -156,7 +156,7 @@ const Configuration = () => {
         min: 0.01,
         max: 0.9,
         step: 0.01,
-        disabled: contextConfig.form === 'flat',
+        disabled: contextConfig.formShape === FormShape.Flat,
       },
       {
         label: 'Blur',
@@ -166,7 +166,7 @@ const Configuration = () => {
           updateContextConfigProp('blur', Number(e.target.value)),
         min: 1,
         max: 100,
-        disabled: contextConfig.form === 'flat',
+        disabled: contextConfig.formShape === FormShape.Flat,
       },
     ],
     [contextConfig, updateContextConfigProp]
@@ -218,7 +218,7 @@ const Configuration = () => {
           pointerColor="#000"
           pointerWidth={5}
           angle={0}
-          disabled={contextConfig.form === 'flat'}
+          disabled={contextConfig.formShape === FormShape.Flat}
         />
 
         <div
@@ -227,7 +227,7 @@ const Configuration = () => {
         <LightSourceSelector
           lightSource={contextConfig.lightSource ?? 1}
           onDirectionChanged={handleDirection}
-          disabled={contextConfig.form === 'flat'}
+          disabled={contextConfig.formShape === FormShape.Flat}
         />
       </div>
 
@@ -249,7 +249,7 @@ const Configuration = () => {
       <button className={style.Configuration__copy} onClick={copyToClipboard}>
         Copy Config
       </button>
-      <ShapeSwitcher shape={contextConfig.form} setShape={handleShape} />
+      <ShapeSwitcher formShape={contextConfig.formShape} setFormShape={handleShape} />
     </div>
   );
 };

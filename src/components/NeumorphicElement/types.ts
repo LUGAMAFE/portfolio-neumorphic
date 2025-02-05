@@ -1,3 +1,5 @@
+import { ComponentPropsWithoutRef, JSX } from 'react';
+
 export enum FormShape {
   Concave = 'concave',
   Convex = 'convex',
@@ -7,7 +9,7 @@ export enum FormShape {
 }
 
 export interface NeumorphicOptions {
-  form?: FormShape;
+  formShape?: FormShape;
   color?: string;
   size?: number;
   intensity?: number;
@@ -16,22 +18,10 @@ export interface NeumorphicOptions {
   blur?: number;
 }
 
-export type NeumorphicElementProps<T extends React.ElementType> = {
-  element?: T;
-} & React.ComponentPropsWithoutRef<T> & {
-    neumorphicOptions?: NeumorphicOptions;
-    form?: FormShape;
-    color?: string;
-    size?: number;
-    intensity?: number;
-    lightSource?: number;
-    distance?: number;
-    blur?: number;
-    allowClicks?: boolean;
-    'data-testid'?: string | number;
-  };
+export type NeumorphicProps = NeumorphicOptions & {
+  neumorphicOptions?: NeumorphicOptions;
+  allowClicks?: boolean;
+};
 
-export interface InputNeumorphicProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  placeholder?: string; // Placeholder para campos de texto
-  text?: string; // Etiqueta adicional o mensaje contextual
-}
+export type NeumorphicElementProps<Tag extends keyof JSX.IntrinsicElements> =
+  ComponentPropsWithoutRef<Tag> & NeumorphicProps;

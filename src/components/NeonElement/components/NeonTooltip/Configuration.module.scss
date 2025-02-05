@@ -1,0 +1,97 @@
+@use '../../../../styles/sass/ITCSS/01_settings/colors' as *;
+@use '../../../../styles/sass/ITCSS/01_settings/fonts' as *;
+@use '../../../../styles/sass/ITCSS/01_settings/global' as *;
+
+@use '../../styles/shared' as shared;
+
+.Configuration {
+  padding: 12px;
+  border-radius: 10px;
+  background-color: var(--textColor);
+  &__copy {
+    justify-self: flex-end;
+    right: 12px;
+    padding: 2px 4px;
+    border: none;
+    border-radius: 2px;
+    background-color: $color-configuration-copy-button;
+    color: white;
+    // cursor: none;
+    font-size: 11px;
+  }
+  &__row {
+    @include shared.row;
+  }
+  &__label {
+    @include shared.label;
+  }
+  &__gradient {
+    @include shared.label;
+    margin-top: 10px;
+  }
+}
+
+//INPUTS
+.Configuration {
+  &__inputText {
+    display: inline-block;
+    width: 60px;
+    height: 19px;
+    padding: 0px 3px;
+    border: 1px solid var(--textColorOpposite);
+    color: #001f3f;
+    font-size: 11px;
+    font-weight: $weight-bold;
+  }
+
+  &__inputColor {
+    width: 19px;
+    height: 19px;
+    padding: 0;
+    border: 1px solid var(--textColorOpposite);
+    -webkit-appearance: none;
+
+    &::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    &::-webkit-color-swatch {
+      border: none;
+    }
+  }
+
+  &__inputCheckbox {
+    position: relative;
+    top: 3px;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--textColorOpposite);
+    margin-left: 5px;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: 0.2s;
+
+    &:checked {
+      background: var(--textColorOpposite);
+
+      &::before {
+        position: absolute;
+        top: 1px;
+        left: 4px;
+        display: block;
+        width: 4px;
+        height: 8px;
+        border-width: 0 2px 2px 0;
+        border-style: solid;
+        border-color: var(--textColor);
+        content: '';
+        transform: rotate(45deg);
+      }
+    }
+
+    &:focus {
+      box-shadow: $base-box-shadow-inputs-configuration-checkbox;
+      outline: none;
+    }
+  }
+}

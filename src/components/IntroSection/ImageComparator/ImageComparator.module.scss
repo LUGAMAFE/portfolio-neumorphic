@@ -66,28 +66,28 @@
       width: 700px;
       height: 604px;
       justify-content: flex-end;
-      padding: 8px;
       padding-right: 30px;
-      margin-top: 0px;
     }
     @include desktopXXL {
       left: 0px;
       width: 875px;
       height: 604px;
-      padding: 8px;
-      padding-right: 30px;
-      margin-top: 0px;
     }
   }
   &__circle {
-    overflow: hidden;
-    height: 94%;
-    border: 6px solid $color-middle-white;
+    border: 6px solid transparent;
     border-radius: 50%;
-    filter: drop-shadow($base-box-shadow-image-comparator);
     overflow: hidden;
     position: relative;
+    height: 94%;
     aspect-ratio: 1 / 1;
+  }
+  &__circle2 {
+    height: 94%;
+    border-radius: 50%;
+    position: relative;
+    aspect-ratio: 1 / 1;
+    position: absolute;
   }
   &__clipWrapper {
     position: absolute;
@@ -127,8 +127,6 @@
     position: absolute;
     width: 6px;
     height: 100%;
-    background: $color-middle-white;
-    box-shadow: $base-box-shadow-image-comparator;
     z-index: 2;
     @include tablet {
       width: 10px;
@@ -138,8 +136,6 @@
     position: absolute;
     width: 12px;
     height: 25px;
-    background: $color-middle-white;
-    box-shadow: $base-box-shadow-image-comparator;
     top: 50%;
     left: -50%;
     border-radius: 20%;

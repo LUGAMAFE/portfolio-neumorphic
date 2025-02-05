@@ -7,7 +7,7 @@ import { LanguageButtonProps } from '../LanguageButton';
 import style from './languageSwitcher.module.scss';
 
 export const LanguageSwitcher = () => {
-  const { currentNeonColor, neonSVGColors } = useNeonColorsContext();
+  const { currentNeonColor, neonColors } = useNeonColorsContext();
 
   const initialButtonConfigs: Omit<LanguageButtonProps, 'clickHandler'>[] = [
     {
@@ -16,7 +16,7 @@ export const LanguageSwitcher = () => {
       className: style.LanguageSwitcher_esButton,
       textClassName: style.LanguageSwitcher_esButtonText,
       neumorphicOptions: {
-        form: FormShape.Flat,
+        formShape: FormShape.Flat,
         size: 100,
         intensity: 0.15,
         lightSource: 1,
@@ -28,7 +28,7 @@ export const LanguageSwitcher = () => {
       className: style.LanguageSwitcher_enButton,
       textClassName: style.LanguageSwitcher_enButtonText,
       neumorphicOptions: {
-        form: FormShape.Pressed,
+        formShape: FormShape.Pressed,
         size: 100,
         intensity: 0.13,
         lightSource: 1,
@@ -47,7 +47,7 @@ export const LanguageSwitcher = () => {
             style: {
               ...config.style,
               backgroundImage: currentNeonColor,
-              textShadow: `0px 0px 18px ${neonSVGColors.gradientColorBoxShadow}`,
+              textShadow: `0px 0px 18px ${neonColors.gradientColorBoxShadow}`,
             },
           };
         } else {
@@ -55,7 +55,7 @@ export const LanguageSwitcher = () => {
         }
       })
     );
-  }, [neonSVGColors.gradientColorBoxShadow, currentNeonColor]);
+  }, [neonColors.gradientColorBoxShadow, currentNeonColor]);
 
   const handleButtonClick = (id: string | number) => {
     setButtonConfigs((prev) =>
@@ -65,8 +65,8 @@ export const LanguageSwitcher = () => {
               ...button,
               neumorphicOptions: {
                 ...button.neumorphicOptions,
-                form: button.neumorphicOptions
-                  ? button.neumorphicOptions.form === FormShape.Flat
+                formShape: button.neumorphicOptions
+                  ? button.neumorphicOptions.formShape === FormShape.Flat
                     ? FormShape.Pressed
                     : FormShape.Flat
                   : FormShape.Flat,
@@ -77,10 +77,10 @@ export const LanguageSwitcher = () => {
     );
   };
   return (
-    <NeumorphicElement
+    <NeumorphicElement.div
       className={style.LanguageSwitcher}
       neumorphicOptions={{
-        form: FormShape.Level,
+        formShape: FormShape.Level,
         size: 55,
         intensity: 0.19,
         lightSource: 1,
@@ -90,9 +90,8 @@ export const LanguageSwitcher = () => {
     >
       <div className={style.LanguageSwitcher_buttons}>
         {buttonConfigs.map((button) => (
-          <NeumorphicElement
+          <NeumorphicElement.button
             key={button.id}
-            element={'button'}
             onClick={() => handleButtonClick(button.id ? button.id : '')}
             neumorphicOptions={button.neumorphicOptions}
             className={button.className}
@@ -100,9 +99,9 @@ export const LanguageSwitcher = () => {
             <p className={button.textClassName} style={button.style}>
               {button.text}
             </p>
-          </NeumorphicElement>
+          </NeumorphicElement.button>
         ))}
       </div>
-    </NeumorphicElement>
+    </NeumorphicElement.div>
   );
 };

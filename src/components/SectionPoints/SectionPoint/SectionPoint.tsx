@@ -7,7 +7,7 @@ interface SectionPointProps {
 }
 
 export const SectionPoint = ({ classPointer, index }: SectionPointProps) => {
-  const { neonSVGColors } = useNeonColorsContext();
+  const { neonColors } = useNeonColorsContext();
   return (
     <button className={style.Point} name={`${classPointer}`}>
       <svg
@@ -63,8 +63,8 @@ export const SectionPoint = ({ classPointer, index }: SectionPointProps) => {
             y2="28"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stopColor={`${neonSVGColors.firstGradientColor}`} />
-            <stop offset="1" stopColor={`${neonSVGColors.secondGradientColor}`} />
+            <stop stopColor={`${neonColors.firstGradientColor}`} />
+            <stop offset="1" stopColor={`${neonColors.secondGradientColor}`} />
           </linearGradient>
         </defs>
       </svg>

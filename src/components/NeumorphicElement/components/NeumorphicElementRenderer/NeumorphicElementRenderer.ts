@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { JSX, useMemo } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
+import React from 'react';
 import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
 import { FormShape, NeumorphicElementProps, NeumorphicOptions } from '../../types';
 import {
@@ -11,10 +12,10 @@ import {
   getIfGradient,
   getIntFormValue,
 } from '../../utils';
-import styles from './RealNeumorphicElement.module.scss';
+import styles from './NeumorphicElementRenderer.module.scss';
 
 const defaultConfig = {
-  form: FormShape.Convex,
+  formShape: FormShape.Convex,
   size: 55,
   intensity: 0.14,
   lightSource: 1,
@@ -22,20 +23,28 @@ const defaultConfig = {
   blur: 15,
 };
 
-export const RealNeumorphicElement = ({
-  element: Element = 'div',
-  className,
-  neumorphicOptions = {},
-  form,
-  color,
-  size,
-  intensity,
-  lightSource,
-  distance,
-  blur,
-  style,
-  ...rest
-}: NeumorphicElementProps<'div'>) => {
+export type NeumorphicElementRendererProps<Tag extends keyof JSX.IntrinsicElements> = {
+  tag: Tag;
+} & NeumorphicElementProps<Tag>;
+
+export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
+  tag,
+  ...props
+}: NeumorphicElementRendererProps<Tag>) {
+  const {
+    neumorphicOptions = {},
+    formShape,
+    color,
+    size,
+    intensity,
+    lightSource,
+    distance,
+    blur,
+    style,
+    className,
+    ...rest
+  } = props;
+
   // 1. Tomamos el contexto
   const { contextConfig, setContextConfig } = useNeumorphicContext();
   // 2. Tomamos los colores del tema neumórfico
@@ -52,13 +61,13 @@ export const RealNeumorphicElement = ({
 
   /**
    * 3. Construimos nuestro objeto "propsConfig" usando:
-   *    1) props directas (form, color, size, etc.)
+   *    1) props directas (formShape, color, size, etc.)
    *    2) si no hay prop directa, usar la key correspondiente de neumorphicOptions
    *    3) si no hay ni en prop ni en neumorphicOptions, usar defaultConfig
    */
-  const propsConfig: NeumorphicOptions = useMemo(
+  const finalConfig: NeumorphicOptions = useMemo(
     () => ({
-      form: form ?? neumorphicOptions.form ?? defaultConfig.form,
+      formShape: formShape ?? neumorphicOptions.formShape ?? defaultConfig.formShape,
       color: color ?? neumorphicOptions.color ?? mainColorContext,
       size: size ?? neumorphicOptions.size ?? defaultConfig.size,
       intensity: intensity ?? neumorphicOptions.intensity ?? defaultConfig.intensity,
@@ -66,12 +75,22 @@ export const RealNeumorphicElement = ({
       distance: distance ?? neumorphicOptions.distance ?? defaultConfig.distance,
       blur: blur ?? neumorphicOptions.blur ?? defaultConfig.blur,
     }),
-    [form, color, size, intensity, lightSource, distance, blur, neumorphicOptions, mainColorContext]
+    [
+      formShape,
+      color,
+      size,
+      intensity,
+      lightSource,
+      distance,
+      blur,
+      neumorphicOptions,
+      mainColorContext,
+    ]
   );
 
   useDeepCompareEffect(() => {
-    setContextConfig(propsConfig);
-  }, [propsConfig]);
+    setContextConfig(finalConfig);
+  }, [finalConfig]);
 
   /**
    * 5. A la hora de renderizar, ***SIEMPRE*** usamos `contextConfig`.
@@ -80,7 +99,7 @@ export const RealNeumorphicElement = ({
    */
   const finalStyle = useMemo(() => {
     // Si el contexto aún no tiene algo usable, devolvemos base
-    if (!mainColorContext || contextConfig.form == null) {
+    if (!mainColorContext || contextConfig.formShape == null) {
       return {
         cssVars: {},
         dynamicClasses: styles.softShadow,
@@ -113,7 +132,7 @@ export const RealNeumorphicElement = ({
     }
 
     // Forma y gradientes
-    const shapeId = getIntFormValue(contextConfig.form);
+    const shapeId = getIntFormValue(contextConfig.formShape);
     const isGradient = getIfGradient(shapeId);
 
     if (shapeId === 4) {
@@ -179,14 +198,14 @@ export const RealNeumorphicElement = ({
     neumorphicOptions.color,
   ]);
 
-  /**
-   * 6. Render final
-   */
-  return (
-    <Element
-      {...rest}
-      className={`neuElement ${finalStyle.dynamicClasses} ${className}`}
-      style={{ ...finalStyle.cssVars, ...style }}
-    />
-  );
-};
+  // 6. Mergemos clase y estilo
+  const mergedClass = `neuElement ${finalStyle.dynamicClasses} ${className || ''}`;
+  const mergedStyle: React.CSSProperties = { ...finalStyle.cssVars, ...style };
+
+  // 7. Render final: en vez de <Element ...> => React.createElement(tag, ...)
+  return React.createElement(tag, {
+    ...rest,
+    className: mergedClass,
+    style: mergedStyle,
+  });
+}

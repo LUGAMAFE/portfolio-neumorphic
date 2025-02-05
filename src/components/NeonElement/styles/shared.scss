@@ -1,0 +1,20 @@
+@use '../../../styles/sass/ITCSS/01_settings/fonts' as *;
+
+@mixin label {
+  padding-right: 10px;
+  font-size: 12px;
+  user-select: none;
+}
+
+@mixin row {
+  display: flex;
+  align-items: center;
+  margin-top: 0px;
+  margin-bottom: 5px;
+  color: var(--textColorOpposite);
+  font-weight: $weight-bold;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}

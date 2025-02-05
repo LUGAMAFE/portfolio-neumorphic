@@ -8,22 +8,22 @@ import { FormShape } from '../../../types';
 import style from './ShapeSwitcher.module.scss';
 
 export interface ShapeSwitcherProps {
-  shape?: FormShape;
-  setShape: (name: FormShape) => void;
+  formShape?: FormShape;
+  setFormShape: (name: FormShape) => void;
 }
 
 export interface ShapeButtonProps {
-  shape?: FormShape;
+  formShape?: FormShape;
   name: FormShape;
   title: string;
   image: ReactNode;
-  setShape: (name: FormShape) => void;
+  setFormShape: (name: FormShape) => void;
 }
 
-const ShapeButton = ({ shape, setShape, name, title, image }: ShapeButtonProps) => (
+const ShapeButton = ({ formShape, setFormShape, name, title, image }: ShapeButtonProps) => (
   <button
-    className={`${style.ShapeSwitcher__button} ${shape === name && style.ShapeSwitcher__button_active}`}
-    onClick={() => setShape(name)}
+    className={`${style.ShapeSwitcher__button} ${formShape === name && style.ShapeSwitcher__button_active}`}
+    onClick={() => setFormShape(name)}
     name={name}
     title={title}
   >
@@ -31,7 +31,7 @@ const ShapeButton = ({ shape, setShape, name, title, image }: ShapeButtonProps) 
   </button>
 );
 
-export const ShapeSwitcher = ({ shape, setShape }: ShapeSwitcherProps) => {
+export const ShapeSwitcher = ({ formShape, setFormShape }: ShapeSwitcherProps) => {
   const shapes = [
     {
       name: 'concave',
@@ -54,8 +54,8 @@ export const ShapeSwitcher = ({ shape, setShape }: ShapeSwitcherProps) => {
           {shapes.map((btnShape) => (
             <ShapeButton
               key={btnShape.name}
-              shape={shape}
-              setShape={setShape}
+              formShape={formShape}
+              setFormShape={setFormShape}
               name={btnShape.name as FormShape}
               title={btnShape.title}
               image={btnShape.image}
