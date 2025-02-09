@@ -144,7 +144,12 @@ export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
 
   const TagElement = tag;
   // 7. Render final: en vez de <Element ...> => React.createElement(tag, ...)
-  return <TagElement {...rest} className={mergedClass} style={mergedStyle} />;
+  return (
+    <TagElement {...rest} className={mergedClass} style={mergedStyle}>
+      {' '}
+      {children}{' '}
+    </TagElement>
+  );
 }
 
 /* ================== COMPONENTES AUXILIARES PARA SVG ================== */
