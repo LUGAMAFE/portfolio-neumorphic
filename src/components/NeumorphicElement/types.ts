@@ -23,5 +23,9 @@ export type NeumorphicProps = NeumorphicOptions & {
   allowClicks?: boolean;
 };
 
+export type NeumorphicConfigs = {
+  tag: keyof JSX.IntrinsicElements;
+} & NeumorphicProps;
+
 export type NeumorphicElementProps<Tag extends keyof JSX.IntrinsicElements> =
   ComponentPropsWithoutRef<Tag> & NeumorphicProps;

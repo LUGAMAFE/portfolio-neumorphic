@@ -60,6 +60,12 @@ const svgTags = [
   'view',
 ];
 
+const textTags = ['p', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+
 export const isSVGElement = (tag: string): boolean => {
   return svgTags.includes(tag);
+};
+
+export const isTextElement = (tag: string): boolean => {
+  return textTags.includes(tag);
 };

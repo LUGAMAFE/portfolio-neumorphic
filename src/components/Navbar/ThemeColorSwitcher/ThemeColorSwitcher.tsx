@@ -1,10 +1,11 @@
+import { NeonElement } from '@/components/NeonElement';
 import { ThemePreset } from '@/providers/AppProviders';
 import { ChangeEvent } from 'react';
 import { useNeumorphicStylesContext } from '../../../providers/NeumorphicStylesProvider';
 import style from './themeColorSwitcher.module.scss';
 
 export const ThemeColorSwitcher = () => {
-  const { handleChangeTheme } = useNeumorphicStylesContext();
+  const { handleChangeTheme, currentTheme } = useNeumorphicStylesContext();
 
   const handleThemeColorSwitcher = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked === true) {
@@ -14,9 +15,19 @@ export const ThemeColorSwitcher = () => {
     }
   };
 
+  const colors =
+    currentTheme === ThemePreset.DARK ? ['#ffffff', '#ffffff'] : ['#a3a3a3', '#4d4d4d'];
+
   return (
     <div className={style.ThemeColorSwitcher}>
-      <p className={style.ThemeColorSwitcher_text}>{'Encender Luces'}</p>
+      <NeonElement.span
+        className={style.ThemeColorSwitcher_text}
+        color1={colors[0]}
+        color2={colors[1]}
+        blur={4}
+      >
+        {currentTheme === ThemePreset.DARK ? 'Encender Luces' : 'Apagar Luces'}
+      </NeonElement.span>
       <label className={style.ThemeColorSwitcher_toggle}>
         <input
           onChange={handleThemeColorSwitcher}

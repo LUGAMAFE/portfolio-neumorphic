@@ -1,81 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { NeumorphicElement } from '@/components/NeumorphicElement';
 import { FormShape } from '@/components/NeumorphicElement/types';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
-import { LanguageButtonProps } from '../LanguageButton';
+import { LanguageButton } from '../LanguageButton';
 import style from './languageSwitcher.module.scss';
 
 export const LanguageSwitcher = () => {
-  const { currentNeonColor, neonColors } = useNeonColorsContext();
+  const { neonColors } = useNeonColorsContext();
 
-  const initialButtonConfigs: Omit<LanguageButtonProps, 'clickHandler'>[] = [
-    {
-      id: 'EsButton',
-      text: 'Español',
-      className: style.LanguageSwitcher_esButton,
-      textClassName: style.LanguageSwitcher_esButtonText,
-      neumorphicOptions: {
-        formShape: FormShape.Flat,
-        size: 100,
-        intensity: 0.15,
-        lightSource: 1,
-      },
-    },
-    {
-      id: 'EngButton',
-      text: 'English',
-      className: style.LanguageSwitcher_enButton,
-      textClassName: style.LanguageSwitcher_enButtonText,
-      neumorphicOptions: {
-        formShape: FormShape.Pressed,
-        size: 100,
-        intensity: 0.13,
-        lightSource: 1,
-      },
-    },
+  const [activeButtonId, setActiveButtonId] = useState('EsButton');
+
+  const buttonList = [
+    { id: 'EsButton', text: 'Español' },
+    { id: 'EngButton', text: 'English' },
   ];
 
-  const [buttonConfigs, setButtonConfigs] = useState(initialButtonConfigs);
-
-  useEffect(() => {
-    setButtonConfigs((currentConfigs) =>
-      currentConfigs.map((config) => {
-        if (config.id === 'EsButton') {
-          return {
-            ...config,
-            style: {
-              ...config.style,
-              backgroundImage: currentNeonColor,
-              textShadow: `0px 0px 18px ${neonColors.gradientColorBoxShadow}`,
-            },
-          };
-        } else {
-          return config;
-        }
-      })
-    );
-  }, [neonColors.gradientColorBoxShadow, currentNeonColor]);
-
-  const handleButtonClick = (id: string | number) => {
-    setButtonConfigs((prev) =>
-      prev.map((button) =>
-        button.id === id
-          ? {
-              ...button,
-              neumorphicOptions: {
-                ...button.neumorphicOptions,
-                formShape: button.neumorphicOptions
-                  ? button.neumorphicOptions.formShape === FormShape.Flat
-                    ? FormShape.Pressed
-                    : FormShape.Flat
-                  : FormShape.Flat,
-              },
-            }
-          : button
-      )
-    );
+  const handleButtonClick = (id: string) => {
+    setActiveButtonId(id);
   };
+
   return (
     <NeumorphicElement.div
       className={style.LanguageSwitcher}
@@ -89,18 +33,30 @@ export const LanguageSwitcher = () => {
       }}
     >
       <div className={style.LanguageSwitcher_buttons}>
-        {buttonConfigs.map((button) => (
-          <NeumorphicElement.button
-            key={button.id}
-            onClick={() => handleButtonClick(button.id ? button.id : '')}
-            neumorphicOptions={button.neumorphicOptions}
-            className={button.className}
-          >
-            <p className={button.textClassName} style={button.style}>
-              {button.text}
-            </p>
-          </NeumorphicElement.button>
-        ))}
+        {buttonList.map(({ id, text }) => {
+          const isActive = id === activeButtonId;
+          return (
+            <LanguageButton
+              key={id}
+              id={id}
+              text={text}
+              clickHandler={handleButtonClick}
+              className={style.LanguageSwitcher_button}
+              textClassName={style.LanguageSwitcher_buttonText}
+              neumorphicOptions={{
+                formShape: isActive ? FormShape.Pressed : FormShape.Flat,
+                size: 100,
+                intensity: isActive ? 0.15 : 0.13,
+                lightSource: 1,
+              }}
+              colors={
+                isActive
+                  ? [neonColors.firstGradientColor, neonColors.secondGradientColor]
+                  : ['#ffffff', '#ffffff']
+              }
+            />
+          );
+        })}
       </div>
     </NeumorphicElement.div>
   );

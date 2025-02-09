@@ -1,5 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { AnglePicker, Format } from '@/components/AnglePicker';
 import {
   deleteFalsyProperties,
   getContrast,
@@ -8,8 +9,7 @@ import {
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { useNeonContext } from '../../providers/NeonProvider';
 import { GradientType } from '../../types';
-import { isSVGElement } from '../../utils';
-import { AnglePicker } from '../AnglePicker';
+import { isSVGElement, isTextElement } from '../../utils';
 import style from './Configuration.module.scss';
 import { ConfigurationRange } from './ConfigurationRange';
 
@@ -67,40 +67,44 @@ const Configuration = () => {
     setColorInputText2(contextConfig.color2 ?? '#ffffff');
   }, [contextConfig.color1, contextConfig.color2]);
 
-  const ConfigurationRanges = useMemo(
-    () => [
+  const isTextTag = contextConfig.tag && isTextElement(contextConfig.tag);
+
+  const ConfigurationRanges = useMemo(() => {
+    return [
       {
         label: 'Intensity',
         type: 'range',
-        value: contextConfig.intensity ?? 1,
+        value: contextConfig.intensity,
         onChange: (e: ChangeEvent<HTMLInputElement>) =>
           updateContextConfigProp('intensity', Number(e.target.value)),
-        min: 0.1,
-        max: 10,
-        step: 0.1,
+        min: 0,
+        max: 1,
+        step: 0.01,
       },
       {
-        label: 'Blur',
+        label: isTextTag ? 'Text Blur' : 'Blur',
         type: 'range',
-        value: contextConfig.blur ?? 90,
+        value: contextConfig.blur,
         onChange: (e: ChangeEvent<HTMLInputElement>) =>
           updateContextConfigProp('blur', Number(e.target.value)),
-        min: 1,
-        max: 100,
+        min: isTextTag ? 0.01 : 0.1,
+        max: isTextTag ? 10 : 50,
+        step: isTextTag ? 0.01 : 1,
       },
       {
         label: 'Speed',
         type: 'range',
-        value: contextConfig.speed ?? 1,
+        value: contextConfig.speed,
         onChange: (e: ChangeEvent<HTMLInputElement>) =>
           updateContextConfigProp('speed', Number(e.target.value)),
-        min: 0.1,
-        max: 10,
-        step: 0.1,
+        min: 0,
+        max: 50,
+        step: 1,
       },
-    ],
-    [contextConfig, updateContextConfigProp]
-  );
+    ];
+  }, [contextConfig, updateContextConfigProp]);
+
+  const isSVG = contextConfig.tag && isSVGElement(contextConfig.tag);
 
   return (
     <div className={style.Configuration} style={defaultCssVariables}>
@@ -165,17 +169,21 @@ const Configuration = () => {
         />
       </div>
 
-      <div className={`${style.Configuration__row} ${style.Configuration__gradient}`}>
-        <label className={style.Configuration__label}>Gradient Type:</label>
+      {!isSVG && (
+        <div className={`${style.Configuration__row} ${style.Configuration__gradient}`}>
+          <label className={style.Configuration__label}>Gradient Type:</label>
 
-        <select
-          value={contextConfig.gradientType}
-          onChange={(e) => updateContextConfigProp('gradientType', e.target.value as GradientType)}
-        >
-          <option value={GradientType.LINEAR}>Linear</option>
-          <option value={GradientType.CONIC}>Conic</option>
-        </select>
-      </div>
+          <select
+            value={contextConfig.gradientType}
+            onChange={(e) =>
+              updateContextConfigProp('gradientType', e.target.value as GradientType)
+            }
+          >
+            <option value={GradientType.LINEAR}>Linear</option>
+            <option value={GradientType.CONIC}>Conic</option>
+          </select>
+        </div>
+      )}
 
       {contextConfig.gradientType === GradientType.LINEAR && (
         <div className={`${style.Configuration__row} ${style.Configuration__label}`}>
@@ -193,6 +201,7 @@ const Configuration = () => {
             pointerColor="#000"
             pointerWidth={5}
             angle={0}
+            format={isSVG ? Format.SVG : Format.CSS}
           />
 
           <div
@@ -214,7 +223,7 @@ const Configuration = () => {
         />
       ))}
 
-      {contextConfig.tag && !isSVGElement(contextConfig.tag) && (
+      {!isSVG && (
         <div className={style.Configuration__row}>
           <label className={style.Configuration__label} htmlFor="showFlare">
             Show flare:

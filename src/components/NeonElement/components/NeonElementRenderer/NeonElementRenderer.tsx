@@ -4,7 +4,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useNeonContext } from '../../providers/NeonProvider';
 import { GradientType, NeonElementProps, NeonProps } from '../../types';
 
-import { isSVGElement } from '../../utils';
+import { isSVGElement, isTextElement } from '../../utils';
 import styles from './NeonElementRenderer.module.scss';
 
 const defaultConfig: Omit<Required<NeonProps>, 'tag'> = {
@@ -96,9 +96,15 @@ export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
       '--neon-flare-speed': `${flareSpeed}s`,
     };
 
-    let dynamicClasses = contextConfig.showFlare
-      ? `${styles.neon} ${styles.neon_flare}`
-      : `${styles.neon}`;
+    let dynamicClasses = styles.neon;
+
+    if (isTextElement(tag)) {
+      dynamicClasses = `${styles.neon_text}`;
+    }
+
+    if (contextConfig.showFlare) {
+      dynamicClasses = `${dynamicClasses} ${styles.neon_flare}`;
+    }
 
     if (contextConfig.gradientType === GradientType.CONIC) {
       dynamicClasses = `${dynamicClasses} ${styles.neon_conic}`;
@@ -114,7 +120,12 @@ export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
     contextConfig.intensity,
     contextConfig.showFlare,
     contextConfig.gradientType,
+    tag,
   ]);
+
+  // 6. Mergemos clase y estilo
+  const mergedClass = `neonElement ${finalStyle.dynamicClasses} ${className}`;
+  const mergedStyle: React.CSSProperties = { ...finalStyle.cssVars, ...style };
 
   // Si el elemento a renderizar es SVG, se utiliza un componente especializado.
   if (isSVGElement(tag)) {
@@ -124,20 +135,16 @@ export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
     );
   }
 
-  // 6. Mergemos clase y estilo
-  const mergedClass = `neonElement ${finalStyle.dynamicClasses} ${className}`;
-  const mergedStyle: React.CSSProperties = { ...finalStyle.cssVars, ...style };
+  if (isTextElement(tag)) {
+    return (
+      //@ts-expect-error types are not complete
+      <CreateTextElement tag={tag} {...props} className={mergedClass} style={mergedStyle} />
+    );
+  }
 
+  const TagElement = tag;
   // 7. Render final: en vez de <Element ...> => React.createElement(tag, ...)
-  return React.createElement(
-    tag,
-    {
-      ...rest,
-      className: mergedClass,
-      style: mergedStyle,
-    },
-    children
-  );
+  return <TagElement {...rest} className={mergedClass} style={mergedStyle} />;
 }
 
 /* ================== COMPONENTES AUXILIARES PARA SVG ================== */
@@ -289,17 +296,61 @@ const CreateDefs: React.FC<CreateDefsProps> = ({ svgAttrsNames }) => {
           />
         </stop>
       </linearGradient>
-      <filter id={svgAttrsNames.filterName}>
-        <feGaussianBlur
-          in="SourceGraphic"
-          stdDeviation={`${contextConfig.blur ?? 0}`}
-          result="blur"
-        />
-        <feMerge>
-          <feMergeNode in="blur" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
+      <CreateGaussianBlur filterName={svgAttrsNames.filterName} />
     </defs>
+  );
+};
+
+const CreateGaussianBlur = ({ filterName }: { filterName: string }) => {
+  const { contextConfig } = useNeonContext();
+  return (
+    <filter id={filterName} x="-50%" y="-200%" width="200%" height="500%">
+      <feGaussianBlur
+        in="SourceGraphic"
+        stdDeviation={`${contextConfig.blur ?? 0}`}
+        result="blur"
+      />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  );
+};
+
+/* ================== COMPONENTES AUXILIARES PARA TEXTO ================== */
+
+type TextWithDefsProps<Tag extends keyof JSX.IntrinsicElements> = {
+  style2: React.CSSProperties;
+} & NeonElementRendererProps<Tag>;
+
+/**
+ * Componente que renderiza elementos Text con definiciones (defs) para filtro.
+ */
+const CreateTextElement = <Tag extends keyof JSX.IntrinsicElements>({
+  tag,
+  style,
+  children,
+  ...rest
+}: TextWithDefsProps<Tag>) => {
+  const id = React.useId();
+  const filterName = `blurGlow-${id}`;
+  const stylesFinal = {
+    ...style,
+    ...{
+      filter: `url(#${filterName})`,
+    },
+  };
+
+  const TagElement = tag;
+
+  return (
+    //@ts-expect-error types are not complete
+    <TagElement {...rest} style={stylesFinal}>
+      {children}
+      <svg width="0" height="0">
+        <CreateGaussianBlur filterName={filterName} />
+      </svg>
+    </TagElement>
   );
 };

@@ -4,7 +4,7 @@ import style from './ConfigurationRange.module.scss';
 interface ConfigurationRangeProps {
   label: string;
   type: string;
-  value: number;
+  value?: number;
   min?: number;
   max?: number;
   step?: number;

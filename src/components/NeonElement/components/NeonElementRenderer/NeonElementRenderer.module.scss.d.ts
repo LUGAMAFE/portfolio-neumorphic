@@ -7,6 +7,8 @@ export type Styles = {
   neon: string;
   neon_conic: string;
   neon_flare: string;
+  neon_text: string;
+  neon_text_conic: string;
   'neon-spin': string;
   stop1: string;
   stop2: string;

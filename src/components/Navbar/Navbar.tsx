@@ -16,13 +16,13 @@ interface NavbarProps {
 
 export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
   const { currentTheme } = useNeumorphicStylesContext();
-  const { currentNeonColor, neonColors } = useNeonColorsContext();
+  const { neonColors } = useNeonColorsContext();
 
   const [buttonConfig, setButtonConfig] = useState({
     id: 'externalButton',
     className: style.Navbar__button,
     neumorphicOptions: {
-      formShape: FormShape.Flat,
+      formShape: FormShape.Concave,
       size: 43,
       intensity: 0.45,
       lightSource: 1,
@@ -69,7 +69,10 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
           distance: 20,
           blur: 40,
         };
-
+  const colors =
+    currentTheme === ThemePreset.DARK
+      ? ['#ffffff', '#ffffff']
+      : [neonColors.firstGradientColor, neonColors.secondGradientColor];
   return (
     <NeumorphicElement.div
       className={style.Navbar}
@@ -77,14 +80,17 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
       neumorphicOptions={neumorphicOptionsContainer}
     >
       <div className={style.Navbar__logo}>
-        <p>{'<LUGAMAFE/>'}</p>
+        <NeonElement.p color1={colors[0]} color2={colors[1]} blur={4}>
+          {'<LUGAMAFE />'}
+        </NeonElement.p>
       </div>
+
       <ThemeColorSwitcher />
       <LanguageSwitcher />
       <div className={style.Navbar__menuToggle}>
         <NeumorphicElement.button
           key={buttonConfig.id}
-          onClick={() => handleButtonClick(buttonConfig.id ? buttonConfig.id : '')}
+          onClick={() => handleButtonClick(buttonConfig.id)}
           neumorphicOptions={buttonConfig.neumorphicOptions}
           className={buttonConfig.className}
           id="externalButton"
@@ -103,6 +109,8 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
         showFlare
         color1={neonColors.firstGradientColor}
         color2={neonColors.secondGradientColor}
+        intensity={0.5}
+        speed={4}
       ></NeonElement.div>
     </NeumorphicElement.div>
   );

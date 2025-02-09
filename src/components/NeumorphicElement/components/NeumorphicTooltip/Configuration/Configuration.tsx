@@ -4,7 +4,8 @@ import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider
 import { useNeumorphicContext } from '../../../providers/NeumorphicProvider';
 import { FormShape } from '../../../types';
 import { deleteFalsyProperties, getContrast, isValidColor } from '../../../utils';
-import { AnglePicker } from '../../AnglePicker';
+
+import { AnglePicker, Format } from '@/components/AnglePicker';
 import { LightSourceSelector } from '../LightSourceSelector';
 import { ShapeSwitcher } from '../ShapeSwitcher';
 import style from './Configuration.module.scss';
@@ -219,6 +220,7 @@ const Configuration = () => {
           pointerWidth={5}
           angle={0}
           disabled={contextConfig.formShape === FormShape.Flat}
+          format={Format.SVG}
         />
 
         <div

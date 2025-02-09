@@ -16,37 +16,12 @@
     display: flex;
   }
   &_text {
-    width: 194px;
-    height: 34px;
-    padding-right: 5px;
-    color: $color-middle-white;
+    padding-right: 1em;
     font-family: 'Nunito';
     font-size: 22px;
     font-style: normal;
-    font-weight: $weight-normal;
+    font-weight: $weight-bold;
     letter-spacing: 0.1px;
-
-    text-shadow: $base-box-shadow-gray;
-    @include phone {
-      width: 48.5px;
-      height: 34px;
-      padding-top: 5px;
-      font-size: 9px;
-      line-height: 11px;
-      text-align: center;
-    }
-    @include tablet {
-      width: 194px;
-      height: 34px;
-      font-size: 22px;
-      line-height: 25px;
-    }
-    @include desktop {
-      width: 194px;
-      height: 34px;
-      font-size: 22px;
-      line-height: 25px;
-    }
   }
 
   &_toggle {

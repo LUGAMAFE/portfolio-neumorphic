@@ -32,58 +32,24 @@
   }
   &_buttons {
     display: flex;
-    width: 352px;
-    height: 34px;
+    width: 350px;
+    height: 35px;
     flex-wrap: wrap;
     align-content: center;
-    justify-content: center;
-    @include phone {
-      width: 100px;
-      height: 17px;
-    }
-    @include phone {
-      width: 352px;
-      height: 34px;
-    }
-    @include desktop {
-      width: 352px;
-      height: 34px;
-    }
+    justify-content: space-evenly;
+    gap: 1em;
   }
-  &_esButton {
-    width: 172px;
-    height: 34px;
+  &_button {
+    height: 100%;
+    flex: 1;
     border: 1px solid var(--light-color);
     border-radius: 8px;
-    margin-right: 5px;
     cursor: none;
-    @include phone {
-      width: 46px;
-      height: 15px;
-    }
-    @include phone {
-      width: 172px;
-      height: 34px;
-    }
-    @include desktop {
-      width: 172px;
-      height: 34px;
-    }
-  }
-  &_esButtonText {
-    width: 100%;
-    height: 100%;
-    background: $color-gradient-pink-linear-vertical;
-    -webkit-background-clip: text;
-    background-clip: text;
     font-family: 'Nunito';
     font-size: 22px;
     font-style: normal;
     font-weight: 500;
     letter-spacing: 0.1px;
-
-    -webkit-text-fill-color: transparent;
-    text-shadow: $base-text-shadow-neon;
     @include phone {
       font-size: 9px;
     }
@@ -94,43 +60,7 @@
       font-size: 22px;
     }
   }
-  &_enButton {
-    width: 172px;
-    height: 34px;
-    border: none;
-    border-radius: 8px;
-    cursor: none;
-    @include phone {
-      width: 46px;
-      height: 15px;
-    }
-    @include phone {
-      width: 172px;
-      height: 34px;
-    }
-    @include desktop {
-      width: 172px;
-      height: 34px;
-    }
-  }
-  &_enButtonText {
+  &_buttonText {
     width: 100%;
-    height: 100%;
-    color: $color-middle-white;
-    font-family: 'Nunito';
-    font-size: 22px;
-    font-style: normal;
-    letter-spacing: 0.1px;
-
-    text-shadow: $base-box-shadow-gray;
-    @include phone {
-      font-size: 9px;
-    }
-    @include phone {
-      font-size: 22px;
-    }
-    @include desktop {
-      font-size: 22px;
-    }
   }
 }

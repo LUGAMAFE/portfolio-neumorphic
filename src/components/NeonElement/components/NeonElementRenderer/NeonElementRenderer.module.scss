@@ -65,6 +65,43 @@
   }
 }
 
+.neon_text {
+  position: relative;
+  background-image: linear-gradient(
+    var(--neon-angle),
+    var(--neon-first-color) var(--neon-position-1),
+    var(--neon-second-color) var(--neon-position-2)
+  );
+  animation-name: move-gradient;
+  animation-duration: var(--neon-speed);
+  animation-iteration-count: infinite;
+  background-clip: text;
+  color: transparent;
+  &_conic {
+    background-image: conic-gradient(
+      from var(--neon-conic-angle),
+      var(--neon-first-color),
+      var(--neon-second-color),
+      var(--neon-first-color)
+    );
+    animation-name: neon-spin;
+    animation-duration: var(--neon-speed);
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-timing-function: linear;
+    background-clip: text;
+    color: transparent;
+    @keyframes neon-spin {
+      from {
+        --neon-conic-angle: 0deg;
+      }
+      to {
+        --neon-conic-angle: 360deg;
+      }
+    }
+  }
+}
+
 .neon {
   position: relative;
   background-image: linear-gradient(

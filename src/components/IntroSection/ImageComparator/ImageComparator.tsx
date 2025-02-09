@@ -226,6 +226,8 @@ export const ImageComparator = () => {
       <NeumorphicElement.div
         className={style.ImageComparator__imageComparer}
         neumorphicOptions={neumorphicOptions}
+        intensity={0.44}
+        distance={16}
       >
         <NeonElement.div
           className={style.ImageComparator__circle2}

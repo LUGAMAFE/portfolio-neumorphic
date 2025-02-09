@@ -9,6 +9,11 @@ export interface Point {
   y: number;
 }
 
+export enum Format {
+  SVG = 'svg',
+  CSS = 'css',
+}
+
 const BORDER_WIDTH: number = 1;
 const WIDTH: number = 30;
 const CIRCLE_WIDTH: number = 6;
@@ -27,6 +32,7 @@ export interface PickerProps {
   onAfterChange?: (interactiveValue: number) => void;
   preventDefault?: boolean;
   disabled?: boolean;
+  format?: Format;
 }
 
 export const AnglePicker = (props: PickerProps) => {
@@ -42,7 +48,7 @@ export const AnglePicker = (props: PickerProps) => {
     value,
     borderColor,
     borderStyle,
-    id,
+    format = Format.CSS,
   } = props;
 
   const [angle, setAngle] = useState(value ?? 0);
@@ -75,7 +81,11 @@ export const AnglePicker = (props: PickerProps) => {
 
   const getRotatedPosition = useCallback(
     (angle: number) => {
-      const theta = (angle / 180) * Math.PI;
+      let theta;
+      theta = ((angle - 90) / 180) * Math.PI;
+      if (format === Format.SVG) {
+        theta = (angle / 180) * Math.PI;
+      }
       const x =
         (startPoint.x - center.x) * Math.cos(theta) -
         (startPoint.y - center.y) * Math.sin(theta) +
@@ -100,8 +110,18 @@ export const AnglePicker = (props: PickerProps) => {
         };
         const nx = e.clientX - centerP.x;
         const ny = e.clientY - centerP.y;
-        const radian = Math.atan2(ny, nx);
-        return radianToAngle(radian);
+        // 1) Calcular ángulo matemático en [0..360)
+        const rawDeg = radianToAngle(Math.atan2(ny, nx));
+        //    donde rawDeg=0 => derecha, rawDeg=90 => arriba, etc.
+        if (format === Format.SVG) {
+          return rawDeg;
+        }
+        // 2) Convertirlo a "CSS-like" donde 0 => arriba, 90 => derecha, etc.
+        //    y creciendo en sentido horario:
+        let cssAngle = rawDeg - 90;
+        cssAngle = (cssAngle + 180) % 360;
+
+        return cssAngle;
       }
       return null;
     },
@@ -157,7 +177,6 @@ export const AnglePicker = (props: PickerProps) => {
       borderColor={borderColor}
       borderStyle={borderStyle}
       borderWidth={borderWidth}
-      id={id}
     >
       <Circle
         x={rotatedPosition.x}
@@ -173,6 +192,7 @@ export const AnglePicker = (props: PickerProps) => {
         width={pointerWidth}
         angle={angle}
         disabled={disabled}
+        format={format}
       />
     </Border>
   );

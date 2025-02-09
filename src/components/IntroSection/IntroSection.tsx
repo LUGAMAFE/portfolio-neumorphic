@@ -73,7 +73,7 @@ export const IntroSection = () => {
               color2={neonColors.secondGradientColor}
               speed={3}
               intensity={1.2}
-              blur={4}
+              blur={5}
             ></NeonElement.div>
             {!isMobile && (
               <NeonElement.div
@@ -83,7 +83,7 @@ export const IntroSection = () => {
                 color2={neonColors.secondGradientColor}
                 speed={4}
                 intensity={1.2}
-                blur={4}
+                blur={5}
               ></NeonElement.div>
             )}
           </div>
@@ -185,7 +185,8 @@ export const IntroSection = () => {
                 <NeonElement.path
                   color1={neonColors.firstGradientColor}
                   color2={neonColors.secondGradientColor}
-                  blur={4}
+                  blur={5}
+                  direction={0}
                   d="M296.444 303C333.509 303 363.556 296.196 363.556 287.802C363.556 279.408 333.509 272.604 296.444 272.604C259.38 272.604 229.333 279.408 229.333 287.802C229.333 296.196 259.38 303 296.444 303Z"
                 ></NeonElement.path>
                 <path
@@ -197,7 +198,8 @@ export const IntroSection = () => {
                 <NeonElement.g
                   color1={neonColors.firstGradientColor}
                   color2={neonColors.secondGradientColor}
-                  blur={2}
+                  blur={5}
+                  direction={0}
                 >
                   <path d="M194 149.454C201.364 149.454 207.333 143.45 207.333 136.044C207.333 128.637 201.364 122.633 194 122.633C186.636 122.633 180.667 128.637 180.667 136.044C180.667 143.45 186.636 149.454 194 149.454Z"></path>
                   <path d="M247.778 149.454C255.142 149.454 261.111 143.45 261.111 136.044C261.111 128.637 255.142 122.633 247.778 122.633C240.414 122.633 234.444 128.637 234.444 136.044C234.444 143.45 240.414 149.454 247.778 149.454Z"></path>
@@ -221,7 +223,8 @@ export const IntroSection = () => {
                 <NeonElement.path
                   color1={neonColors.firstGradientColor}
                   color2={neonColors.secondGradientColor}
-                  blur={4}
+                  blur={5}
+                  direction={0}
                   d="M121.333 29.8799H29.7778V58.4882H121.333V29.8799Z"
                 ></NeonElement.path>
                 <path
@@ -284,7 +287,8 @@ export const IntroSection = () => {
                   color1={neonColors.firstGradientColor}
                   color2={neonColors.secondGradientColor}
                   d="M158.667 197.06H67.1111V225.668H158.667V197.06Z"
-                  blur={4}
+                  blur={5}
+                  direction={0}
                 ></NeonElement.path>
                 <path
                   d="M199.333 191.472V268.357H37.5556V171.804H169.111"

@@ -4,7 +4,12 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import React from 'react';
 import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
-import { FormShape, NeumorphicElementProps, NeumorphicOptions } from '../../types';
+import {
+  FormShape,
+  NeumorphicConfigs,
+  NeumorphicElementProps,
+  NeumorphicOptions,
+} from '../../types';
 import {
   angleGradient,
   colorLuminance,
@@ -14,7 +19,7 @@ import {
 } from '../../utils';
 import styles from './NeumorphicElementRenderer.module.scss';
 
-const defaultConfig = {
+const defaultConfig: Omit<NeumorphicConfigs, 'tag'> = {
   formShape: FormShape.Convex,
   size: 55,
   intensity: 0.14,
