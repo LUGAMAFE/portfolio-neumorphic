@@ -1,4 +1,5 @@
 import { FormShape } from '../types';
+export * from './tags';
 
 export function angleGradient(
   shapeId: number,

@@ -4,22 +4,18 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import React from 'react';
 import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
-import {
-  FormShape,
-  NeumorphicConfigs,
-  NeumorphicElementProps,
-  NeumorphicOptions,
-} from '../../types';
+import { FormShape, NeumorphicElementProps, NeumorphicOptions } from '../../types';
 import {
   angleGradient,
   colorLuminance,
   getContrast,
   getIfGradient,
   getIntFormValue,
+  isSVGElement,
 } from '../../utils';
 import styles from './NeumorphicElementRenderer.module.scss';
 
-const defaultConfig: Omit<NeumorphicConfigs, 'tag'> = {
+const defaultConfig: Omit<Required<NeumorphicOptions>, 'color'> = {
   formShape: FormShape.Convex,
   size: 55,
   intensity: 0.14,
@@ -47,6 +43,7 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
     blur,
     style,
     className,
+    children,
     ...rest
   } = props;
 
@@ -207,10 +204,144 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
   const mergedClass = `neuElement ${finalStyle.dynamicClasses} ${className || ''}`;
   const mergedStyle: React.CSSProperties = { ...finalStyle.cssVars, ...style };
 
-  // 7. Render final: en vez de <Element ...> => React.createElement(tag, ...)
-  return React.createElement(tag, {
-    ...rest,
-    className: mergedClass,
-    style: mergedStyle,
-  });
+  // Si el elemento a renderizar es SVG, se utiliza un componente especializado.
+  if (isSVGElement(tag)) {
+    return (
+      //@ts-expect-error types are not complete
+      <CreateSvgElement tag={tag} style2={finalStyle.cssVars} {...props} />
+    );
+  }
+
+  const TagElement = tag;
+  // 7. Render final
+  return (
+    <TagElement {...rest} className={mergedClass} style={mergedStyle}>
+      {children}
+    </TagElement>
+  );
 }
+
+/* ================== COMPONENTES AUXILIARES PARA SVG ================== */
+
+type SvgWithDefsProps<Tag extends keyof JSX.IntrinsicElements> = {
+  style2: React.CSSProperties;
+} & NeumorphicElementRendererProps<Tag>;
+
+/**
+ * Componente que renderiza elementos SVG con definiciones (defs) para gradiente y filtro.
+ */
+const CreateSvgElement = <Tag extends keyof JSX.IntrinsicElements>({
+  tag,
+  style2,
+  style,
+  children,
+  ...rest
+}: SvgWithDefsProps<Tag>) => {
+  const id = React.useId();
+  const svgAttrsNames = {
+    gradientName: `neumorphicLinearGradient-${id}`,
+    filterName: `neumorphicFilter-${id}`,
+  };
+
+  const TagElement = tag;
+
+  // Si el tag es 'g' se renderiza directamente con los defs
+  if (tag === 'g' || tag === 'svg') {
+    return (
+      //@ts-expect-error types are not complete
+      <TagElement
+        {...rest}
+        style={{ ...style2, ...style }}
+        filter={`url(#${svgAttrsNames.filterName})`}
+        fill={`url(#${svgAttrsNames.gradientName})`}
+      >
+        {children}
+        <CreateDefs svgAttrsNames={svgAttrsNames} />
+      </TagElement>
+    );
+  }
+
+  // Para otros tags SVG se usa un grupo que incluye un <path> con defs
+  return (
+    <SvgGroupElementWithDefs
+      tag={tag}
+      style2={style2}
+      style={style}
+      svgAttrsNames={svgAttrsNames}
+      {...rest}
+    >
+      {children}
+    </SvgGroupElementWithDefs>
+  );
+};
+
+type SvgGroupElementWithDefsProps<Tag extends keyof JSX.IntrinsicElements> = {
+  svgAttrsNames: {
+    gradientName: string;
+    filterName: string;
+  };
+} & SvgWithDefsProps<Tag>;
+
+/**
+ * Grupo SVG que incluye el <defs> y un <path> con el filtro y gradiente aplicados.
+ */
+const SvgGroupElementWithDefs = <Tag extends keyof JSX.IntrinsicElements>({
+  svgAttrsNames,
+  style2,
+  tag: TagElement,
+  ...rest
+}: SvgGroupElementWithDefsProps<Tag>) => {
+  return (
+    <g style={style2}>
+      <CreateDefs svgAttrsNames={svgAttrsNames} />
+      <TagElement
+        {...rest}
+        filter={`url(#${svgAttrsNames.filterName})`}
+        fill={`url(#${svgAttrsNames.gradientName})`}
+      />
+    </g>
+  );
+};
+
+type CreateDefsProps = {
+  svgAttrsNames: {
+    gradientName: string;
+    filterName: string;
+  };
+};
+
+/**
+ * Componente que define el gradiente lineal y el filtro (glow) para los elementos SVG.
+ */
+const CreateDefs: React.FC<CreateDefsProps> = ({ svgAttrsNames }) => {
+  const { contextConfig } = useNeumorphicContext();
+  return (
+    <defs>
+      <linearGradient
+        id={svgAttrsNames.gradientName}
+        x1="0"
+        y1="0"
+        x2="1"
+        y2="0"
+        gradientTransform={`rotate(0} 0.5 0.5)`}
+      >
+        <stop offset="0%" stopColor={contextConfig.color}></stop>
+        <stop offset="100%" stopColor={contextConfig.color}></stop>
+      </linearGradient>
+      <CreateGaussianBlur filterName={svgAttrsNames.filterName} />
+    </defs>
+  );
+};
+
+const CreateGaussianBlur = ({ filterName }: { filterName: string }) => {
+  const { contextConfig } = useNeumorphicContext();
+  return (
+    <filter id={filterName} x="-50%" y="-200%" width="200%" height="500%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation={`0`} result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  );
+};

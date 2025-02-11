@@ -146,8 +146,7 @@ export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
   // 7. Render final: en vez de <Element ...> => React.createElement(tag, ...)
   return (
     <TagElement {...rest} className={mergedClass} style={mergedStyle}>
-      {' '}
-      {children}{' '}
+      {children}
     </TagElement>
   );
 }
