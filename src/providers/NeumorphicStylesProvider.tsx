@@ -1,6 +1,5 @@
 'use client';
 
-import { colorLuminance } from '@/components/NeumorphicElement/utils';
 import { createContext, PropsWithChildren, useContext, useState } from 'react';
 
 /**
@@ -10,25 +9,17 @@ import { createContext, PropsWithChildren, useContext, useState } from 'react';
  */
 export type NeumorphicThemeMap = Record<string, string>;
 
-/**
- * Estructura con los colores resultantes (claro, oscuro, gradientes).
- */
-interface NeumorphicStyles {
-  darkColor: string;
-  mainColor: string;
-  lightColor: string;
-  darkGradientColor: string;
-  lightGradientColor: string;
-}
+export type NeumorphicTheme = {
+  color: string;
+  name: string;
+};
 
 /**
  * Interfaz para lo que se expone en el contexto.
  */
 interface NeumorphicStylesContextValue {
-  styles: NeumorphicStyles;
-  currentTheme: string;
+  currentTheme: NeumorphicTheme;
   handleChangeTheme: (themeName: string) => void;
-  colorDifference: number;
 }
 
 /**
@@ -37,17 +28,6 @@ interface NeumorphicStylesContextValue {
 export const NeumorphicStylesContext = createContext<NeumorphicStylesContextValue | undefined>(
   undefined
 );
-
-/**
- * Genera los colores neumórficos a partir de un color base y una diferencia.
- */
-const generateNeumorphicColors = (color: string, difference: number): NeumorphicStyles => ({
-  darkColor: colorLuminance(color, -difference),
-  mainColor: color,
-  lightColor: colorLuminance(color, difference),
-  darkGradientColor: colorLuminance(color, 0.07),
-  lightGradientColor: colorLuminance(color, -0.1),
-});
 
 interface NeumorphicStylesProviderProps {
   /**
@@ -65,12 +45,6 @@ interface NeumorphicStylesProviderProps {
    * Debe ser una de las claves definidas en 'themes'.
    */
   defaultTheme: string;
-
-  /**
-   * Diferencia de luminancia (por defecto 0.15).
-   * Afecta a qué tan claros u oscuros son darkColor y lightColor.
-   */
-  colorDifference?: number;
 }
 
 /**
@@ -80,13 +54,18 @@ export function NeumorphicStylesProvider({
   children,
   themes,
   defaultTheme,
-  colorDifference = 0.15,
 }: PropsWithChildren<NeumorphicStylesProviderProps>) {
+  if (!themes) {
+    throw new Error('themes es requerido en NeumorphicStylesProvider.');
+  }
+  // Verificamos que el tema por defecto exista en 'themes'.
+  if (!themes[defaultTheme]) {
+    throw new Error(`El tema por defecto "${defaultTheme}" no está definido en "themes".`);
+  }
   // Almacenamos el nombre del tema actual (ej: "dark", "light", etc.).
-  const [currentTheme, setCurrentTheme] = useState(defaultTheme);
-  // Inicializamos los estilos basado en el tema por defecto.
-  const [styles, setStyles] = useState<NeumorphicStyles>(() => {
-    return generateNeumorphicColors(themes[defaultTheme], colorDifference);
+  const [currentTheme, setCurrentTheme] = useState({
+    color: themes[defaultTheme],
+    name: defaultTheme,
   });
 
   /**
@@ -97,18 +76,17 @@ export function NeumorphicStylesProvider({
       console.warn(`El tema "${themeName}" no está definido en "themes". Se mantiene el actual.`);
       return;
     }
-    setCurrentTheme(themeName);
-    document.documentElement.style.setProperty('--main-color', themes[themeName]);
-    setStyles(generateNeumorphicColors(themes[themeName], colorDifference));
+    setCurrentTheme({
+      color: themes[themeName],
+      name: themeName,
+    });
   };
 
   return (
     <NeumorphicStylesContext.Provider
       value={{
-        styles,
         currentTheme,
         handleChangeTheme,
-        colorDifference,
       }}
     >
       {children}

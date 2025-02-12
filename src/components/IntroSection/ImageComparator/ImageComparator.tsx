@@ -194,9 +194,9 @@ export const ImageComparator = () => {
   );
 
   const neumorphicOptions =
-    currentTheme === ThemePreset.LIGHT
+    currentTheme.name === ThemePreset.LIGHT
       ? {
-          FormShape: FormShape.Pressed,
+          formShape: FormShape.Pressed,
           size: 125,
           intensity: 0.09,
           lightSource: 2,
@@ -204,7 +204,7 @@ export const ImageComparator = () => {
           blur: 25,
         }
       : {
-          FormShape: FormShape.Concave,
+          formShape: FormShape.Concave,
           size: 168,
           intensity: 0.25,
           lightSource: 1,
@@ -225,17 +225,22 @@ export const ImageComparator = () => {
     <div ref={containerRef} className={style.ImageComparator}>
       <NeumorphicElement.div
         className={style.ImageComparator__imageComparer}
-        neumorphicOptions={neumorphicOptions}
+        {...neumorphicOptions}
         intensity={0.44}
         distance={16}
+        color={currentTheme.color}
       >
         <NeonElement.div
           className={style.ImageComparator__circle2}
-          showFlare={currentTheme === ThemePreset.DARK}
+          showFlare={currentTheme.name === ThemePreset.DARK}
           intensity={0.5}
           blur={8}
-          color1={currentTheme === ThemePreset.DARK ? '#e4ebf2' : mixedColor.firstGradientColor}
-          color2={currentTheme === ThemePreset.DARK ? '#eff3f7' : mixedColor.secondGradientColor}
+          color1={
+            currentTheme.name === ThemePreset.DARK ? '#e4ebf2' : mixedColor.firstGradientColor
+          }
+          color2={
+            currentTheme.name === ThemePreset.DARK ? '#eff3f7' : mixedColor.secondGradientColor
+          }
         ></NeonElement.div>
         <div className={style.ImageComparator__circle}>
           <div className={style.ImageComparator__clipWrapper}>
@@ -254,21 +259,27 @@ export const ImageComparator = () => {
           />
           <NeonElement.div
             className={style.ImageComparator__dragger}
-            showFlare={currentTheme === ThemePreset.DARK}
+            showFlare={currentTheme.name === ThemePreset.DARK}
             intensity={0.5}
             blur={8}
-            color1={currentTheme === ThemePreset.DARK ? '#e4ebf2' : mixedColor.firstGradientColor}
-            color2={currentTheme === ThemePreset.DARK ? '#eff3f7' : mixedColor.secondGradientColor}
+            color1={
+              currentTheme.name === ThemePreset.DARK ? '#e4ebf2' : mixedColor.firstGradientColor
+            }
+            color2={
+              currentTheme.name === ThemePreset.DARK ? '#eff3f7' : mixedColor.secondGradientColor
+            }
             gradientType={GradientType.CONIC}
           >
             <NeonElement.div
               className={style.ImageComparator__draggerHandle}
-              showFlare={currentTheme === ThemePreset.DARK}
+              showFlare={currentTheme.name === ThemePreset.DARK}
               intensity={0.5}
               blur={8}
-              color1={currentTheme === ThemePreset.DARK ? '#e4ebf2' : mixedColor.firstGradientColor}
+              color1={
+                currentTheme.name === ThemePreset.DARK ? '#e4ebf2' : mixedColor.firstGradientColor
+              }
               color2={
-                currentTheme === ThemePreset.DARK ? '#eff3f7' : mixedColor.secondGradientColor
+                currentTheme.name === ThemePreset.DARK ? '#eff3f7' : mixedColor.secondGradientColor
               }
             >
               <div

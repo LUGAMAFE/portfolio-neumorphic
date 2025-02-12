@@ -11,21 +11,21 @@ export type NeonColorPickerButtonProps = NeumorphicElementProps<'button'> & {
 
 export const NeonColorPickerButton = ({
   id,
-  neumorphicOptions,
   className,
   style,
   text,
   handleButtonClick,
   textClassName,
   value,
+  ...rest
 }: NeonColorPickerButtonProps) => {
   return (
     <>
       <NeumorphicElement.button
         key={id}
         onClick={() => handleButtonClick(value)}
-        neumorphicOptions={neumorphicOptions}
         className={className}
+        {...rest}
       ></NeumorphicElement.button>
       <p className={textClassName} style={style}>
         {text}

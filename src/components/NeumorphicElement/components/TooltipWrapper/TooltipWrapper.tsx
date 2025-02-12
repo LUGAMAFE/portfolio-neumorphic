@@ -28,7 +28,7 @@ export const TooltipWrapper = ({ children, open, setOpen, allowClicks }: Tooltip
   } = useNeumorphicContext();
 
   const {
-    styles: { mainColor },
+    currentTheme: { color: mainColor },
   } = useNeumorphicStylesContext();
 
   const { editorMode } = useUIStateContext();

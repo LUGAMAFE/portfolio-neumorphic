@@ -1,6 +1,5 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { useNeumorphicContext } from '../../../providers/NeumorphicProvider';
 import { FormShape } from '../../../types';
 import { deleteFalsyProperties, getContrast, isValidColor } from '../../../utils';
@@ -25,9 +24,6 @@ const getAngleFromDirection = (direction: number) => {
 
 const Configuration = () => {
   const { contextConfig, updateContextConfigProp, setContextConfig } = useNeumorphicContext();
-  const {
-    styles: { mainColor: mainColorContext },
-  } = useNeumorphicStylesContext();
   const [color, setColor] = useState<string>('#ffffff');
   const [colorInputText, setColorInputText] = useState<string>('#ffffff');
   const [defaultCssVariables, setDefaultCssVariables] = useState<Record<string, string>>({});
@@ -122,11 +118,11 @@ const Configuration = () => {
 
   useEffect(() => {
     if (!contextConfig.color) {
-      updateColorAndCssVariables(mainColorContext || '#ffffff');
+      updateColorAndCssVariables('#ffffff');
     } else {
       updateColorAndCssVariables(contextConfig.color);
     }
-  }, [contextConfig.color, mainColorContext, updateColorAndCssVariables]);
+  }, [contextConfig.color, updateColorAndCssVariables]);
 
   const ConfigurationRanges = useMemo(
     () => [

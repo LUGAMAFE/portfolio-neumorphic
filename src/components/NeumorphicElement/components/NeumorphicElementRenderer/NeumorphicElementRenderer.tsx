@@ -1,7 +1,6 @@
 import { JSX, useMemo } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import React from 'react';
 import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
 import { FormShape, NeumorphicElementProps, NeumorphicOptions } from '../../types';
@@ -18,11 +17,30 @@ import styles from './NeumorphicElementRenderer.module.scss';
 const defaultConfig: Omit<Required<NeumorphicOptions>, 'color'> = {
   formShape: FormShape.Convex,
   size: 55,
-  intensity: 0.14,
+  intensity: 0.15,
   lightSource: 1,
   distance: 5,
   blur: 15,
 };
+
+interface NeumorphicStyles {
+  darkColor: string;
+  mainColor: string;
+  lightColor: string;
+  darkGradientColor: string;
+  lightGradientColor: string;
+}
+
+/**
+ * Genera los colores neumórficos a partir de un color base y una diferencia.
+ */
+const generateNeumorphicColors = (color: string, difference: number): NeumorphicStyles => ({
+  darkColor: colorLuminance(color, -difference),
+  mainColor: color,
+  lightColor: colorLuminance(color, difference),
+  darkGradientColor: colorLuminance(color, 0.07),
+  lightGradientColor: colorLuminance(color, -0.1),
+});
 
 export type NeumorphicElementRendererProps<Tag extends keyof JSX.IntrinsicElements> = {
   tag: Tag;
@@ -33,7 +51,6 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
   ...props
 }: NeumorphicElementRendererProps<Tag>) {
   const {
-    neumorphicOptions = {},
     formShape,
     color,
     size,
@@ -49,45 +66,23 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
 
   // 1. Tomamos el contexto
   const { contextConfig, setContextConfig } = useNeumorphicContext();
-  // 2. Tomamos los colores del tema neumórfico
-  const {
-    colorDifference,
-    styles: {
-      darkColor: darkColorContext,
-      mainColor: mainColorContext,
-      lightColor: lightColorContext,
-      darkGradientColor: darkGradientColorContext,
-      lightGradientColor: lightGradientColorContext,
-    },
-  } = useNeumorphicStylesContext();
 
   /**
-   * 3. Construimos nuestro objeto "propsConfig" usando:
+   * 2. Construimos nuestro objeto "propsConfig" usando:
    *    1) props directas (formShape, color, size, etc.)
-   *    2) si no hay prop directa, usar la key correspondiente de neumorphicOptions
-   *    3) si no hay ni en prop ni en neumorphicOptions, usar defaultConfig
+   *    2) si no hay prop usar defaultConfig
    */
   const finalConfig: NeumorphicOptions = useMemo(
     () => ({
-      formShape: formShape ?? neumorphicOptions.formShape ?? defaultConfig.formShape,
-      color: color ?? neumorphicOptions.color ?? mainColorContext,
-      size: size ?? neumorphicOptions.size ?? defaultConfig.size,
-      intensity: intensity ?? neumorphicOptions.intensity ?? defaultConfig.intensity,
-      lightSource: lightSource ?? neumorphicOptions.lightSource ?? defaultConfig.lightSource,
-      distance: distance ?? neumorphicOptions.distance ?? defaultConfig.distance,
-      blur: blur ?? neumorphicOptions.blur ?? defaultConfig.blur,
+      formShape: formShape ?? defaultConfig.formShape,
+      color: color,
+      size: size ?? defaultConfig.size,
+      intensity: intensity ?? defaultConfig.intensity,
+      lightSource: lightSource ?? defaultConfig.lightSource,
+      distance: distance ?? defaultConfig.distance,
+      blur: blur ?? defaultConfig.blur,
     }),
-    [
-      formShape,
-      color,
-      size,
-      intensity,
-      lightSource,
-      distance,
-      blur,
-      neumorphicOptions,
-      mainColorContext,
-    ]
+    [formShape, color, size, intensity, lightSource, distance, blur]
   );
 
   useDeepCompareEffect(() => {
@@ -100,38 +95,21 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
    *    (o por cualquier otro) en el contexto.
    */
   const finalStyle = useMemo(() => {
-    // Si el contexto aún no tiene algo usable, devolvemos base
-    if (!mainColorContext || contextConfig.formShape == null) {
+    if (contextConfig.formShape == null) {
       return {
         cssVars: {},
         dynamicClasses: styles.softShadow,
       };
-    }
-
-    const colorToUse = contextConfig.color ?? mainColorContext;
-
-    // Determinamos si la intensidad coincide con la del tema
-    // y no pasaron color en props => reasumimos lo del contexto
-    const usingSameIntensity =
-      contextConfig.intensity === colorDifference && !color && !neumorphicOptions.color;
-
-    // Calculamos colores
-    let darkColor: string;
-    let lightColor: string;
-    let darkGradientColor: string;
-    let lightGradientColor: string;
-
-    if (usingSameIntensity) {
-      darkColor = darkColorContext;
-      lightColor = lightColorContext;
-      darkGradientColor = darkGradientColorContext;
-      lightGradientColor = lightGradientColorContext;
     } else {
-      darkColor = colorLuminance(colorToUse, -contextConfig.intensity!);
-      lightColor = colorLuminance(colorToUse, contextConfig.intensity!);
-      darkGradientColor = colorLuminance(colorToUse, -0.1);
-      lightGradientColor = colorLuminance(colorToUse, 0.07);
+      if (contextConfig.color == undefined) {
+        throw new Error('Color prop is required');
+      }
     }
+
+    const colors = generateNeumorphicColors(contextConfig.color, contextConfig.intensity!);
+
+    let { darkColor, lightColor } = colors;
+    const { mainColor, darkGradientColor, lightGradientColor } = colors;
 
     // Forma y gradientes
     const shapeId = getIntFormValue(contextConfig.formShape);
@@ -148,13 +126,13 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
         ? shapeId === 3
           ? lightGradientColor
           : darkGradientColor
-        : colorToUse;
+        : mainColor;
     const secondGradientColor =
       isGradient && shapeId !== 1
         ? shapeId === 2
           ? lightGradientColor
           : darkGradientColor
-        : colorToUse;
+        : mainColor;
 
     // Distancia, blur
     const finalDistance = contextConfig.distance ?? defaultConfig.distance;
@@ -174,9 +152,9 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
       '--positionYOpposite': `${-positionY}px`,
       '--angle': `${angle}deg`,
       '--blur': `${finalBlur}px`,
-      '--textColor': getContrast(colorToUse),
-      '--textColorOpposite': colorToUse,
-      '--mainColor': colorToUse,
+      '--textColor': getContrast(mainColor),
+      '--textColorOpposite': mainColor,
+      '--mainColor': mainColor,
       '--darkColor': darkColor,
       '--lightColor': lightColor,
       '--firstGradientColor': firstGradientColor,
@@ -188,17 +166,7 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
       shapeId === 0 ? `${styles.softShadow} ${styles.pressed}` : styles.softShadow;
 
     return { cssVars, dynamicClasses };
-  }, [
-    contextConfig,
-    mainColorContext,
-    darkColorContext,
-    lightColorContext,
-    darkGradientColorContext,
-    lightGradientColorContext,
-    colorDifference,
-    color,
-    neumorphicOptions.color,
-  ]);
+  }, [contextConfig]);
 
   // 6. Mergemos clase y estilo
   const mergedClass = `neuElement ${finalStyle.dynamicClasses} ${className || ''}`;
@@ -208,7 +176,13 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
   if (isSVGElement(tag)) {
     return (
       //@ts-expect-error types are not complete
-      <CreateSvgElement tag={tag} style2={finalStyle.cssVars} {...props} />
+      <CreateSvgElement
+        tag={tag}
+        style2={finalStyle.cssVars}
+        className={className}
+        style={style}
+        {...rest}
+      />
     );
   }
 

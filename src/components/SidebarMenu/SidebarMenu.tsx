@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import useDeviceType from '../../hooks/useDeviceType';
 
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
+import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { NeumorphicElement } from '../NeumorphicElement';
 import { FormShape, NeumorphicElementProps } from '../NeumorphicElement/types';
 import {
@@ -18,19 +19,19 @@ interface SidebarMenuProps {
 
 export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
   const { handleChangeColorNeon, neonColors } = useNeonColorsContext();
+  const { currentTheme } = useNeumorphicStylesContext();
   const { isMobile } = useDeviceType();
 
   const initialButtonCloseConfig: NeumorphicElementProps<'button'> = {
     id: 'externalButtonClose',
     className: style.SidebarMenu_button,
-    neumorphicOptions: {
-      formShape: FormShape.Flat,
-      size: 43,
-      intensity: 0.45,
-      lightSource: 1,
-      distance: 4,
-      blur: 9,
-    },
+    formShape: FormShape.Flat,
+    size: 43,
+    intensity: 0.45,
+    lightSource: 1,
+    distance: 4,
+    blur: 9,
+    color: currentTheme.color,
     onClick: () => handleButtonClickX('externalButtonClose'),
   };
   const [buttonCloseConfig, setButtonCloseConfig] = useState(initialButtonCloseConfig);
@@ -40,14 +41,10 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
       prevButtonCloseConfig.id === id
         ? {
             ...prevButtonCloseConfig,
-            neumorphicOptions: {
-              ...prevButtonCloseConfig.neumorphicOptions,
-              form: prevButtonCloseConfig.neumorphicOptions
-                ? prevButtonCloseConfig.neumorphicOptions.formShape === FormShape.Concave
-                  ? FormShape.Pressed
-                  : FormShape.Concave
+            formShape:
+              prevButtonCloseConfig.formShape === FormShape.Concave
+                ? FormShape.Pressed
                 : FormShape.Concave,
-            },
           }
         : prevButtonCloseConfig
     );
@@ -77,10 +74,7 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
         button.value === value
           ? {
               ...button,
-              neumorphicOptions: {
-                ...button.neumorphicOptions,
-                formShape: FormShape.Pressed,
-              },
+              formShape: FormShape.Pressed,
               style: {
                 ...button.style,
                 WebkitTextFillColor: 'transparent',
@@ -97,10 +91,7 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
             }
           : {
               ...button,
-              neumorphicOptions: {
-                ...button.neumorphicOptions,
-                form: FormShape.Concave,
-              },
+              formShape: FormShape.Concave,
               style: {
                 ...button.style,
 
@@ -120,14 +111,13 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
       className: style.SidebarMenu_radio,
       textClassName: style.SidebarMenu_esButtonText,
       handleButtonClick: handleButtonClick,
-      neumorphicOptions: {
-        formShape: FormShape.Pressed,
-        size: 128,
-        intensity: 0.42,
-        lightSource: 1,
-        distance: 6,
-        blur: 6,
-      },
+      formShape: FormShape.Pressed,
+      size: 128,
+      intensity: 0.42,
+      lightSource: 1,
+      distance: 6,
+      blur: 6,
+      color: currentTheme.color,
     },
     {
       id: 'Opcion2',
@@ -136,14 +126,13 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
       className: style.SidebarMenu_radio,
       textClassName: style.SidebarMenu_esButtonText,
       handleButtonClick: handleButtonClick,
-      neumorphicOptions: {
-        formShape: FormShape.Concave,
-        size: 77,
-        intensity: 0.78,
-        lightSource: 1,
-        distance: 2,
-        blur: 5,
-      },
+      formShape: FormShape.Concave,
+      size: 77,
+      intensity: 0.78,
+      lightSource: 1,
+      distance: 2,
+      blur: 5,
+      color: currentTheme.color,
     },
     {
       id: 'Opcion3',
@@ -152,14 +141,13 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
       className: style.SidebarMenu_radio,
       textClassName: style.SidebarMenu_esButtonText,
       handleButtonClick: handleButtonClick,
-      neumorphicOptions: {
-        formShape: FormShape.Concave,
-        size: 77,
-        intensity: 0.78,
-        lightSource: 1,
-        distance: 2,
-        blur: 5,
-      },
+      formShape: FormShape.Concave,
+      size: 77,
+      intensity: 0.78,
+      lightSource: 1,
+      distance: 2,
+      blur: 5,
+      color: currentTheme.color,
     },
   ];
 
@@ -188,14 +176,13 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
   return (
     <div>
       <NeumorphicElement.div
-        neumorphicOptions={{
-          formShape: FormShape.Level,
-          size: 55,
-          intensity: 0.19,
-          lightSource: 1,
-          distance: 6,
-          blur: 11,
-        }}
+        formShape={FormShape.Level}
+        size={55}
+        intensity={0.19}
+        lightSource={1}
+        distance={6}
+        blur={11}
+        color={currentTheme.color}
         className={style.SidebarMenu}
         style={{
           zIndex: 999,

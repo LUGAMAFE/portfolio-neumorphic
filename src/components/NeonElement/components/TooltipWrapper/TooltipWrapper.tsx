@@ -23,7 +23,7 @@ export const TooltipWrapper = ({ children, open, setOpen }: TooltipWrapperProps)
   const arrowRef = useRef(null);
 
   const {
-    styles: { mainColor },
+    currentTheme: { color: mainColor },
   } = useNeumorphicStylesContext();
 
   const { editorMode } = useUIStateContext();

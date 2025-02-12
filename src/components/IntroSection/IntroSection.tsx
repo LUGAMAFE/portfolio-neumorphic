@@ -34,7 +34,7 @@ export const IntroSection = () => {
   }, []);
 
   const neumorphicOptions =
-    currentTheme === ThemePreset.LIGHT
+    currentTheme.name === ThemePreset.LIGHT
       ? {
           form: FormShape.Flat,
           size: 44,
@@ -56,7 +56,8 @@ export const IntroSection = () => {
     <NeumorphicElement.div
       id="seccion0"
       className={`${style.Intro} section`}
-      neumorphicOptions={neumorphicOptions}
+      {...neumorphicOptions}
+      color={currentTheme.color}
     >
       <ImageComparator />
       <div className={style.Intro__myIntroduction}>

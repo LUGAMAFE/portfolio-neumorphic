@@ -13,19 +13,19 @@ export interface LanguageButtonProps extends NeumorphicElementProps<'button'> {
 export const LanguageButton = ({
   id,
   text,
-  neumorphicOptions,
   className,
   style,
   textClassName,
   colors,
   clickHandler,
+  ...rest
 }: LanguageButtonProps) => {
   return (
     <NeumorphicElement.button
       key={id}
       onClick={() => clickHandler(id)}
-      neumorphicOptions={neumorphicOptions}
       className={className}
+      {...rest}
     >
       <NeonElement.span
         className={textClassName}

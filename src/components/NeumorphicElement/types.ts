@@ -1,3 +1,4 @@
+import { MakeRequired } from '@/utils/type-utils';
 import { ComponentPropsWithoutRef, JSX } from 'react';
 
 export enum FormShape {
@@ -18,8 +19,7 @@ export interface NeumorphicOptions {
   blur?: number;
 }
 
-export type NeumorphicProps = NeumorphicOptions & {
-  neumorphicOptions?: NeumorphicOptions;
+export type NeumorphicProps = MakeRequired<NeumorphicOptions, 'color'> & {
   allowClicks?: boolean;
 };
 
