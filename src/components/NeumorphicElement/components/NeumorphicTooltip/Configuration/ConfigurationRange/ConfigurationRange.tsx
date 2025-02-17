@@ -36,7 +36,7 @@ export const ConfigurationRange = ({
         max={max}
         step={step}
         id={camelize(label)}
-        disabled={disabled || !value}
+        disabled={disabled}
         className={style.ConfigurationRange__input}
       />
     </div>

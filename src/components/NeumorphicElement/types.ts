@@ -12,11 +12,11 @@ export enum FormShape {
 export interface NeumorphicOptions {
   formShape?: FormShape;
   color?: string;
-  size?: number;
   intensity?: number;
   lightSource?: number;
   distance?: number;
   blur?: number;
+  concavity?: number;
 }
 
 export type NeumorphicProps = MakeRequired<NeumorphicOptions, 'color'> & {

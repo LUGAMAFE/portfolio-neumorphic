@@ -37,7 +37,6 @@ export const IntroSection = () => {
     currentTheme.name === ThemePreset.LIGHT
       ? {
           form: FormShape.Flat,
-          size: 44,
           intensity: 0.47,
           lightSource: 3,
           distance: 4,
@@ -45,7 +44,6 @@ export const IntroSection = () => {
         }
       : {
           form: FormShape.Flat,
-          size: 500,
           intensity: 0.65,
           lightSource: 3,
           distance: 45,

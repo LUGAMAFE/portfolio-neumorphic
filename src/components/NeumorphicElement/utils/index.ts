@@ -61,11 +61,10 @@ export const handleDistance = (value: number): { blur: number; distance: number 
   return { blur, distance };
 };
 
-export const handleSize = (value: number): { size: number; blur: number; distance: number } => {
-  const size = value;
+export const handleSize = (value: number): { blur: number; distance: number } => {
   const distance = Math.round(value * 0.1);
   const blur = Math.round(value * 0.2);
-  return { size, blur, distance };
+  return { blur, distance };
 };
 
 export const getIfGradient = (shapeId: number): boolean => {

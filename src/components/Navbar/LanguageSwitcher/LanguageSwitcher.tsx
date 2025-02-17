@@ -26,8 +26,7 @@ export const LanguageSwitcher = () => {
     <NeumorphicElement.div
       className={style.LanguageSwitcher}
       formShape={FormShape.Level}
-      size={55}
-      intensity={0.19}
+      intensity={0.13}
       lightSource={1}
       distance={6}
       blur={11}
@@ -50,7 +49,6 @@ export const LanguageSwitcher = () => {
                   : ['#ffffff', '#ffffff']
               }
               formShape={isActive ? FormShape.Pressed : FormShape.Flat}
-              size={100}
               intensity={isActive ? 0.15 : 0.13}
               lightSource={1}
               color={currentTheme.color}

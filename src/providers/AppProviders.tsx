@@ -12,18 +12,14 @@ export enum ThemePreset {
 
 export const ThemesPresets: Record<ThemePreset, string> = {
   [ThemePreset.DARK]: '#26292e',
-  [ThemePreset.LIGHT]: '#e0e0e0',
+  [ThemePreset.LIGHT]: '#ecedee',
   [ThemePreset.SOLARIZED]: '#002b36',
   [ThemePreset.DRACULA]: '#282a36',
 };
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
-    <NeumorphicStylesProvider
-      defaultTheme={ThemePreset.DARK}
-      themes={ThemesPresets}
-      colorDifference={0}
-    >
+    <NeumorphicStylesProvider defaultTheme={ThemePreset.DARK} themes={ThemesPresets}>
       <NeonColorsProvider>
         <UIStateProvider>{children}</UIStateProvider>
       </NeonColorsProvider>

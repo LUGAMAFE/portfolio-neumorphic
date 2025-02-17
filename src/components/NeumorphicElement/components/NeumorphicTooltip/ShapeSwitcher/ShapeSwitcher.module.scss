@@ -16,7 +16,12 @@
     cursor: pointer;
     opacity: 0.9;
     outline: 0;
-    &_active {
+    &:focus-visible {
+      opacity: 1;
+    }
+    &_active,
+    &:active {
+      filter: invert(1) hue-rotate(180deg);
       opacity: 1;
     }
   }

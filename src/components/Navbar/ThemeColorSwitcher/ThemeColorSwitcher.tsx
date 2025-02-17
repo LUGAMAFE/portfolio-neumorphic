@@ -16,7 +16,7 @@ export const ThemeColorSwitcher = () => {
   };
 
   const colors =
-    currentTheme === ThemePreset.DARK ? ['#ffffff', '#ffffff'] : ['#a3a3a3', '#4d4d4d'];
+    currentTheme.name === ThemePreset.DARK ? ['#ffffff', '#ffffff'] : ['#a3a3a3', '#4d4d4d'];
 
   return (
     <div className={style.ThemeColorSwitcher}>
@@ -26,7 +26,7 @@ export const ThemeColorSwitcher = () => {
         color2={colors[1]}
         blur={4}
       >
-        {currentTheme === ThemePreset.DARK ? 'Encender Luces' : 'Apagar Luces'}
+        {currentTheme.name === ThemePreset.DARK ? 'Encender Luces' : 'Apagar Luces'}
       </NeonElement.span>
       <label className={style.ThemeColorSwitcher_toggle}>
         <input

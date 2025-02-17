@@ -196,16 +196,14 @@ export const ImageComparator = () => {
   const neumorphicOptions =
     currentTheme.name === ThemePreset.LIGHT
       ? {
-          formShape: FormShape.Pressed,
-          size: 125,
-          intensity: 0.09,
-          lightSource: 2,
-          distance: 13,
-          blur: 25,
+          formShape: FormShape.Convex,
+          intensity: 0.13,
+          lightSource: 1,
+          distance: 20,
+          blur: 48,
         }
       : {
           formShape: FormShape.Concave,
-          size: 168,
           intensity: 0.25,
           lightSource: 1,
           distance: 20,
@@ -226,8 +224,6 @@ export const ImageComparator = () => {
       <NeumorphicElement.div
         className={style.ImageComparator__imageComparer}
         {...neumorphicOptions}
-        intensity={0.44}
-        distance={16}
         color={currentTheme.color}
       >
         <NeonElement.div

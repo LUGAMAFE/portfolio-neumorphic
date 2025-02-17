@@ -1,6 +1,6 @@
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { useUIStateContext } from '@/providers/UIStateProvider';
-import { arrow, flip, offset, shift } from '@floating-ui/react';
+import { arrow, offset, shift } from '@floating-ui/react';
 import { PropsWithChildren, useRef } from 'react';
 import {
   HandleTriggerClickParams,
@@ -35,7 +35,6 @@ export const TooltipWrapper = ({ children, open, setOpen, allowClicks }: Tooltip
 
   const middleWares = [
     offset(ARROW_HEIGHT),
-    flip(),
     shift(),
     arrow({
       element: arrowRef,

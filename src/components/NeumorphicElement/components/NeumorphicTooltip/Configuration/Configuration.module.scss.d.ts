@@ -5,6 +5,8 @@ export type Styles = {
   Configuration__inputColor: string;
   Configuration__inputText: string;
   Configuration__label: string;
+  Configuration__path: string;
+  Configuration__pathRow: string;
   Configuration__row: string;
 };
 

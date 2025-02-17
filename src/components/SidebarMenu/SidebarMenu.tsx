@@ -26,7 +26,6 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
     id: 'externalButtonClose',
     className: style.SidebarMenu_button,
     formShape: FormShape.Flat,
-    size: 43,
     intensity: 0.45,
     lightSource: 1,
     distance: 4,
@@ -112,7 +111,6 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
       textClassName: style.SidebarMenu_esButtonText,
       handleButtonClick: handleButtonClick,
       formShape: FormShape.Pressed,
-      size: 128,
       intensity: 0.42,
       lightSource: 1,
       distance: 6,
@@ -127,7 +125,6 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
       textClassName: style.SidebarMenu_esButtonText,
       handleButtonClick: handleButtonClick,
       formShape: FormShape.Concave,
-      size: 77,
       intensity: 0.78,
       lightSource: 1,
       distance: 2,
@@ -142,7 +139,6 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
       textClassName: style.SidebarMenu_esButtonText,
       handleButtonClick: handleButtonClick,
       formShape: FormShape.Concave,
-      size: 77,
       intensity: 0.78,
       lightSource: 1,
       distance: 2,
@@ -177,7 +173,6 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
     <div>
       <NeumorphicElement.div
         formShape={FormShape.Level}
-        size={55}
         intensity={0.19}
         lightSource={1}
         distance={6}

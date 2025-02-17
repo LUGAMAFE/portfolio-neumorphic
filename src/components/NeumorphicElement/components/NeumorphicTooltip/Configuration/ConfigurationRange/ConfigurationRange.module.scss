@@ -117,6 +117,16 @@
       }
     }
 
+    &[name='concavity'] {
+      &:hover,
+      &:active,
+      &:focus {
+        &::after {
+          content: attr(value);
+        }
+      }
+    }
+
     &:focus {
       &::-ms-fill-lower,
       &::-ms-fill-upper,

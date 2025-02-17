@@ -16,7 +16,7 @@ import { ConfigurationRange } from './ConfigurationRange';
 const Configuration = () => {
   const { contextConfig, updateContextConfigProp } = useNeonContext();
   const {
-    styles: { mainColor: mainColorContext },
+    currentTheme: { color: mainColorContext },
   } = useNeumorphicStylesContext();
 
   const [colorInputText1, setColorInputText1] = useState<string>('');

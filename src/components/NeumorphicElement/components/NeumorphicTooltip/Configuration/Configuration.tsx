@@ -9,6 +9,7 @@ import { LightSourceSelector } from '../LightSourceSelector';
 import { ShapeSwitcher } from '../ShapeSwitcher';
 import style from './Configuration.module.scss';
 import { ConfigurationRange } from './ConfigurationRange';
+import { NeumorphicPath } from './NeumorphicPath/NeumorphicPath';
 
 const maxSize = 500;
 
@@ -27,6 +28,7 @@ const Configuration = () => {
   const [color, setColor] = useState<string>('#ffffff');
   const [colorInputText, setColorInputText] = useState<string>('#ffffff');
   const [defaultCssVariables, setDefaultCssVariables] = useState<Record<string, string>>({});
+  const [size, setSize] = useState<number>(10);
   const [angle, setAngle] = useState<number>(() =>
     getAngleFromDirection(contextConfig.lightSource ?? 1)
   );
@@ -60,9 +62,9 @@ const Configuration = () => {
   const handleSizeChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
+      setSize(Number(value));
       setContextConfig((prev) => ({
         ...prev,
-        size: Number(value),
         blur: Math.round(Number(value) * 0.2),
         distance: Math.round(Number(value) * 0.1),
       }));
@@ -129,7 +131,7 @@ const Configuration = () => {
       {
         label: 'Size',
         type: 'range',
-        value: contextConfig.size ?? 100,
+        value: size,
         onChange: handleSizeChange,
         min: 10,
         max: maxSize,
@@ -140,7 +142,7 @@ const Configuration = () => {
         type: 'range',
         value: contextConfig.distance ?? 45,
         onChange: handleDistanceChange,
-        min: 2,
+        min: 0,
         max: 50,
         disabled: contextConfig.formShape === FormShape.Flat,
       },
@@ -150,8 +152,19 @@ const Configuration = () => {
         value: contextConfig.intensity ?? 0.15,
         onChange: (e: ChangeEvent<HTMLInputElement>) =>
           updateContextConfigProp('intensity', Number(e.target.value)),
-        min: 0.01,
-        max: 0.9,
+        min: -1,
+        max: 1,
+        step: 0.01,
+        disabled: contextConfig.formShape === FormShape.Flat,
+      },
+      {
+        label: 'Concavity',
+        type: 'range',
+        value: contextConfig.concavity ?? 0.5,
+        onChange: (e: ChangeEvent<HTMLInputElement>) =>
+          updateContextConfigProp('concavity', Number(e.target.value)),
+        min: -1,
+        max: 1,
         step: 0.01,
         disabled: contextConfig.formShape === FormShape.Flat,
       },
@@ -242,6 +255,15 @@ const Configuration = () => {
           disabled={row.disabled}
         />
       ))}
+
+      <div className={`${style.Configuration__row} ${style.Configuration__pathRow}`}>
+        <NeumorphicPath
+          concavity={contextConfig.concavity}
+          intensity={contextConfig.intensity}
+          blur={contextConfig.blur}
+          className={style.Configuration__path}
+        />
+      </div>
 
       <div className={style.Configuration__row}></div>
       <button className={style.Configuration__copy} onClick={copyToClipboard}>

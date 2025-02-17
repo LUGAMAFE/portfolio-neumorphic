@@ -22,7 +22,6 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
     id: 'externalButton',
     className: style.Navbar__button,
     formShape: FormShape.Concave,
-    size: 43,
     intensity: 0.45,
     lightSource: 1,
     distance: 4,
@@ -49,7 +48,6 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
       ? {
           formShape: FormShape.Level,
           color: '#ebebeb',
-          size: 10,
           intensity: 0.01,
           lightSource: 3,
           distance: 2,
@@ -57,7 +55,6 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
         }
       : {
           formShape: FormShape.Pressed,
-          size: 196,
           intensity: 0.42,
           lightSource: 3,
           distance: 20,

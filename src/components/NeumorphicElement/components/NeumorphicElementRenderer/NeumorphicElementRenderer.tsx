@@ -16,11 +16,11 @@ import styles from './NeumorphicElementRenderer.module.scss';
 
 const defaultConfig: Omit<Required<NeumorphicOptions>, 'color'> = {
   formShape: FormShape.Convex,
-  size: 55,
   intensity: 0.15,
   lightSource: 1,
   distance: 5,
   blur: 15,
+  concavity: 0.5,
 };
 
 interface NeumorphicStyles {
@@ -34,12 +34,16 @@ interface NeumorphicStyles {
 /**
  * Genera los colores neumórficos a partir de un color base y una diferencia.
  */
-const generateNeumorphicColors = (color: string, difference: number): NeumorphicStyles => ({
+const generateNeumorphicColors = (
+  color: string,
+  difference: number,
+  concavity: number
+): NeumorphicStyles => ({
   darkColor: colorLuminance(color, -difference),
   mainColor: color,
   lightColor: colorLuminance(color, difference),
-  darkGradientColor: colorLuminance(color, 0.07),
-  lightGradientColor: colorLuminance(color, -0.1),
+  darkGradientColor: colorLuminance(color, 0.14 * concavity),
+  lightGradientColor: colorLuminance(color, -0.2 * concavity),
 });
 
 export type NeumorphicElementRendererProps<Tag extends keyof JSX.IntrinsicElements> = {
@@ -53,10 +57,10 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
   const {
     formShape,
     color,
-    size,
     intensity,
     lightSource,
     distance,
+    concavity,
     blur,
     style,
     className,
@@ -69,20 +73,20 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
 
   /**
    * 2. Construimos nuestro objeto "propsConfig" usando:
-   *    1) props directas (formShape, color, size, etc.)
+   *    1) props directas (formShape, color, intensity, etc.)
    *    2) si no hay prop usar defaultConfig
    */
   const finalConfig: NeumorphicOptions = useMemo(
     () => ({
       formShape: formShape ?? defaultConfig.formShape,
       color: color,
-      size: size ?? defaultConfig.size,
       intensity: intensity ?? defaultConfig.intensity,
       lightSource: lightSource ?? defaultConfig.lightSource,
       distance: distance ?? defaultConfig.distance,
+      concavity: concavity ?? defaultConfig.concavity,
       blur: blur ?? defaultConfig.blur,
     }),
-    [formShape, color, size, intensity, lightSource, distance, blur]
+    [formShape, color, intensity, lightSource, distance, concavity, blur]
   );
 
   useDeepCompareEffect(() => {
@@ -106,7 +110,11 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
       }
     }
 
-    const colors = generateNeumorphicColors(contextConfig.color, contextConfig.intensity!);
+    const colors = generateNeumorphicColors(
+      contextConfig.color,
+      contextConfig.intensity!,
+      contextConfig.concavity!
+    );
 
     let { darkColor, lightColor } = colors;
     const { mainColor, darkGradientColor, lightGradientColor } = colors;
@@ -121,27 +129,22 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
       lightColor = '#00000000';
     }
 
-    const firstGradientColor =
-      isGradient && shapeId !== 1
-        ? shapeId === 3
-          ? lightGradientColor
-          : darkGradientColor
-        : mainColor;
-    const secondGradientColor =
-      isGradient && shapeId !== 1
-        ? shapeId === 2
-          ? lightGradientColor
-          : darkGradientColor
-        : mainColor;
+    const firstGradientColor = (() => {
+      if (!isGradient || shapeId === 1) return mainColor;
+      if (shapeId === 3) return darkGradientColor;
+      return lightGradientColor;
+    })();
 
-    // Distancia, blur
-    const finalDistance = contextConfig.distance ?? defaultConfig.distance;
-    const finalBlur = contextConfig.blur ?? defaultConfig.blur;
+    const secondGradientColor = (() => {
+      if (!isGradient || shapeId === 1) return mainColor;
+      if (shapeId === 2) return darkGradientColor;
+      return lightGradientColor;
+    })();
 
     // Posición de luz
     const { positionX, positionY, angle } = angleGradient(
       contextConfig.lightSource ?? defaultConfig.lightSource,
-      finalDistance
+      contextConfig.distance!
     );
 
     // Variables CSS
@@ -151,7 +154,7 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
       '--positionY': `${positionY}px`,
       '--positionYOpposite': `${-positionY}px`,
       '--angle': `${angle}deg`,
-      '--blur': `${finalBlur}px`,
+      '--blur': `${contextConfig.blur}px`,
       '--textColor': getContrast(mainColor),
       '--textColorOpposite': mainColor,
       '--mainColor': mainColor,
