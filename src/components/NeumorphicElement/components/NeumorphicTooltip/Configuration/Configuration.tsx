@@ -5,6 +5,7 @@ import { FormShape } from '../../../types';
 import { deleteFalsyProperties, getContrast, isValidColor } from '../../../utils';
 
 import { AnglePicker, Format } from '@/components/AnglePicker';
+import { useClipboard } from 'react-haiku';
 import { LightSourceSelector } from '../LightSourceSelector';
 import { ShapeSwitcher } from '../ShapeSwitcher';
 import style from './Configuration.module.scss';
@@ -31,9 +32,11 @@ const Configuration = () => {
     getAngleFromDirection(contextConfig.lightSource ?? 1)
   );
 
+  const clipboard = useClipboard({ timeout: 2000 });
+
   const copyToClipboard = () => {
     const textConfig = `neumorphicOptions=${JSON.stringify(deleteFalsyProperties(contextConfig))}`;
-    navigator.clipboard.writeText(textConfig);
+    clipboard.copy(textConfig);
     alert(`Copied neumorphic element config: \n ${textConfig}`);
   };
 
@@ -140,7 +143,7 @@ const Configuration = () => {
         step: 0.01,
       },
       {
-        label: 'Blur',
+        label: 'Softness',
         type: 'range',
         value: contextConfig.softness ?? 90,
         onChange: (e: ChangeEvent<HTMLInputElement>) => {

@@ -195,14 +195,10 @@ export const ImageComparator = () => {
   const neumorphicOptions =
     currentTheme.name === ThemePreset.LIGHT
       ? {
-          depth: 0.13,
-          lightSource: 1,
-          softness: 48,
+          depth: 0.8,
         }
       : {
-          depth: 1,
           concavity: -1,
-          softness: 48,
         };
 
   const mixedColor = useMemo(() => {
@@ -221,6 +217,7 @@ export const ImageComparator = () => {
         {...neumorphicOptions}
         surfaceColor={currentTheme.color}
         intensity={currentTheme.intensity}
+        softness={48}
       >
         <NeonElement.div
           className={style.ImageComparator__circle2}
