@@ -2,7 +2,6 @@ export type Styles = {
   SidebarMenu: string;
   SidebarMenu_button: string;
   SidebarMenu_divider: string;
-  SidebarMenu_esButtonText: string;
   SidebarMenu_imageContainer: string;
   SidebarMenu_listElement: string;
   SidebarMenu_listElementText: string;

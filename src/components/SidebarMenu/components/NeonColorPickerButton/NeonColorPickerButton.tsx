@@ -1,5 +1,7 @@
+import { NeonElement } from '@/components/NeonElement';
 import { NeumorphicElement } from '@/components/NeumorphicElement';
 import { NeumorphicElementProps } from '@/components/NeumorphicElement/types';
+import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 
 export type NeonColorPickerButtonProps = NeumorphicElementProps<'button'> & {
   id: string;
@@ -19,6 +21,7 @@ export const NeonColorPickerButton = ({
   value,
   ...rest
 }: NeonColorPickerButtonProps) => {
+  const { neonColors } = useNeonColorsContext();
   return (
     <>
       <NeumorphicElement.button
@@ -27,9 +30,14 @@ export const NeonColorPickerButton = ({
         className={className}
         {...rest}
       ></NeumorphicElement.button>
-      <p className={textClassName} style={style}>
+      <NeonElement.p
+        className={textClassName}
+        style={style}
+        color1={neonColors.firstGradientColor}
+        color2={neonColors.secondGradientColor}
+      >
         {text}
-      </p>
+      </NeonElement.p>
     </>
   );
 };

@@ -1,8 +1,13 @@
 import Concave from '@/svg/concave.svg';
 import Convex from '@/svg/convex.svg';
 import Flat from '@/svg/flat.svg';
-import Level from '@/svg/level.svg';
-import Pressed from '@/svg/pressed.svg';
+import LevelConcave from '@/svg/levelConcave.svg';
+import LevelConvex from '@/svg/levelConvex.svg';
+import LevelFlat from '@/svg/levelFlat.svg';
+import PressedConcave from '@/svg/pressedConcave.svg';
+import PressedConvex from '@/svg/pressedConvex.svg';
+import PressedFlat from '@/svg/pressedFlat.svg';
+
 import { ReactNode } from 'react';
 import { FormShape } from '../../../types';
 import style from './ShapeSwitcher.module.scss';
@@ -34,14 +39,50 @@ const ShapeButton = ({ formShape, setFormShape, name, title, image }: ShapeButto
 export const ShapeSwitcher = ({ formShape, setFormShape }: ShapeSwitcherProps) => {
   const shapes = [
     {
-      name: 'concave',
+      name: FormShape.LevelConvex,
+      title: 'Level Convex',
+      image: <LevelConvex className={style.ShapeSwitcher__icon} />,
+    },
+    {
+      name: FormShape.LevelFlat,
+      title: 'Level Flat',
+      image: <LevelFlat className={style.ShapeSwitcher__icon} />,
+    },
+    {
+      name: FormShape.LevelConcave,
+      title: 'Level Concave',
+      image: <LevelConcave className={style.ShapeSwitcher__icon} />,
+    },
+    {
+      name: FormShape.Convex,
+      title: 'Convex',
+      image: <Convex className={style.ShapeSwitcher__icon} />,
+    },
+    {
+      name: FormShape.Flat,
+      title: 'Flat',
+      image: <Flat className={style.ShapeSwitcher__icon} />,
+    },
+    {
+      name: FormShape.Concave,
       title: 'Concave',
       image: <Concave className={style.ShapeSwitcher__icon} />,
     },
-    { name: 'convex', title: 'Convex', image: <Convex className={style.ShapeSwitcher__icon} /> },
-    { name: 'level', title: 'Level', image: <Level className={style.ShapeSwitcher__icon} /> },
-    { name: 'pressed', title: 'Pressed', image: <Pressed className={style.ShapeSwitcher__icon} /> },
-    { name: 'flat', title: 'Flat', image: <Flat className={style.ShapeSwitcher__icon} /> },
+    {
+      name: FormShape.PressedConvex,
+      title: 'Pressed Convex',
+      image: <PressedConvex className={style.ShapeSwitcher__icon} />,
+    },
+    {
+      name: FormShape.PressedFlat,
+      title: 'Pressed Flat',
+      image: <PressedFlat className={style.ShapeSwitcher__icon} />,
+    },
+    {
+      name: FormShape.PressedConcave,
+      title: 'Pressed Concave',
+      image: <PressedConcave className={style.ShapeSwitcher__icon} />,
+    },
   ];
 
   return (
@@ -49,19 +90,17 @@ export const ShapeSwitcher = ({ formShape, setFormShape }: ShapeSwitcherProps) =
       <div className={`${style.ShapeSwitcher__row} ${style.ShapeSwitcher__label}`}>
         <label className={style.ShapeSwitcher__label}>Form: </label>
       </div>
-      <div className={style.ShapeSwitcher__row}>
-        <div className={style.ShapeSwitcher}>
-          {shapes.map((btnShape) => (
-            <ShapeButton
-              key={btnShape.name}
-              formShape={formShape}
-              setFormShape={setFormShape}
-              name={btnShape.name as FormShape}
-              title={btnShape.title}
-              image={btnShape.image}
-            />
-          ))}
-        </div>
+      <div className={style.ShapeSwitcher}>
+        {shapes.map((btnShape) => (
+          <ShapeButton
+            key={btnShape.name}
+            formShape={formShape}
+            setFormShape={setFormShape}
+            name={btnShape.name as FormShape}
+            title={btnShape.title}
+            image={btnShape.image}
+          />
+        ))}
       </div>
     </>
   );

@@ -1,7 +1,9 @@
 @use '../../../styles/shared' as shared;
 
 .ShapeSwitcher {
-  display: flex;
+  @include shared.row;
+  flex-wrap: wrap;
+  width: 8rem;
   overflow: hidden;
   flex-grow: 1;
   border-radius: 3px;
@@ -9,7 +11,7 @@
     @include shared.row;
   }
   &__button {
-    flex-grow: 1;
+    padding: 0 2px;
     border: none;
     background: var(--textColorOpposite);
     color: var(--textColor);

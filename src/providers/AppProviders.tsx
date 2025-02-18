@@ -1,6 +1,6 @@
 import React from 'react';
 import { NeonColorsProvider } from './NeonColorsProvider';
-import { NeumorphicStylesProvider } from './NeumorphicStylesProvider';
+import { NeumorphicStylesProvider, NeumorphicThemeSettings } from './NeumorphicStylesProvider';
 import { UIStateProvider } from './UIStateProvider';
 
 export enum ThemePreset {
@@ -10,11 +10,11 @@ export enum ThemePreset {
   DRACULA = 'dracula',
 }
 
-export const ThemesPresets: Record<ThemePreset, string> = {
-  [ThemePreset.DARK]: '#26292e',
-  [ThemePreset.LIGHT]: '#ecedee',
-  [ThemePreset.SOLARIZED]: '#002b36',
-  [ThemePreset.DRACULA]: '#282a36',
+export const ThemesPresets: Record<ThemePreset, NeumorphicThemeSettings> = {
+  [ThemePreset.DARK]: { color: '#26292e', intensity: 0.28 },
+  [ThemePreset.LIGHT]: { color: '#ecedee', intensity: 0.15 },
+  [ThemePreset.SOLARIZED]: { color: '#002b36', intensity: 0.25 },
+  [ThemePreset.DRACULA]: { color: '#282a36', intensity: 0.22 },
 };
 
 export function AppProviders({ children }: { children: React.ReactNode }) {

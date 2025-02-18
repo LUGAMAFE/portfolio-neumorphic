@@ -24,6 +24,7 @@
     "react": "^19.0.0",
     "react-angle-picker": "^1.0.6",
     "react-dom": "^19.0.0",
+    "react-haiku": "^2.2.0",
     "react-syntax-highlighter": "^15.5.0",
     "use-deep-compare-effect": "^1.8.1"
   },

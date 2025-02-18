@@ -7,7 +7,6 @@ import { useMemo, useRef } from 'react';
 import { NeonElement } from '@/components/NeonElement';
 import { GradientType } from '@/components/NeonElement/types';
 import { NeumorphicElement } from '@/components/NeumorphicElement';
-import { FormShape } from '@/components/NeumorphicElement/types';
 import { ThemePreset } from '@/providers/AppProviders';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
@@ -196,18 +195,14 @@ export const ImageComparator = () => {
   const neumorphicOptions =
     currentTheme.name === ThemePreset.LIGHT
       ? {
-          formShape: FormShape.Convex,
-          intensity: 0.13,
+          depth: 0.13,
           lightSource: 1,
-          distance: 20,
-          blur: 48,
+          softness: 48,
         }
       : {
-          formShape: FormShape.Concave,
-          intensity: 0.25,
-          lightSource: 1,
-          distance: 20,
-          blur: 45,
+          depth: 1,
+          concavity: -1,
+          softness: 48,
         };
 
   const mixedColor = useMemo(() => {
@@ -224,7 +219,8 @@ export const ImageComparator = () => {
       <NeumorphicElement.div
         className={style.ImageComparator__imageComparer}
         {...neumorphicOptions}
-        color={currentTheme.color}
+        surfaceColor={currentTheme.color}
+        intensity={currentTheme.intensity}
       >
         <NeonElement.div
           className={style.ImageComparator__circle2}

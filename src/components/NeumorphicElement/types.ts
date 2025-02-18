@@ -2,24 +2,28 @@ import { MakeRequired } from '@/utils/type-utils';
 import { ComponentPropsWithoutRef, JSX } from 'react';
 
 export enum FormShape {
-  Concave = 'concave',
+  LevelConvex = 'levelConvex',
+  LevelFlat = 'levelFlat',
+  LevelConcave = 'levelConcave',
   Convex = 'convex',
-  Level = 'level',
-  Pressed = 'pressed',
   Flat = 'flat',
+  Concave = 'concave',
+  PressedConvex = 'pressedConvex',
+  PressedFlat = 'pressedFlat',
+  PressedConcave = 'pressedConcave',
 }
 
 export interface NeumorphicOptions {
   formShape?: FormShape;
-  color?: string;
-  intensity?: number;
+  surfaceColor?: string;
   lightSource?: number;
-  distance?: number;
-  blur?: number;
+  softness?: number;
   concavity?: number;
+  depth?: number;
+  intensity?: number;
 }
 
-export type NeumorphicProps = MakeRequired<NeumorphicOptions, 'color'> & {
+export type NeumorphicProps = Omit<MakeRequired<NeumorphicOptions, 'surfaceColor'>, 'formShape'> & {
   allowClicks?: boolean;
 };
 

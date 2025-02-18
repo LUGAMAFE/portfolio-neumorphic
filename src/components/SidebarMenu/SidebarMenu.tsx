@@ -5,7 +5,7 @@ import useDeviceType from '../../hooks/useDeviceType';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { NeumorphicElement } from '../NeumorphicElement';
-import { FormShape, NeumorphicElementProps } from '../NeumorphicElement/types';
+import { NeumorphicElementProps } from '../NeumorphicElement/types';
 import {
   NeonColorPickerButton,
   NeonColorPickerButtonProps,
@@ -18,19 +18,17 @@ interface SidebarMenuProps {
 }
 
 export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
-  const { handleChangeColorNeon, neonColors } = useNeonColorsContext();
+  const { handleChangeColorNeon } = useNeonColorsContext();
   const { currentTheme } = useNeumorphicStylesContext();
   const { isMobile } = useDeviceType();
 
-  const initialButtonCloseConfig: NeumorphicElementProps<'button'> = {
+  const initialButtonCloseConfig: Omit<NeumorphicElementProps<'button'>, 'surfaceColor'> = {
     id: 'externalButtonClose',
     className: style.SidebarMenu_button,
-    formShape: FormShape.Flat,
-    intensity: 0.45,
+    concavity: 0,
+    depth: 0.45,
     lightSource: 1,
-    distance: 4,
-    blur: 9,
-    color: currentTheme.color,
+    softness: 9,
     onClick: () => handleButtonClickX('externalButtonClose'),
   };
   const [buttonCloseConfig, setButtonCloseConfig] = useState(initialButtonCloseConfig);
@@ -40,10 +38,7 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
       prevButtonCloseConfig.id === id
         ? {
             ...prevButtonCloseConfig,
-            formShape:
-              prevButtonCloseConfig.formShape === FormShape.Concave
-                ? FormShape.Pressed
-                : FormShape.Concave,
+            concavity: -(prevButtonCloseConfig.concavity ?? 0),
           }
         : prevButtonCloseConfig
     );
@@ -73,111 +68,84 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
         button.value === value
           ? {
               ...button,
-              formShape: FormShape.Pressed,
+              concavity: -1,
+              depth: -1,
+              lightSource: 1,
               style: {
-                ...button.style,
-                WebkitTextFillColor: 'transparent',
-                backgroundImage:
-                  value === 1
-                    ? 'linear-gradient(90deg, #ff6161 0%, #f6d 100%)'
-                    : value === 2
-                      ? 'linear-gradient(90deg, #009EFD 0%, #2AF598 100%)'
-                      : 'linear-gradient(90deg, #FF1741 0%, #FF6174 100%)',
-                textShadow: `0px 0px 18px ${
-                  value === 1 ? '#ffb9bf' : value === 1 ? '#509eff' : '#FF355F'
-                }`,
+                color: 'transparent',
               },
             }
           : {
               ...button,
-              formShape: FormShape.Concave,
+              concavity: -0.5,
+              depth: 0.8,
+              lightSource: 1,
               style: {
-                ...button.style,
-
-                textShadow: `0px 0px 18px transparent`,
-                WebkitTextFillColor: 'unset',
+                color: 'white',
               },
             }
       )
     );
   };
 
-  const initialButtonConfigs: NeonColorPickerButtonProps[] = [
+  const initialButtonConfigs: Omit<NeonColorPickerButtonProps, 'surfaceColor'>[] = [
     {
       id: 'Opcion1',
       text: 'Pink',
       value: 1,
       className: style.SidebarMenu_radio,
-      textClassName: style.SidebarMenu_esButtonText,
+      textClassName: style.SidebarMenu_listElementText,
       handleButtonClick: handleButtonClick,
-      formShape: FormShape.Pressed,
-      intensity: 0.42,
+      concavity: -1,
+      depth: -1,
       lightSource: 1,
-      distance: 6,
-      blur: 6,
-      color: currentTheme.color,
+      softness: 6,
+      style: {
+        color: 'transparent',
+      },
     },
     {
       id: 'Opcion2',
       text: 'Blue',
       value: 2,
       className: style.SidebarMenu_radio,
-      textClassName: style.SidebarMenu_esButtonText,
+      textClassName: style.SidebarMenu_listElementText,
       handleButtonClick: handleButtonClick,
-      formShape: FormShape.Concave,
-      intensity: 0.78,
+      concavity: -0.5,
+      depth: 0.8,
       lightSource: 1,
-      distance: 2,
-      blur: 5,
-      color: currentTheme.color,
+      softness: 5,
+      style: {
+        color: 'white',
+      },
     },
     {
       id: 'Opcion3',
       text: 'Red',
       value: 3,
       className: style.SidebarMenu_radio,
-      textClassName: style.SidebarMenu_esButtonText,
+      textClassName: style.SidebarMenu_listElementText,
       handleButtonClick: handleButtonClick,
-      formShape: FormShape.Concave,
-      intensity: 0.78,
+      concavity: -0.5,
+      depth: 0.8,
       lightSource: 1,
-      distance: 2,
-      blur: 5,
-      color: currentTheme.color,
+      softness: 5,
+      style: {
+        color: 'white',
+      },
     },
   ];
 
   const [buttonConfigs, setButtonConfigs] = useState(initialButtonConfigs);
 
-  useEffect(() => {
-    setButtonConfigs((currentConfigs) =>
-      currentConfigs.map((config) => {
-        if (config.id === 'Opcion1') {
-          return {
-            ...config,
-            style: {
-              ...config.style,
-              backgroundImage: 'linear-gradient(90deg, #ff6161 0%, #f6d 100%)',
-              WebkitTextFillColor: 'transparent',
-              textShadow: `0px 0px 18px ${neonColors.gradientColorBoxShadow}`,
-            },
-          };
-        } else {
-          return config;
-        }
-      })
-    );
-  }, []);
-
   return (
     <div>
       <NeumorphicElement.div
-        formShape={FormShape.Level}
-        intensity={0.19}
+        depth={0.19}
         lightSource={1}
-        distance={6}
-        blur={11}
-        color={currentTheme.color}
+        softness={11}
+        surfaceColor={currentTheme.color}
+        intensity={currentTheme.intensity}
         className={style.SidebarMenu}
         style={{
           zIndex: 999,
@@ -185,7 +153,7 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
           transition: 'width 0.5s ease',
         }}
       >
-        <NeumorphicElement.button {...buttonCloseConfig}>
+        <NeumorphicElement.button {...buttonCloseConfig} surfaceColor={currentTheme.color}>
           <img
             className={style.SidebarMenu_menuSVG}
             src="/images/cross.svg"
@@ -209,7 +177,7 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
                 <circle cx="15.5" cy="13.5" r="1.5"></circle>
               </svg>
             </div>
-            <div className={style.SidebarMenu_listElementText}>Introduccion</div>
+            <div className={style.SidebarMenu_listElementText}>Introducción</div>
           </li>
           <li className={style.SidebarMenu_listElement}>
             <div className={style.SidebarMenu_imageContainer}>
@@ -224,7 +192,7 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
                 <path d="M20.5 5A1.5 1.5 0 0 0 19 6.5V11h-1V4.5a1.5 1.5 0 0 0-3 0V11h-1V3.5a1.5 1.5 0 0 0-3 0V11h-1V5.5a1.5 1.5 0 0 0-3 0v10.81l-2.22-3.6a1.5 1.5 0 0 0-2.56 1.58l3.31 5.34A5 5 0 0 0 9.78 22H17a5 5 0 0 0 5-5V6.5A1.5 1.5 0 0 0 20.5 5z"></path>
               </svg>
             </div>
-            <div className={style.SidebarMenu_listElementText}>Presentacion</div>
+            <div className={style.SidebarMenu_listElementText}>Presentación</div>
           </li>
           <li className={style.SidebarMenu_listElement}>
             <div className={style.SidebarMenu_imageContainer}>
@@ -287,7 +255,7 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
                 <path d="m7.375 16.781 1.25-1.562L4.601 12l4.024-3.219-1.25-1.562-5 4a1 1 0 0 0 0 1.562l5 4zm9.25-9.562-1.25 1.562L19.399 12l-4.024 3.219 1.25 1.562 5-4a1 1 0 0 0 0-1.562l-5-4zm-1.649-4.003-4 18-1.953-.434 4-18z"></path>
               </svg>
             </div>
-            <div className={style.SidebarMenu_listElementText}>Codigo</div>
+            <div className={style.SidebarMenu_listElementText}>Código</div>
           </li>
           <li className={style.SidebarMenu_listElement}>
             <div className={style.SidebarMenu_imageContainer}>
@@ -308,12 +276,12 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
         <div className={style.SidebarMenu_divider}></div>
         <div className={style.SidebarMenu_neuContainer}>
           {buttonConfigs.map((button, index) => (
-            <div
-              key={index}
-              className=""
-              style={{ display: 'flex', gap: '5px', alignItems: 'center' }}
-            >
-              <NeonColorPickerButton {...button}></NeonColorPickerButton>
+            <div key={index} style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+              <NeonColorPickerButton
+                {...button}
+                surfaceColor={currentTheme.color}
+                intensity={currentTheme.intensity}
+              ></NeonColorPickerButton>
             </div>
           ))}
         </div>

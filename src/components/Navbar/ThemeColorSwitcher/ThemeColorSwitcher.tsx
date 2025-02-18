@@ -1,10 +1,12 @@
 import { NeonElement } from '@/components/NeonElement';
 import { ThemePreset } from '@/providers/AppProviders';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useEffect } from 'react';
+import { usePrefersTheme } from 'react-haiku';
 import { useNeumorphicStylesContext } from '../../../providers/NeumorphicStylesProvider';
 import style from './themeColorSwitcher.module.scss';
 
 export const ThemeColorSwitcher = () => {
+  const theme = usePrefersTheme(ThemePreset.DARK);
   const { handleChangeTheme, currentTheme } = useNeumorphicStylesContext();
 
   const handleThemeColorSwitcher = (event: ChangeEvent<HTMLInputElement>) => {
@@ -14,6 +16,10 @@ export const ThemeColorSwitcher = () => {
       handleChangeTheme(ThemePreset.DARK);
     }
   };
+
+  useEffect(() => {
+    handleChangeTheme(theme as ThemePreset);
+  }, [theme]);
 
   const colors =
     currentTheme.name === ThemePreset.DARK ? ['#ffffff', '#ffffff'] : ['#a3a3a3', '#4d4d4d'];
@@ -33,6 +39,7 @@ export const ThemeColorSwitcher = () => {
           onChange={handleThemeColorSwitcher}
           className={style.ThemeColorSwitcher_toggleCheckbox}
           type="checkbox"
+          checked={currentTheme.name === ThemePreset.LIGHT}
         ></input>
         <div className={style.ThemeColorSwitcher_toggleSwitch}></div>
       </label>

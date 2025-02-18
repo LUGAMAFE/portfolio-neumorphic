@@ -10,7 +10,6 @@ import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { NeonElement } from '../NeonElement';
 import { NeumorphicElement } from '../NeumorphicElement';
-import { FormShape } from '../NeumorphicElement/types';
 import { ImageComparator } from './ImageComparator';
 import style from './IntroSection.module.scss';
 gsap.registerPlugin(SplitText, TextPlugin);
@@ -36,18 +35,14 @@ export const IntroSection = () => {
   const neumorphicOptions =
     currentTheme.name === ThemePreset.LIGHT
       ? {
-          form: FormShape.Flat,
-          intensity: 0.47,
+          depth: 0.47,
           lightSource: 3,
-          distance: 4,
-          blur: 39,
+          softness: 39,
         }
       : {
-          form: FormShape.Flat,
-          intensity: 0.65,
+          depth: 0.65,
           lightSource: 3,
-          distance: 45,
-          blur: 90,
+          softness: 90,
         };
 
   return (
@@ -55,7 +50,8 @@ export const IntroSection = () => {
       id="seccion0"
       className={`${style.Intro} section`}
       {...neumorphicOptions}
-      color={currentTheme.color}
+      surfaceColor={currentTheme.color}
+      intensity={currentTheme.intensity}
     >
       <ImageComparator />
       <div className={style.Intro__myIntroduction}>

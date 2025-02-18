@@ -85,7 +85,6 @@
     }
   }
 
-  &_esButtonText,
   &_listElementText {
     font-size: 22px;
     letter-spacing: 0.1px;
@@ -101,11 +100,6 @@
       letter-spacing: 0.1px;
       line-height: 30px;
     }
-  }
-
-  &_esButtonText {
-    -webkit-background-clip: text;
-    background-clip: text;
   }
 
   &_sectionsContainer {

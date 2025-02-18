@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { NeumorphicElement } from '@/components/NeumorphicElement';
-import { FormShape } from '@/components/NeumorphicElement/types';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { LanguageButton } from '../LanguageButton';
@@ -25,12 +24,12 @@ export const LanguageSwitcher = () => {
   return (
     <NeumorphicElement.div
       className={style.LanguageSwitcher}
-      formShape={FormShape.Level}
-      intensity={0.13}
+      concavity={0}
+      depth={0.8}
       lightSource={1}
-      distance={6}
-      blur={11}
-      color={currentTheme.color}
+      softness={5}
+      surfaceColor={currentTheme.color}
+      intensity={currentTheme.intensity}
     >
       <div className={style.LanguageSwitcher_buttons}>
         {buttonList.map(({ id, text }) => {
@@ -48,10 +47,11 @@ export const LanguageSwitcher = () => {
                   ? [neonColors.firstGradientColor, neonColors.secondGradientColor]
                   : ['#ffffff', '#ffffff']
               }
-              formShape={isActive ? FormShape.Pressed : FormShape.Flat}
-              intensity={isActive ? 0.15 : 0.13}
+              concavity={isActive ? -0.9 : 0}
+              depth={isActive ? -0.4 : 0}
               lightSource={1}
-              color={currentTheme.color}
+              surfaceColor={currentTheme.color}
+              intensity={currentTheme.intensity}
             />
           );
         })}

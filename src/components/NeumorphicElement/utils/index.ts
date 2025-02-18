@@ -2,7 +2,7 @@ import { FormShape } from '../types';
 export * from './tags';
 
 export function angleGradient(
-  shapeId: number,
+  lightSource: number,
   distance: number
 ): { positionX: number; positionY: number; angle: number } {
   const positions: { [key: number]: { positionX: number; positionY: number; angle: number } } = {
@@ -11,7 +11,48 @@ export function angleGradient(
     3: { positionX: distance * -1, positionY: distance * -1, angle: 315 },
     4: { positionX: distance, positionY: distance * -1, angle: 45 },
   };
-  return positions[shapeId];
+  return positions[lightSource];
+}
+
+export function getFormShape(depth: number, concavity: number): FormShape {
+  // Determinar el estado base (Level, Flat o Pressed) basado en la intensidad
+  let baseShape: 'LevelFlat' | 'PressedFlat' | 'Flat';
+  if (depth > 0.05) {
+    baseShape = 'LevelFlat';
+  } else if (depth < -0.05) {
+    baseShape = 'PressedFlat';
+  } else {
+    baseShape = 'Flat';
+  }
+
+  // Determinar la concavidad (Convex, Flat o Concave)
+  if (concavity > 0.05) {
+    // Para estados especiales Level y Pressed
+    if (baseShape === 'LevelFlat') {
+      return FormShape.LevelConvex;
+    } else if (baseShape === 'PressedFlat') {
+      return FormShape.PressedConvex;
+    }
+    return FormShape.Convex;
+  } else if (concavity < -0.05) {
+    // Para estados especiales Level y Pressed
+    if (baseShape === 'LevelFlat') {
+      return FormShape.LevelConcave;
+    } else if (baseShape === 'PressedFlat') {
+      return FormShape.PressedConcave;
+    }
+    return FormShape.Concave;
+  }
+
+  // Si no hay concavidad significativa, retornar el estado base
+  switch (baseShape) {
+    case 'LevelFlat':
+      return FormShape.LevelFlat;
+    case 'PressedFlat':
+      return FormShape.PressedFlat;
+    default:
+      return FormShape.Flat;
+  }
 }
 
 export function getIntFormValue(form: FormShape): number {
@@ -54,18 +95,6 @@ export function getContrast(hex: string): string {
     yiq = (r * 299 + g * 587 + b * 114) / 1000;
   return yiq >= 128 ? '#2e3133' : '#F6F5F7';
 }
-
-export const handleDistance = (value: number): { blur: number; distance: number } => {
-  const distance = value;
-  const blur = value * 2;
-  return { blur, distance };
-};
-
-export const handleSize = (value: number): { blur: number; distance: number } => {
-  const distance = Math.round(value * 0.1);
-  const blur = Math.round(value * 0.2);
-  return { blur, distance };
-};
 
 export const getIfGradient = (shapeId: number): boolean => {
   if (shapeId === 2 || shapeId === 3) {

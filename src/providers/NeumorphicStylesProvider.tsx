@@ -7,11 +7,17 @@ import { createContext, PropsWithChildren, useContext, useState } from 'react';
  * - La clave es el nombre del tema (string).
  * - El valor es el color principal.
  */
-export type NeumorphicThemeMap = Record<string, string>;
+export type NeumorphicThemeSettings = {
+  color: string;
+  intensity: number;
+};
+
+export type NeumorphicThemeMap = Record<string, NeumorphicThemeSettings>;
 
 export type NeumorphicTheme = {
   color: string;
   name: string;
+  intensity: number;
 };
 
 /**
@@ -63,9 +69,10 @@ export function NeumorphicStylesProvider({
     throw new Error(`El tema por defecto "${defaultTheme}" no está definido en "themes".`);
   }
   // Almacenamos el nombre del tema actual (ej: "dark", "light", etc.).
-  const [currentTheme, setCurrentTheme] = useState({
-    color: themes[defaultTheme],
+  const [currentTheme, setCurrentTheme] = useState<NeumorphicTheme>({
+    color: themes[defaultTheme].color,
     name: defaultTheme,
+    intensity: themes[defaultTheme].intensity,
   });
 
   /**
@@ -77,8 +84,9 @@ export function NeumorphicStylesProvider({
       return;
     }
     setCurrentTheme({
-      color: themes[themeName],
+      color: themes[themeName].color,
       name: themeName,
+      intensity: themes[themeName].intensity,
     });
   };
 
