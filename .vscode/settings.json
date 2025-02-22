@@ -28,5 +28,8 @@
   },
   "inlineFold.autoFold": false,
   "cSpell.words": ["GSAP", "Neumorphic", "usar"],
-  "cssModules.camelCase": true
+  "cssModules.camelCase": true,
+  "[xml]": {
+    "editor.defaultFormatter": "PrateekMahendrakar.prettyxml"
+  }
 }

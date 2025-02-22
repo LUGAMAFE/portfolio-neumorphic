@@ -52,6 +52,7 @@ export const LanguageSwitcher = () => {
               lightSource={1}
               surfaceColor={currentTheme.color}
               intensity={currentTheme.intensity}
+              softness={8}
             />
           );
         })}

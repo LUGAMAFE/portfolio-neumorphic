@@ -1,5 +1,5 @@
 import { MakeRequired } from '@/utils/type-utils';
-import { ComponentPropsWithoutRef, JSX } from 'react';
+import { ComponentProps, JSX } from 'react';
 
 export enum FormShape {
   LevelConvex = 'levelConvex',
@@ -27,9 +27,5 @@ export type NeumorphicProps = Omit<MakeRequired<NeumorphicOptions, 'surfaceColor
   allowClicks?: boolean;
 };
 
-export type NeumorphicConfigs = {
-  tag: keyof JSX.IntrinsicElements;
-} & NeumorphicProps;
-
-export type NeumorphicElementProps<Tag extends keyof JSX.IntrinsicElements> =
-  ComponentPropsWithoutRef<Tag> & NeumorphicProps;
+export type NeumorphicElementProps<Tag extends keyof JSX.IntrinsicElements> = ComponentProps<Tag> &
+  NeumorphicProps;

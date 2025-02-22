@@ -14,7 +14,7 @@ import style from './ShapeSwitcher.module.scss';
 
 export interface ShapeSwitcherProps {
   formShape?: FormShape;
-  setFormShape: (name: FormShape) => void;
+  setFormShape?: (name: FormShape) => void;
 }
 
 export interface ShapeButtonProps {
@@ -22,13 +22,13 @@ export interface ShapeButtonProps {
   name: FormShape;
   title: string;
   image: ReactNode;
-  setFormShape: (name: FormShape) => void;
+  setFormShape?: (name: FormShape) => void;
 }
 
 const ShapeButton = ({ formShape, setFormShape, name, title, image }: ShapeButtonProps) => (
   <button
     className={`${style.ShapeSwitcher__button} ${formShape === name && style.ShapeSwitcher__button_active}`}
-    onClick={() => setFormShape(name)}
+    onClick={() => setFormShape?.(name)}
     name={name}
     title={title}
   >

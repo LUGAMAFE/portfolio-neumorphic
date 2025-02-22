@@ -133,16 +133,6 @@ const Configuration = () => {
         step: 0.01,
       },
       {
-        label: 'Intensity',
-        type: 'range',
-        value: contextConfig.intensity ?? 1,
-        onChange: (e: ChangeEvent<HTMLInputElement>) =>
-          updateContextConfigProp('intensity', Number(e.target.value)),
-        min: 0.1,
-        max: 0.5,
-        step: 0.01,
-      },
-      {
         label: 'Softness',
         type: 'range',
         value: contextConfig.softness ?? 90,
@@ -190,6 +180,19 @@ const Configuration = () => {
           className={style.Configuration__inputText}
         />
       </div>
+
+      <ConfigurationRange
+        label="Intensity"
+        type="range"
+        value={contextConfig.intensity ?? 1}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          updateContextConfigProp('intensity', Number(e.target.value))
+        }
+        min={0.1}
+        max={0.5}
+        step={0.01}
+      />
+
       <div className={`${style.Configuration__row} ${style.Configuration__label}`}>
         <label className={style.Configuration__label}>Pick an angle:</label>
 
@@ -204,7 +207,6 @@ const Configuration = () => {
           pointerColor="#000"
           pointerWidth={5}
           angle={0}
-          disabled={contextConfig.formShape === FormShape.Flat}
           format={Format.SVG}
         />
 
@@ -214,7 +216,6 @@ const Configuration = () => {
         <LightSourceSelector
           lightSource={contextConfig.lightSource ?? 1}
           onDirectionChanged={handleDirection}
-          disabled={contextConfig.formShape === FormShape.Flat}
         />
       </div>
 
@@ -244,7 +245,7 @@ const Configuration = () => {
       <button className={style.Configuration__copy} onClick={copyToClipboard}>
         Copy Config
       </button>
-      <ShapeSwitcher formShape={contextConfig.formShape} setFormShape={handleShape} />
+      <ShapeSwitcher formShape={contextConfig.formShape} />
     </div>
   );
 };
