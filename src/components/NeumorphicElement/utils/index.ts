@@ -9,11 +9,12 @@ export function angleGradient(
   distance: number,
   isSvg: boolean = false
 ): { positionX: number; positionY: number; angle: number } {
+  const distanceValue = isSvg ? distance / 2 : distance;
   const positions: { [key: number]: { positionX: number; positionY: number; angle: number } } = {
-    1: { positionX: distance, positionY: distance, angle: isSvg ? 45 : 145 },
-    2: { positionX: -distance, positionY: distance, angle: isSvg ? 145 : 225 },
-    3: { positionX: -distance, positionY: -distance, angle: isSvg ? 225 : 315 },
-    4: { positionX: distance, positionY: -distance, angle: isSvg ? 315 : 45 },
+    1: { positionX: distanceValue, positionY: distanceValue, angle: isSvg ? 45 : 145 },
+    2: { positionX: -distanceValue, positionY: distanceValue, angle: isSvg ? 145 : 225 },
+    3: { positionX: -distanceValue, positionY: -distanceValue, angle: isSvg ? 225 : 315 },
+    4: { positionX: distanceValue, positionY: -distanceValue, angle: isSvg ? 315 : 45 },
   };
   return positions[lightSource];
 }

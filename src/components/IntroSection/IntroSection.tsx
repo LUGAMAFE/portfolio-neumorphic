@@ -5,6 +5,7 @@ import TextPlugin from 'gsap-trial/TextPlugin';
 import { useRef } from 'react';
 import useIsMobile from '../../hooks/useIsMobile';
 
+import { ThemePreset } from '@/providers/AppProviders';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { NeonElement } from '../NeonElement';
@@ -31,15 +32,37 @@ export const IntroSection = () => {
     });
   }, []);
 
+  const neumorphicOptions =
+    currentTheme.name === ThemePreset.LIGHT
+      ? {
+          depth: 0.47,
+          lightSource: 3,
+          softness: 39,
+        }
+      : {
+          depth: 0.65,
+          lightSource: 3,
+          softness: 90,
+        };
+
+  const svgNeumorphicOptions =
+    currentTheme.name === ThemePreset.LIGHT
+      ? {
+          intensity: currentTheme.intensity - 0.1,
+          concavity: -0.45,
+        }
+      : {
+          intensity: currentTheme.intensity,
+          concavity: 1,
+        };
+
   return (
     <NeumorphicElement.div
       id="seccion0"
       className={`${style.Intro} section`}
+      {...neumorphicOptions}
       surfaceColor={currentTheme.color}
       intensity={currentTheme.intensity}
-      depth={0}
-      concavity={0}
-      softness={0}
     >
       <ImageComparator />
       <div className={style.Intro__myIntroduction}>
@@ -85,106 +108,16 @@ export const IntroSection = () => {
             xmlns="http://www.w3.org/2000/svg"
           >
             <g>
-              {/* <NeumorphicElement.path
+              <NeumorphicElement.path
+                surfaceColor={currentTheme.color}
+                depth={1}
+                softness={15}
+                {...svgNeumorphicOptions}
                 d="M543.261 131.124C607.286 174.068 649 423 613.383 444C577.766 465 423.5 472 406.574 444C372 403.5 304.964 366.041 263.5 373.214C211.671 382.18 124.562 414.27 90.0091 373.214C80.6216 362.059 47.0441 299.596 32.0823 241.079C-40.0722 -41.1225 231.778 40.0457 297.326 56.0906C407.082 82.9564 491.272 96.2526 543.261 131.124Z"
-                surfaceColor={currentTheme.color}
-                intensity={currentTheme.intensity}
-                depth={0}
-                concavity={0}
-                softness={0}
-              /> */}
-              <NeumorphicElement.circle
-                cx="317.5"
-                cy="220.5"
-                r="210"
-                surfaceColor={currentTheme.color}
-                intensity={currentTheme.intensity}
-                depth={0}
-                concavity={0}
               />
-              <path d="M543.261 131.124C607.286 174.068 649 423 613.383 444C577.766 465 423.5 472 406.574 444C372 403.5 304.964 366.041 263.5 373.214C211.671 382.18 124.562 414.27 90.0091 373.214C80.6216 362.059 47.0441 299.596 32.0823 241.079C-40.0722 -41.1225 231.778 40.0457 297.326 56.0906C407.082 82.9564 491.272 96.2526 543.261 131.124Z" />
             </g>
           </svg>
-          <svg
-            className={style.Intro__neomorphicSVG}
-            width="635"
-            height="441"
-            viewBox="0 0 635 441"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g filter="url(#filter0_dd_78_19)">
-              <path
-                d="M543.261 131.124C607.286 174.068 649 423 613.383 444C577.766 465 423.5 472 406.574 444C372 403.5 304.964 366.041 263.5 373.214C211.671 382.18 124.562 414.27 90.0091 373.214C80.6216 362.059 47.0441 299.596 32.0823 241.079C-40.0722 -41.1225 231.778 40.0457 297.326 56.0906C407.082 82.9564 491.272 96.2526 543.261 131.124Z"
-                fill="url(#paint0_linear_78_19)"
-              />
-              <path
-                d="M543.261 131.124C607.286 174.068 649 423 613.383 444C577.766 465 423.5 472 406.574 444C372 403.5 304.964 366.041 263.5 373.214C211.671 382.18 124.562 414.27 90.0091 373.214C80.6216 362.059 47.0441 299.596 32.0823 241.079C-40.0722 -41.1225 231.778 40.0457 297.326 56.0906C407.082 82.9564 491.272 96.2526 543.261 131.124Z"
-                stroke="#26292E"
-              />
-            </g>
-            <defs>
-              <filter
-                id="filter0_dd_78_19"
-                x="-5.49983"
-                y="0.499878"
-                width="667.457"
-                height="504.468"
-                filterUnits="userSpaceOnUse"
-                colorInterpolationFilters="sRGB"
-              >
-                <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                <feColorMatrix
-                  in="SourceAlpha"
-                  type="matrix"
-                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                  result="hardAlpha"
-                />
-                <feOffset dx="5" dy="-2" />
-                <feGaussianBlur stdDeviation="15" />
-                <feColorMatrix
-                  type="matrix"
-                  values="0 0 0 0 0.0578125 0 0 0 0 0.0646875 0 0 0 0 0.075 0 0 0 1 0"
-                />
-                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_78_19" />
-                <feColorMatrix
-                  in="SourceAlpha"
-                  type="matrix"
-                  values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                  result="hardAlpha"
-                />
-                <feOffset dx="12" dy="22" />
-                <feGaussianBlur stdDeviation="10" />
-                <feColorMatrix
-                  type="matrix"
-                  values="0 0 0 0 0.100781 0 0 0 0 0.104129 0 0 0 0 0.1125 0 0 0 1 0"
-                />
-                <feBlend
-                  mode="normal"
-                  in2="effect1_dropShadow_78_19"
-                  result="effect2_dropShadow_78_19"
-                />
-                <feBlend
-                  mode="normal"
-                  in="SourceGraphic"
-                  in2="effect2_dropShadow_78_19"
-                  result="shape"
-                />
-              </filter>
-              <linearGradient
-                id="paint0_linear_78_19"
-                x1="168.033"
-                y1="-11.8316"
-                x2="562.579"
-                y2="510.7"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#353A40" />
-                <stop offset="1" stopColor="#16171B" />
-              </linearGradient>
-            </defs>
-          </svg>
-          {/* <div className={style.Intro__design}>
+          <div className={style.Intro__design}>
             <svg
               className={style.Intro__svg}
               width="370"
@@ -511,16 +444,8 @@ export const IntroSection = () => {
                 </clipPath>
               </defs>
             </svg>
-          </div> */}
+          </div>
         </div>
-        <NeumorphicElement.div
-          style={{ width: '500px', height: '500px', margin: 'auto' }}
-          surfaceColor={currentTheme.color}
-          depth={0.1}
-          concavity={0.5}
-          softness={15}
-          intensity={currentTheme.intensity}
-        ></NeumorphicElement.div>
       </div>
     </NeumorphicElement.div>
   );

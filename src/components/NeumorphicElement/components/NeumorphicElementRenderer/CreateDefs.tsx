@@ -1,6 +1,6 @@
 import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
-import { NeumorphicOptions } from '../../types';
-import { angleGradient, generateNeumorphicColors, NeumorphicStyles } from '../../utils';
+import { FormShape } from '../../types';
+import { angleGradient, generateNeumorphicColors } from '../../utils';
 
 type CreateDefsProps = {
   svgAttrsNames: {
@@ -10,9 +10,9 @@ type CreateDefsProps = {
 };
 
 const hexToRgb = (hex: string) => {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const r = Number((parseInt(hex.slice(1, 3), 16) / 255).toFixed(6));
+  const g = Number((parseInt(hex.slice(3, 5), 16) / 255).toFixed(6));
+  const b = Number((parseInt(hex.slice(5, 7), 16) / 255).toFixed(6));
   return { r, g, b };
 };
 
@@ -28,13 +28,40 @@ const CreateDefs = ({ svgAttrsNames }: CreateDefsProps) => {
   );
 
   const colors = generateNeumorphicColors(
-    contextConfig.surfaceColor ?? '#ffffff',
-    contextConfig.depth ?? 0.15,
-    contextConfig.concavity ?? 0.5,
-    contextConfig.intensity ?? 0.2
+    contextConfig.surfaceColor!,
+    contextConfig.depth!,
+    contextConfig.concavity!,
+    contextConfig.intensity!
   );
 
-  const { firstGradientColor, secondGradientColor } = getGradientColors(contextConfig, colors);
+  const { mainColor, darkGradientColor, lightGradientColor } = colors;
+
+  const formShape = contextConfig.formShape;
+
+  const isFlat =
+    formShape === FormShape.Flat ||
+    formShape === FormShape.PressedFlat ||
+    formShape === FormShape.LevelFlat;
+  const isConcave =
+    formShape === FormShape.Concave ||
+    formShape === FormShape.PressedConcave ||
+    formShape === FormShape.LevelConcave;
+  const isConvex =
+    formShape === FormShape.Convex ||
+    formShape === FormShape.PressedConvex ||
+    formShape === FormShape.LevelConvex;
+
+  const firstGradientColor = (() => {
+    if (isFlat) return mainColor;
+    if (isConvex) return darkGradientColor;
+    return lightGradientColor;
+  })();
+
+  const secondGradientColor = (() => {
+    if (isFlat) return mainColor;
+    if (isConcave) return darkGradientColor;
+    return lightGradientColor;
+  })();
 
   return (
     <defs>
@@ -60,17 +87,15 @@ type CreateNeumorphicFilterProps = {
 
 const CreateNeumorphicFilter = ({ filterName }: CreateNeumorphicFilterProps) => {
   const { contextConfig } = useNeumorphicContext();
+  const stdDeviation = (contextConfig.softness ?? 15) / 2;
 
-  const { positionX, positionY } = angleGradient(
-    contextConfig.lightSource ?? 1,
-    contextConfig.softness ?? 15
-  );
+  const { positionX, positionY } = angleGradient(contextConfig.lightSource ?? 1, stdDeviation);
 
   const colors = generateNeumorphicColors(
-    contextConfig.surfaceColor ?? '#ffffff',
-    contextConfig.depth ?? 0.15,
-    contextConfig.concavity ?? 0.5,
-    contextConfig.intensity ?? 0.2
+    contextConfig.surfaceColor!,
+    contextConfig.depth!,
+    contextConfig.concavity!,
+    contextConfig.intensity!
   );
 
   const isPressed = contextConfig.formShape?.includes('pressed');
@@ -80,7 +105,15 @@ const CreateNeumorphicFilter = ({ filterName }: CreateNeumorphicFilterProps) => 
   const rgbDark = hexToRgb(colors.darkColor);
 
   return (
-    <filter id={filterName} x="-50%" y="-50%" width="200%" height="200%">
+    <filter
+      id={filterName}
+      x="-50%"
+      y="-50%"
+      width="200%"
+      height="200%"
+      color-interpolation-filters="sRGB"
+      filterUnits="userSpaceOnUse"
+    >
       {isPressed ? (
         // Efecto de sombra interior para estado presionado
         <>
@@ -95,7 +128,7 @@ const CreateNeumorphicFilter = ({ filterName }: CreateNeumorphicFilterProps) => 
             result="hardAlpha"
           />
           <feOffset dx={-positionX} dy={-positionY} />
-          <feGaussianBlur stdDeviation={contextConfig.softness ?? 15} />
+          <feGaussianBlur stdDeviation={stdDeviation} />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
           <feColorMatrix
             type="matrix"
@@ -111,7 +144,7 @@ const CreateNeumorphicFilter = ({ filterName }: CreateNeumorphicFilterProps) => 
             result="hardAlpha"
           />
           <feOffset dx={positionX} dy={positionY} />
-          <feGaussianBlur stdDeviation={contextConfig.softness ?? 15} />
+          <feGaussianBlur stdDeviation={stdDeviation} />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
           <feColorMatrix
             type="matrix"
@@ -132,7 +165,7 @@ const CreateNeumorphicFilter = ({ filterName }: CreateNeumorphicFilterProps) => 
             result="hardAlpha"
           />
           <feOffset dx={-positionX} dy={-positionY} />
-          <feGaussianBlur stdDeviation={contextConfig.softness ?? 15} />
+          <feGaussianBlur stdDeviation={stdDeviation} />
           <feColorMatrix
             type="matrix"
             values={`0 0 0 0 ${rgbLight.r} 0 0 0 0 ${rgbLight.g} 0 0 0 0 ${rgbLight.b} 0 0 0 1 0`}
@@ -147,7 +180,7 @@ const CreateNeumorphicFilter = ({ filterName }: CreateNeumorphicFilterProps) => 
             result="hardAlpha"
           />
           <feOffset dx={positionX} dy={positionY} />
-          <feGaussianBlur stdDeviation={contextConfig.softness ?? 15} />
+          <feGaussianBlur stdDeviation={stdDeviation} />
           <feColorMatrix
             type="matrix"
             values={`0 0 0 0 ${rgbDark.r} 0 0 0 0 ${rgbDark.g} 0 0 0 0 ${rgbDark.b} 0 0 0 1 0`}
@@ -161,29 +194,5 @@ const CreateNeumorphicFilter = ({ filterName }: CreateNeumorphicFilterProps) => 
     </filter>
   );
 };
-
-// Helper function to determine gradient colors based on form shape
-function getGradientColors(contextConfig: NeumorphicOptions, colors: NeumorphicStyles) {
-  const { mainColor, darkGradientColor, lightGradientColor } = colors;
-  const formShape = contextConfig.formShape;
-
-  const isFlat = formShape?.includes('flat');
-  const isConcave = formShape?.includes('concave');
-  const isConvex = formShape?.includes('convex');
-
-  const firstGradientColor = (() => {
-    if (isFlat) return mainColor;
-    if (isConvex) return darkGradientColor;
-    return lightGradientColor;
-  })();
-
-  const secondGradientColor = (() => {
-    if (isFlat) return mainColor;
-    if (isConcave) return darkGradientColor;
-    return lightGradientColor;
-  })();
-
-  return { firstGradientColor, secondGradientColor };
-}
 
 export default CreateDefs;
