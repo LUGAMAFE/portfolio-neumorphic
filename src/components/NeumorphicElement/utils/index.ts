@@ -1,3 +1,4 @@
+import chroma from 'chroma-js';
 import { FormShape } from '../types';
 export * from './tags';
 
@@ -149,6 +150,18 @@ export const deleteFalsyProperties = <T>(obj: T): T => {
 };
 
 /**
+ * Converts a hex color to a color matrix.
+ */
+export const hexToColorMatrix = (hex: string): { r: string; g: string; b: string } => {
+  const [r, g, b] = chroma(hex).rgb();
+  return {
+    r: (r / 255).toFixed(6),
+    g: (g / 255).toFixed(6),
+    b: (b / 255).toFixed(6),
+  };
+};
+
+/**
  * Calculates display style based on the reference element's position property.
  */
 export const calculateDisplayStyle = (refElement: HTMLElement | null) => {
@@ -186,6 +199,35 @@ export function generateNeumorphicColors(
     ...gradientColors,
   };
 }
+
+/**
+ * Retrieves the styles for a given form shape.
+ */
+export const getStylesForFormShape = (
+  formShape: FormShape,
+  colors: ReturnType<typeof generateNeumorphicColors>
+) => {
+  const { mainColor, darkGradientColor, lightGradientColor } = colors;
+  const lowerCaseFormShape = formShape.toLowerCase();
+
+  const isFlat = lowerCaseFormShape.includes('flat');
+  const isConcave = lowerCaseFormShape.includes('concave');
+  const isConvex = lowerCaseFormShape.includes('convex');
+  const isPressed = lowerCaseFormShape.includes('pressed');
+
+  const firstGradientColor = isFlat ? mainColor : isConvex ? darkGradientColor : lightGradientColor;
+  const secondGradientColor = isFlat
+    ? mainColor
+    : isConcave
+      ? darkGradientColor
+      : lightGradientColor;
+
+  return {
+    firstGradientColor,
+    secondGradientColor,
+    isPressed,
+  };
+};
 
 export interface NeumorphicStyles {
   darkColor: string;

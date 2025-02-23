@@ -35,21 +35,24 @@ export const IntroSection = () => {
   const neumorphicOptions =
     currentTheme.name === ThemePreset.LIGHT
       ? {
-          depth: 0.47,
+          depth: 0,
           lightSource: 3,
           softness: 39,
+          concavity: 0,
         }
       : {
-          depth: 0.65,
+          depth: 0,
           lightSource: 3,
           softness: 90,
+          concavity: 0,
         };
 
   const svgNeumorphicOptions =
     currentTheme.name === ThemePreset.LIGHT
       ? {
           intensity: currentTheme.intensity - 0.1,
-          concavity: -0.45,
+          concavity: 1,
+          depth: -1,
         }
       : {
           intensity: currentTheme.intensity,

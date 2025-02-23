@@ -4,11 +4,17 @@ import {
   createContext,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 import { NeumorphicOptions } from '../types';
-import { getFormShape } from '../utils';
+import {
+  angleGradient,
+  generateNeumorphicColors,
+  getFormShape,
+  getStylesForFormShape,
+} from '../utils';
 
 interface NeumorphicState {
   contextConfig: NeumorphicOptions;
@@ -24,6 +30,13 @@ interface NeumorphicState {
   measureDimensions: RefObject<{
     measure: () => void;
   } | null>;
+  computedStyles: {
+    colors: ReturnType<typeof generateNeumorphicColors>;
+    gradientStyles: ReturnType<typeof getStylesForFormShape>;
+    lightPosition: ReturnType<typeof angleGradient>;
+    svgLightPosition: ReturnType<typeof angleGradient>;
+    stdDeviation: number;
+  } | null;
 }
 
 const NeumorphicContext = createContext<NeumorphicState | undefined>(undefined);
@@ -37,18 +50,51 @@ export const NeumorphicProvider = ({ children }: PropsWithChildren) => {
 
   const measureDimensions = useRef<{ measure: () => void }>(null);
 
+  const computedStyles = useMemo(() => {
+    if (!contextConfig.formShape || !contextConfig.surfaceColor) {
+      return null;
+    }
+
+    const colors = generateNeumorphicColors(
+      contextConfig.surfaceColor,
+      contextConfig.depth!,
+      contextConfig.concavity!,
+      contextConfig.intensity!
+    );
+
+    const gradientStyles = getStylesForFormShape(contextConfig.formShape, colors);
+
+    const stdDeviation = (contextConfig.softness ?? 15) / 2;
+    const lightPosition = angleGradient(contextConfig.lightSource ?? 1, stdDeviation);
+    const svgLightPosition = angleGradient(
+      contextConfig.lightSource ?? 1,
+      contextConfig.softness ?? 15,
+      true
+    );
+
+    return {
+      colors,
+      gradientStyles,
+      lightPosition,
+      svgLightPosition,
+      stdDeviation,
+    };
+  }, [
+    contextConfig.formShape,
+    contextConfig.surfaceColor,
+    contextConfig.depth,
+    contextConfig.concavity,
+    contextConfig.intensity,
+    contextConfig.softness,
+    contextConfig.lightSource,
+  ]);
+
   const setContextConfig = useCallback(
     (configOrFn: NeumorphicOptions | ((prev: NeumorphicOptions) => NeumorphicOptions)) => {
-      setContext((prevContextConfig: NeumorphicOptions) => {
-        const newConfig =
-          typeof configOrFn === 'function' ? configOrFn(prevContextConfig) : configOrFn;
-
+      setContext((prevConfig) => {
+        const newConfig = typeof configOrFn === 'function' ? configOrFn(prevConfig) : configOrFn;
         const formShape = getFormShape(newConfig.depth!, newConfig.concavity!);
-        return {
-          ...prevContextConfig,
-          ...newConfig,
-          formShape,
-        };
+        return { ...prevConfig, ...newConfig, formShape };
       });
     },
     []
@@ -56,21 +102,14 @@ export const NeumorphicProvider = ({ children }: PropsWithChildren) => {
 
   const updateContextConfigProp = useCallback(
     <K extends keyof NeumorphicOptions>(property: K, value: NeumorphicOptions[K]) => {
-      setContext((prevContextConfig: NeumorphicOptions) => {
-        const newConfig = {
-          ...prevContextConfig,
-          [property]: value,
-        };
+      setContext((prevConfig) => {
+        const newConfig = { ...prevConfig, [property]: value };
 
         if (property === 'depth' || property === 'concavity') {
-          const depth = property === 'depth' ? (value as number) : (prevContextConfig.depth ?? 0);
+          const depth = property === 'depth' ? (value as number) : (prevConfig.depth ?? 0);
           const concavity =
-            property === 'concavity' ? (value as number) : (prevContextConfig.concavity ?? 0);
-
-          return {
-            ...newConfig,
-            formShape: getFormShape(depth, concavity),
-          };
+            property === 'concavity' ? (value as number) : (prevConfig.concavity ?? 0);
+          return { ...newConfig, formShape: getFormShape(depth, concavity) };
         }
 
         return newConfig;
@@ -92,6 +131,7 @@ export const NeumorphicProvider = ({ children }: PropsWithChildren) => {
         dimensions,
         setDimensions,
         measureDimensions,
+        computedStyles,
       }}
     >
       {children}

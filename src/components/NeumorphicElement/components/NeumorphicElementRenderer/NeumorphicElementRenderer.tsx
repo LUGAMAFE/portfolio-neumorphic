@@ -1,11 +1,10 @@
-import { JSX, Ref, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
+import { JSX, Ref, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { useMergeRefs } from '@floating-ui/react';
-import React from 'react';
 import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
-import { FormShape, NeumorphicElementProps, NeumorphicOptions } from '../../types';
-import { angleGradient, generateNeumorphicColors, getContrast, isSVGElement } from '../../utils';
+import { NeumorphicElementProps, NeumorphicOptions } from '../../types';
+import { getContrast, isSVGElement } from '../../utils';
 import CreateSvgElement from './CreateSvgElement';
 import styles from './NeumorphicElementRenderer.module.scss';
 
@@ -23,11 +22,11 @@ export type NeumorphicElementRendererProps<Tag extends keyof JSX.IntrinsicElemen
 
 export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
   surfaceColor,
-  depth,
-  lightSource,
-  concavity,
-  softness,
-  intensity,
+  depth = DEFAULT_CONFIG.depth,
+  lightSource = DEFAULT_CONFIG.lightSource,
+  concavity = DEFAULT_CONFIG.concavity,
+  softness = DEFAULT_CONFIG.softness,
+  intensity = DEFAULT_CONFIG.intensity,
   style,
   className,
   children,
@@ -36,43 +35,43 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
   ...rest
 }: NeumorphicElementRendererProps<Tag>) {
   // 1. Get the context
-  const { contextConfig, setContextConfig, setDimensions, measureDimensions } =
+  const { contextConfig, setContextConfig, setDimensions, measureDimensions, computedStyles } =
     useNeumorphicContext();
-
   const elementRef = useRef<SVGElement | HTMLElement | null>(null);
-
   // Merge refs to maintain compatibility with Floating UI
   const mergedRef = useMergeRefs([elementRef, ref as Ref<SVGElement | HTMLElement>]);
 
-  useEffect(() => {
+  // Memoizar la medición de dimensiones
+  const measureElement = useCallback(() => {
     if (elementRef.current) {
       const { width, height } = elementRef.current.getBoundingClientRect();
       setDimensions(width, height);
     }
-  }, []);
+  }, [setDimensions]);
 
-  useImperativeHandle(measureDimensions, () => ({
-    measure: () => {
-      if (elementRef.current) {
-        const { width, height } = elementRef.current.getBoundingClientRect();
-        setDimensions(width, height);
-      }
-    },
-  }));
+  useEffect(() => {
+    measureElement();
+  }, [measureElement]);
+
+  useImperativeHandle(
+    measureDimensions,
+    () => ({
+      measure: measureElement,
+    }),
+    [measureElement]
+  );
 
   /**
-   * 2. Build the "propsConfig" object using:
-   *    1) Direct props (surfaceColor, depth, concavity, etc.)
-   *    2) Use DEFAULT_CONFIG if props are not provided
+   * 2. Build the "propsConfig" object using
    */
-  const finalConfig: NeumorphicOptions = useMemo(
+  const finalConfig = useMemo(
     () => ({
       surfaceColor,
-      depth: depth ?? DEFAULT_CONFIG.depth,
-      lightSource: lightSource ?? DEFAULT_CONFIG.lightSource,
-      concavity: concavity ?? DEFAULT_CONFIG.concavity,
-      softness: softness ?? DEFAULT_CONFIG.softness,
-      intensity: intensity ?? DEFAULT_CONFIG.intensity,
+      depth,
+      lightSource,
+      concavity,
+      softness,
+      intensity,
     }),
     [surfaceColor, depth, lightSource, concavity, softness, intensity]
   );
@@ -87,66 +86,19 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
    *    (or any other) in the context.
    */
   const finalStyle = useMemo(() => {
-    if (contextConfig.formShape == null) {
+    if (!computedStyles) {
       return {
         cssVars: {},
         dynamicClasses: styles.softShadow,
       };
-    } else {
-      if (contextConfig.surfaceColor === undefined) {
-        throw new Error('surfaceColor prop is required');
-      }
     }
 
-    const colors = generateNeumorphicColors(
-      contextConfig.surfaceColor,
-      contextConfig.depth!,
-      contextConfig.concavity!,
-      contextConfig.intensity!
-    );
+    const { colors, gradientStyles, lightPosition } = computedStyles;
+    const { darkColor, lightColor, mainColor } = colors;
+    const { firstGradientColor, secondGradientColor, isPressed } = gradientStyles;
+    const { positionX, positionY, angle } = lightPosition;
 
-    const { darkColor, lightColor } = colors;
-    const { mainColor, darkGradientColor, lightGradientColor } = colors;
-
-    const formShape = contextConfig.formShape;
-
-    const isFlat =
-      formShape === FormShape.Flat ||
-      formShape === FormShape.PressedFlat ||
-      formShape === FormShape.LevelFlat;
-    const isConcave =
-      formShape === FormShape.Concave ||
-      formShape === FormShape.PressedConcave ||
-      formShape === FormShape.LevelConcave;
-    const isConvex =
-      formShape === FormShape.Convex ||
-      formShape === FormShape.PressedConvex ||
-      formShape === FormShape.LevelConvex;
-    const isPressed =
-      formShape === FormShape.PressedFlat ||
-      formShape === FormShape.PressedConcave ||
-      formShape === FormShape.PressedConvex;
-
-    const firstGradientColor = (() => {
-      if (isFlat) return mainColor;
-      if (isConvex) return darkGradientColor;
-      return lightGradientColor;
-    })();
-
-    const secondGradientColor = (() => {
-      if (isFlat) return mainColor;
-      if (isConcave) return darkGradientColor;
-      return lightGradientColor;
-    })();
-
-    // Light position
-    const { positionX, positionY, angle } = angleGradient(
-      contextConfig.lightSource!,
-      contextConfig.softness! / 2
-    );
-
-    // CSS Variables
-    const cssVars: React.CSSProperties = {
+    const cssVars = {
       '--positionX': `${positionX}px`,
       '--positionXOpposite': `${-positionX}px`,
       '--positionY': `${positionY}px`,
@@ -162,26 +114,27 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
       '--secondGradientColor': secondGradientColor,
     };
 
-    const dynamicClasses = isPressed ? `${styles.softShadow} ${styles.pressed}` : styles.softShadow;
-
-    return { cssVars, dynamicClasses };
-  }, [contextConfig]);
+    return {
+      cssVars,
+      dynamicClasses: isPressed ? `${styles.softShadow} ${styles.pressed}` : styles.softShadow,
+    };
+  }, [contextConfig, computedStyles]);
 
   // Merge class and style
-  const mergedClass = `neuElement ${finalStyle.dynamicClasses} ${className || ''}`;
-  const mergedStyle: React.CSSProperties = { ...finalStyle.cssVars, ...style };
+  const mergedClass = useMemo(
+    () => `neuElement ${finalStyle.dynamicClasses} ${className || ''}`,
+    [finalStyle.dynamicClasses, className]
+  );
+
+  const mergedStyle = useMemo(
+    () => ({ ...finalStyle.cssVars, ...style }),
+    [finalStyle.cssVars, style]
+  );
 
   // If the element to render is SVG, use a specialized component.
   if (isSVGElement(tag)) {
     return (
-      <CreateSvgElement
-        tag={tag}
-        style2={finalStyle.cssVars}
-        className={className}
-        style={style}
-        ref={mergedRef}
-        {...rest}
-      />
+      <CreateSvgElement tag={tag} className={className} style={style} ref={mergedRef} {...rest} />
     );
   }
 

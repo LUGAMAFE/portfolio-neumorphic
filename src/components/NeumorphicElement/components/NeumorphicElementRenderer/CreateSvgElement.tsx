@@ -1,4 +1,5 @@
 import React, { forwardRef, JSX } from 'react';
+import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
 import CreateDefs from './CreateDefs';
 import { NeumorphicElementRendererProps } from './NeumorphicElementRenderer';
 import SvgGroupElementWithDefs from './SvgGroupElementWithDefs';
@@ -17,6 +18,7 @@ const CreateSvgElement = forwardRef(
     ref: React.Ref<SVGElement>
   ) => {
     const id = React.useId();
+    const { contextConfig } = useNeumorphicContext();
     const svgAttrsNames = {
       gradientName: `neumorphicLinearGradient-${id}`,
       filterName: `neumorphicFilter-${id}`,
@@ -24,6 +26,10 @@ const CreateSvgElement = forwardRef(
 
     // Importante: Asegurarnos que TagElement es el tipo correcto
     const TagElement = tag as keyof JSX.IntrinsicElements;
+
+    if (!contextConfig.formShape) {
+      return null;
+    }
 
     // If the tag is 'g' or 'svg', render directly with defs
     if (tag === 'g' || tag === 'svg') {
