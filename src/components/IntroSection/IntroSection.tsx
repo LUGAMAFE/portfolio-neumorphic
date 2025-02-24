@@ -52,7 +52,7 @@ export const IntroSection = () => {
       ? {
           intensity: 0.1,
           concavity: 1,
-          depth: -1.1,
+          depth: -1,
         }
       : {
           intensity: currentTheme.intensity,
