@@ -105,8 +105,8 @@ const Configuration = () => {
   const blurLimits = useMemo(() => {
     const maxSize = Math.max(dimensions.width, dimensions.height);
     return {
-      minBlur: Math.round(maxSize / 100),
-      maxBlur: Math.round(maxSize / 10),
+      minBlur: 1,
+      maxBlur: Math.round(maxSize / 10) || 1000,
     };
   }, [dimensions.width, dimensions.height]);
 

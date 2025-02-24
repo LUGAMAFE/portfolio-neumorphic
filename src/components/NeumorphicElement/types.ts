@@ -25,6 +25,12 @@ export interface NeumorphicOptions {
 
 export type NeumorphicProps = Omit<MakeRequired<NeumorphicOptions, 'surfaceColor'>, 'formShape'> & {
   allowClicks?: boolean;
+  surfaceColor: string;
+  depth?: number;
+  concavity?: number;
+  softness?: number;
+  intensity?: number;
+  lightSource?: number;
 };
 
 export type NeumorphicElementProps<Tag extends keyof JSX.IntrinsicElements> = ComponentProps<Tag> &

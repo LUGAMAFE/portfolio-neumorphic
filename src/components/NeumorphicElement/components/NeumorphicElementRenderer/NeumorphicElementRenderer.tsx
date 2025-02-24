@@ -2,6 +2,7 @@ import { JSX, Ref, useCallback, useEffect, useImperativeHandle, useMemo, useRef 
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { useMergeRefs } from '@floating-ui/react';
+import { useNeumorphicValidation } from '../../hooks/useNeumorphicValidation';
 import { useNeumorphicContext } from '../../providers/NeumorphicProvider';
 import { NeumorphicElementProps, NeumorphicOptions } from '../../types';
 import { getContrast, isSVGElement } from '../../utils';
@@ -40,6 +41,16 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
   const elementRef = useRef<SVGElement | HTMLElement | null>(null);
   // Merge refs to maintain compatibility with Floating UI
   const mergedRef = useMergeRefs([elementRef, ref as Ref<SVGElement | HTMLElement>]);
+
+  // Usar el hook de validación
+  const { validateProps } = useNeumorphicValidation({
+    surfaceColor,
+    depth,
+    lightSource,
+    concavity,
+    softness,
+    intensity,
+  });
 
   // Memoizar la medición de dimensiones
   const measureElement = useCallback(() => {
@@ -130,6 +141,8 @@ export function NeumorphicElementRenderer<Tag extends keyof JSX.IntrinsicElement
     () => ({ ...finalStyle.cssVars, ...style }),
     [finalStyle.cssVars, style]
   );
+
+  validateProps();
 
   // If the element to render is SVG, use a specialized component.
   if (isSVGElement(tag)) {

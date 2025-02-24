@@ -50,9 +50,9 @@ export const IntroSection = () => {
   const svgNeumorphicOptions =
     currentTheme.name === ThemePreset.LIGHT
       ? {
-          intensity: currentTheme.intensity - 0.1,
+          intensity: 0.1,
           concavity: 1,
-          depth: -1,
+          depth: -1.1,
         }
       : {
           intensity: currentTheme.intensity,

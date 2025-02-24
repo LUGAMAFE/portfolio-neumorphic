@@ -41,14 +41,22 @@ const scaleDragger = (dragger: HTMLElement, scale: number) => {
 
 // Utility function to add touch event handlers for the child dragger
 const addTouchEvents = (dragger: HTMLElement, parentDragger: Draggable[]) => {
-  dragger.addEventListener('touchstart', (event) => {
-    event.preventDefault();
-    parentDragger.forEach((drag) => drag.disable());
-  });
+  dragger.addEventListener(
+    'touchstart',
+    (event) => {
+      event.preventDefault();
+      parentDragger.forEach((drag) => drag.disable());
+    },
+    { passive: true }
+  );
 
-  dragger.addEventListener('touchend', () => {
-    parentDragger.forEach((drag) => drag.enable());
-  });
+  dragger.addEventListener(
+    'touchend',
+    () => {
+      parentDragger.forEach((drag) => drag.enable());
+    },
+    { passive: true }
+  );
 };
 
 export const ImageComparator = () => {
