@@ -9,9 +9,10 @@ import { ThemePreset } from '@/providers/AppProviders';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { NeonElement } from '../NeonElement';
-import { NeumorphicElement } from '../NeumorphicElement';
+import { NeumorphicElement } from '../NeumorphicElement/NeumorphicElement';
 import { ImageComparator } from './ImageComparator';
 import style from './IntroSection.module.scss';
+import ProgressDemo from './ProgressDemo';
 gsap.registerPlugin(SplitText, TextPlugin);
 export const IntroSection = () => {
   const { currentTheme } = useNeumorphicStylesContext();
@@ -101,6 +102,7 @@ export const IntroSection = () => {
             <em className={style.Intro__em}>diseñador</em> de sitios web
           </p>
         </div>
+        <ProgressDemo />
         <div className={style.Intro__ilustration}>
           <svg
             className={style.Intro__neomorphicSVG}

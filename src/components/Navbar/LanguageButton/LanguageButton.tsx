@@ -1,5 +1,5 @@
 import { NeonElement } from '@/components/NeonElement';
-import { NeumorphicElement } from '@/components/NeumorphicElement';
+import { NeumorphicElement } from '@/components/NeumorphicElement/NeumorphicElement';
 import { NeumorphicElementProps } from '@/components/NeumorphicElement/types';
 
 export interface LanguageButtonProps extends NeumorphicElementProps<'button'> {

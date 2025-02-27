@@ -4,7 +4,7 @@ import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider
 import Image from 'next/image';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { NeonElement } from '../NeonElement';
-import { NeumorphicElement } from '../NeumorphicElement';
+import { NeumorphicElement } from '../NeumorphicElement/NeumorphicElement';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import style from './navbar.module.scss';
 import { ThemeColorSwitcher } from './ThemeColorSwitcher';

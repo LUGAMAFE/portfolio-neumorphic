@@ -4,10 +4,10 @@ import { JSX, useState } from 'react';
 import {
   NeumorphicElementRenderer,
   NeumorphicElementRendererProps,
-} from './components/NeumorphicElementRenderer';
-import { TooltipWrapper } from './components/TooltipWrapper';
-import { NeumorphicProvider } from './providers/NeumorphicProvider';
-import { NeumorphicProps } from './types';
+} from '../components/NeumorphicElementRenderer';
+import { TooltipWrapper } from '../components/TooltipWrapper';
+import { NeumorphicProvider } from '../providers/NeumorphicProvider';
+import { NeumorphicProps } from '../types';
 
 const NeuElements = createIntrinsicElements<NeumorphicProps>((tag, props) => (
   <NeumorphicElementWrapper<keyof JSX.IntrinsicElements> tag={tag} {...props} />

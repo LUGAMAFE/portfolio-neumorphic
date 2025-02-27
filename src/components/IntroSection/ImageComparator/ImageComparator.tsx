@@ -6,7 +6,7 @@ import { useMemo, useRef } from 'react';
 
 import { NeonElement } from '@/components/NeonElement';
 import { GradientType } from '@/components/NeonElement/types';
-import { NeumorphicElement } from '@/components/NeumorphicElement';
+import { NeumorphicElement } from '@/components/NeumorphicElement/NeumorphicElement';
 import { ThemePreset } from '@/providers/AppProviders';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';

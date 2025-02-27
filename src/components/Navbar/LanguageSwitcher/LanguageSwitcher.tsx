@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { NeumorphicElement } from '@/components/NeumorphicElement';
+import { NeumorphicElement } from '@/components/NeumorphicElement/NeumorphicElement';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import { LanguageButton } from '../LanguageButton';

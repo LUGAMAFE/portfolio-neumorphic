@@ -4,7 +4,7 @@ import useDeviceType from '../../hooks/useDeviceType';
 
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
-import { NeumorphicElement } from '../NeumorphicElement';
+import { NeumorphicElement } from '../NeumorphicElement/NeumorphicElement';
 import { NeumorphicElementProps } from '../NeumorphicElement/types';
 import {
   NeonColorPickerButton,
