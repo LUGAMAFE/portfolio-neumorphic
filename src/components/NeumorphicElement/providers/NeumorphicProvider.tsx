@@ -2,6 +2,7 @@ import {
   PropsWithChildren,
   RefObject,
   createContext,
+  memo,
   useCallback,
   useContext,
   useMemo,
@@ -41,7 +42,7 @@ interface NeumorphicState {
 
 const NeumorphicContext = createContext<NeumorphicState | undefined>(undefined);
 
-export const NeumorphicProvider = ({ children }: PropsWithChildren) => {
+export const NeumorphicProvider = memo(({ children }: PropsWithChildren) => {
   const [contextConfig, setContext] = useState<NeumorphicOptions>({});
   const [dimensions, setDimensionsState] = useState<{ width: number; height: number }>({
     width: 0,
@@ -137,7 +138,9 @@ export const NeumorphicProvider = ({ children }: PropsWithChildren) => {
       {children}
     </NeumorphicContext.Provider>
   );
-};
+});
+
+NeumorphicProvider.displayName = 'NeumorphicProvider';
 
 export const useNeumorphicContext = () => {
   const Neumorphic = useContext(NeumorphicContext);

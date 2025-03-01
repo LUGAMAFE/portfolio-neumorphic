@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 
 import { NeumorphicElement } from '@/components/NeumorphicElement/NeumorphicElement';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
@@ -6,7 +6,7 @@ import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider
 import { LanguageButton } from '../LanguageButton';
 import style from './languageSwitcher.module.scss';
 
-export const LanguageSwitcher = () => {
+export const LanguageSwitcher = memo(() => {
   const { neonColors } = useNeonColorsContext();
   const { currentTheme } = useNeumorphicStylesContext();
 
@@ -59,4 +59,6 @@ export const LanguageSwitcher = () => {
       </div>
     </NeumorphicElement.div>
   );
-};
+});
+
+LanguageSwitcher.displayName = 'LanguageSwitcher';

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import useDeviceType from '../../hooks/useDeviceType';
 
@@ -17,7 +17,7 @@ interface SidebarMenuProps {
   setIsOpen: (value: boolean) => void;
 }
 
-export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
+export const SidebarMenu = memo(({ isOpen, setIsOpen }: SidebarMenuProps) => {
   const { handleChangeColorNeon } = useNeonColorsContext();
   const { currentTheme } = useNeumorphicStylesContext();
   const { isMobile } = useDeviceType();
@@ -288,4 +288,4 @@ export const SidebarMenu = ({ isOpen, setIsOpen }: SidebarMenuProps) => {
       </NeumorphicElement.div>
     </div>
   );
-};
+});

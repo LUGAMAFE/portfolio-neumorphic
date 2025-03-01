@@ -1,11 +1,11 @@
 import { NeonElement } from '@/components/NeonElement';
 import { ThemePreset } from '@/providers/AppProviders';
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent, memo, useEffect } from 'react';
 import { usePrefersTheme } from 'react-haiku';
 import { useNeumorphicStylesContext } from '../../../providers/NeumorphicStylesProvider';
 import style from './themeColorSwitcher.module.scss';
 
-export const ThemeColorSwitcher = () => {
+export const ThemeColorSwitcher = memo(() => {
   const theme = usePrefersTheme(ThemePreset.DARK);
   const { handleChangeTheme, currentTheme } = useNeumorphicStylesContext();
 
@@ -45,4 +45,6 @@ export const ThemeColorSwitcher = () => {
       </label>
     </div>
   );
-};
+});
+
+ThemeColorSwitcher.displayName = 'ThemeColorSwitcher';

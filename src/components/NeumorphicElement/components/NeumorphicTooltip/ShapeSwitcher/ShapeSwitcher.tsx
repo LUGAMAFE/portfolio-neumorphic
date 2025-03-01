@@ -8,7 +8,7 @@ import PressedConcave from '@/svg/pressedConcave.svg';
 import PressedConvex from '@/svg/pressedConvex.svg';
 import PressedFlat from '@/svg/pressedFlat.svg';
 
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 import { FormShape } from '../../../types';
 import style from './ShapeSwitcher.module.scss';
 
@@ -17,7 +17,7 @@ export interface ShapeSwitcherProps {
   setFormShape?: (name: FormShape) => void;
 }
 
-export interface ShapeButtonProps {
+interface ShapeButtonProps {
   formShape?: FormShape;
   name: FormShape;
   title: string;
@@ -25,70 +25,101 @@ export interface ShapeButtonProps {
   setFormShape?: (name: FormShape) => void;
 }
 
-const ShapeButton = ({ formShape, setFormShape, name, title, image }: ShapeButtonProps) => (
+// Memoized button component to prevent unnecessary re-renders
+const ShapeButton = memo(({ formShape, setFormShape, name, title, image }: ShapeButtonProps) => (
   <button
-    className={`${style.ShapeSwitcher__button} ${formShape === name && style.ShapeSwitcher__button_active}`}
+    className={`${style.ShapeSwitcher__button} ${formShape === name ? style.ShapeSwitcher__button_active : ''}`}
     onClick={() => setFormShape?.(name)}
     name={name}
     title={title}
   >
     {image}
   </button>
-);
+));
 
-export const ShapeSwitcher = ({ formShape, setFormShape }: ShapeSwitcherProps) => {
-  const shapes = [
-    {
-      name: FormShape.LevelConvex,
-      title: 'Level Convex',
-      image: <LevelConvex className={style.ShapeSwitcher__icon} />,
-    },
-    {
-      name: FormShape.LevelFlat,
-      title: 'Level Flat',
-      image: <LevelFlat className={style.ShapeSwitcher__icon} />,
-    },
-    {
-      name: FormShape.LevelConcave,
-      title: 'Level Concave',
-      image: <LevelConcave className={style.ShapeSwitcher__icon} />,
-    },
-    {
-      name: FormShape.Convex,
-      title: 'Convex',
-      image: <Convex className={style.ShapeSwitcher__icon} />,
-    },
-    {
-      name: FormShape.Flat,
-      title: 'Flat',
-      image: <Flat className={style.ShapeSwitcher__icon} />,
-    },
-    {
-      name: FormShape.Concave,
-      title: 'Concave',
-      image: <Concave className={style.ShapeSwitcher__icon} />,
-    },
-    {
-      name: FormShape.PressedConvex,
-      title: 'Pressed Convex',
-      image: <PressedConvex className={style.ShapeSwitcher__icon} />,
-    },
-    {
-      name: FormShape.PressedFlat,
-      title: 'Pressed Flat',
-      image: <PressedFlat className={style.ShapeSwitcher__icon} />,
-    },
-    {
-      name: FormShape.PressedConcave,
-      title: 'Pressed Concave',
-      image: <PressedConcave className={style.ShapeSwitcher__icon} />,
-    },
-  ];
+ShapeButton.displayName = 'ShapeButton';
 
+// Define shapes array outside component to prevent recreation on each render
+const shapes = [
+  {
+    name: FormShape.LevelConvex,
+    title: 'Level Convex',
+    image: (className: string) => {
+      const SvgComponent = LevelConvex as React.ComponentType<React.SVGProps<SVGSVGElement>>;
+      return <SvgComponent className={className} />;
+    },
+  },
+  {
+    name: FormShape.LevelFlat,
+    title: 'Level Flat',
+    image: (className: string) => {
+      const SvgComponent = LevelFlat as React.ComponentType<React.SVGProps<SVGSVGElement>>;
+      return <SvgComponent className={className} />;
+    },
+  },
+  {
+    name: FormShape.LevelConcave,
+    title: 'Level Concave',
+    image: (className: string) => {
+      const SvgComponent = LevelConcave as React.ComponentType<React.SVGProps<SVGSVGElement>>;
+      return <SvgComponent className={className} />;
+    },
+  },
+  {
+    name: FormShape.Convex,
+    title: 'Convex',
+    image: (className: string) => {
+      const SvgComponent = Convex as React.ComponentType<React.SVGProps<SVGSVGElement>>;
+      return <SvgComponent className={className} />;
+    },
+  },
+  {
+    name: FormShape.Flat,
+    title: 'Flat',
+    image: (className: string) => {
+      const SvgComponent = Flat as React.ComponentType<React.SVGProps<SVGSVGElement>>;
+      return <SvgComponent className={className} />;
+    },
+  },
+  {
+    name: FormShape.Concave,
+    title: 'Concave',
+    image: (className: string) => {
+      const SvgComponent = Concave as React.ComponentType<React.SVGProps<SVGSVGElement>>;
+      return <SvgComponent className={className} />;
+    },
+  },
+  {
+    name: FormShape.PressedConvex,
+    title: 'Pressed Convex',
+    image: (className: string) => {
+      const SvgComponent = PressedConvex as React.ComponentType<React.SVGProps<SVGSVGElement>>;
+      return <SvgComponent className={className} />;
+    },
+  },
+  {
+    name: FormShape.PressedFlat,
+    title: 'Pressed Flat',
+    image: (className: string) => {
+      const SvgComponent = PressedFlat as React.ComponentType<React.SVGProps<SVGSVGElement>>;
+      return <SvgComponent className={className} />;
+    },
+  },
+  {
+    name: FormShape.PressedConcave,
+    title: 'Pressed Concave',
+    image: (className: string) => {
+      const SvgComponent = PressedConcave as React.ComponentType<React.SVGProps<SVGSVGElement>>;
+      return <SvgComponent className={className} />;
+    },
+  },
+];
+
+export const ShapeSwitcher = memo(({ formShape, setFormShape }: ShapeSwitcherProps) => {
   return (
     <>
       <div className={`${style.ShapeSwitcher__row} ${style.ShapeSwitcher__label}`}>
-        <label className={style.ShapeSwitcher__label}>Form: </label>
+        <label>Form: </label>
       </div>
       <div className={style.ShapeSwitcher}>
         {shapes.map((btnShape) => (
@@ -96,12 +127,14 @@ export const ShapeSwitcher = ({ formShape, setFormShape }: ShapeSwitcherProps) =
             key={btnShape.name}
             formShape={formShape}
             setFormShape={setFormShape}
-            name={btnShape.name as FormShape}
+            name={btnShape.name}
             title={btnShape.title}
-            image={btnShape.image}
+            image={btnShape.image(style.ShapeSwitcher__icon)}
           />
         ))}
       </div>
     </>
   );
-};
+});
+
+ShapeSwitcher.displayName = 'ShapeSwitcher';

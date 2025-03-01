@@ -1,5 +1,5 @@
 import { createIntrinsicElements } from '@/utils/createIntrinsicElements';
-import { JSX, useState } from 'react';
+import { JSX, useMemo, useState } from 'react';
 import { NeonElementRenderer, NeonElementRendererProps } from './components/NeonElementRenderer';
 import { TooltipWrapper } from './components/TooltipWrapper';
 import { NeonProvider } from './providers/NeonProvider';
@@ -14,13 +14,18 @@ function NeonElementWrapper<Tag extends keyof JSX.IntrinsicElements>(
 ) {
   const [open, setOpen] = useState(false);
 
-  return (
-    <NeonProvider>
+  const memoizedRenderer = useMemo(() => <NeonElementRenderer {...props} />, [props]);
+
+  const memoizedTooltip = useMemo(
+    () => (
       <TooltipWrapper open={open} setOpen={setOpen}>
-        <NeonElementRenderer {...props} />
+        {memoizedRenderer}
       </TooltipWrapper>
-    </NeonProvider>
+    ),
+    [open, setOpen, memoizedRenderer]
   );
+
+  return <NeonProvider>{memoizedTooltip}</NeonProvider>;
 }
 
 export const NeonElement = NeuElements;

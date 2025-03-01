@@ -1,5 +1,5 @@
 import chroma from 'chroma-js';
-import React, { JSX, useMemo } from 'react';
+import React, { JSX, memo, useMemo } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useNeonContext } from '../../providers/NeonProvider';
 import { GradientType, NeonElementProps, NeonProps } from '../../types';
@@ -22,7 +22,7 @@ export type NeonElementRendererProps<Tag extends keyof JSX.IntrinsicElements> = 
   tag: Tag;
 } & NeonElementProps<Tag>;
 
-export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
+export const NeonElementRenderer = memo(function Renderer<Tag extends keyof JSX.IntrinsicElements>({
   tag,
   ...props
 }: NeonElementRendererProps<Tag>) {
@@ -72,20 +72,18 @@ export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
    *    Así podemos reflejar modificaciones hechas por el tooltip
    *    (o por cualquier otro) en el contexto.
    */
-  const finalStyle = useMemo(() => {
+
+  // Extract cssVars into a separate useMemo for stability
+  const cssVars = useMemo(() => {
     if (contextConfig.color1 == null) {
-      return {
-        cssVars: {},
-        dynamicClasses: '',
-      };
+      return {};
     }
 
     // Se calcula un valor aleatorio para la velocidad del "flare"
     const flareSpeed =
       Math.floor(Math.random() * 2 * (contextConfig.speed ?? 0)) + (contextConfig.speed ?? 0);
 
-    // Variables CSS
-    const cssVars = {
+    return {
       '--neon-angle': `${contextConfig.direction}deg`,
       '--neon-blur': `${contextConfig.blur}px`,
       '--neon-blur-deviation': contextConfig.blur,
@@ -95,6 +93,22 @@ export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
       '--neon-speed': `${contextConfig.speed}s`,
       '--neon-flare-speed': `${flareSpeed}s`,
     };
+  }, [
+    contextConfig.direction,
+    contextConfig.blur,
+    contextConfig.color1,
+    contextConfig.color2,
+    contextConfig.intensity,
+    contextConfig.speed,
+  ]);
+
+  const finalStyle = useMemo(() => {
+    if (!cssVars) {
+      return {
+        cssVars: {},
+        dynamicClasses: '',
+      };
+    }
 
     let dynamicClasses = styles.neon;
 
@@ -111,27 +125,21 @@ export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
     }
 
     return { cssVars, dynamicClasses };
-  }, [
-    contextConfig.color1,
-    contextConfig.speed,
-    contextConfig.direction,
-    contextConfig.blur,
-    contextConfig.color2,
-    contextConfig.intensity,
-    contextConfig.showFlare,
-    contextConfig.gradientType,
-    tag,
-  ]);
+  }, [cssVars, contextConfig.showFlare, contextConfig.gradientType, tag]);
 
   // 6. Mergemos clase y estilo
-  const mergedClass = `neonElement ${finalStyle.dynamicClasses} ${className}`;
-  const mergedStyle: React.CSSProperties = { ...finalStyle.cssVars, ...style };
+  const mergedClass = useMemo(
+    () => `neonElement ${finalStyle.dynamicClasses} ${className}`,
+    [finalStyle.dynamicClasses, className]
+  );
+
+  const mergedStyle = useMemo(() => ({ ...cssVars, ...style }), [cssVars, style]);
 
   // Si el elemento a renderizar es SVG, se utiliza un componente especializado.
   if (isSVGElement(tag)) {
     return (
       //@ts-expect-error types are not complete
-      <CreateSvgElement tag={tag} style2={finalStyle.cssVars} {...props} />
+      <CreateSvgElement tag={tag} style2={cssVars} {...props} />
     );
   }
 
@@ -143,13 +151,12 @@ export function NeonElementRenderer<Tag extends keyof JSX.IntrinsicElements>({
   }
 
   const TagElement = tag;
-  // 7. Render final: en vez de <Element ...> => React.createElement(tag, ...)
   return (
     <TagElement {...rest} className={mergedClass} style={mergedStyle}>
       {children}
     </TagElement>
   );
-}
+});
 
 /* ================== COMPONENTES AUXILIARES PARA SVG ================== */
 
@@ -168,10 +175,14 @@ const CreateSvgElement = <Tag extends keyof JSX.IntrinsicElements>({
   ...rest
 }: SvgWithDefsProps<Tag>) => {
   const id = React.useId();
-  const svgAttrsNames = {
-    gradientName: `linearGradient-${id}`,
-    filterName: `neonGlow-${id}`,
-  };
+
+  const svgAttrsNames = React.useMemo(
+    () => ({
+      gradientName: `linearGradient-${id}`,
+      filterName: `neonGlow-${id}`,
+    }),
+    [id]
+  );
 
   const TagElement = tag;
 
@@ -186,7 +197,10 @@ const CreateSvgElement = <Tag extends keyof JSX.IntrinsicElements>({
         fill={`url(#${svgAttrsNames.gradientName})`}
       >
         {children}
-        <CreateDefs svgAttrsNames={svgAttrsNames} />
+        <CreateDefs
+          gradientName={svgAttrsNames.gradientName}
+          filterName={svgAttrsNames.filterName}
+        />
       </TagElement>
     );
   }
@@ -197,7 +211,8 @@ const CreateSvgElement = <Tag extends keyof JSX.IntrinsicElements>({
       tag={tag}
       style2={style2}
       style={style}
-      svgAttrsNames={svgAttrsNames}
+      gradientName={svgAttrsNames.gradientName}
+      filterName={svgAttrsNames.filterName}
       {...rest}
     >
       {children}
@@ -206,44 +221,47 @@ const CreateSvgElement = <Tag extends keyof JSX.IntrinsicElements>({
 };
 
 type SvgGroupElementWithDefsProps<Tag extends keyof JSX.IntrinsicElements> = {
-  svgAttrsNames: {
-    gradientName: string;
-    filterName: string;
-  };
+  gradientName: string;
+  filterName: string;
 } & SvgWithDefsProps<Tag>;
 
 /**
  * Grupo SVG que incluye el <defs> y un <path> con el filtro y gradiente aplicados.
  */
 const SvgGroupElementWithDefs = <Tag extends keyof JSX.IntrinsicElements>({
-  svgAttrsNames,
+  gradientName,
+  filterName,
   style2,
   tag: TagElement,
+  onClick,
+  onKeyDown,
+  onPointerDown,
   ...rest
 }: SvgGroupElementWithDefsProps<Tag>) => {
   return (
     <g style={style2}>
-      <CreateDefs svgAttrsNames={svgAttrsNames} />
+      <CreateDefs gradientName={gradientName} filterName={filterName} />
       <TagElement
         {...rest}
-        filter={`url(#${svgAttrsNames.filterName})`}
-        fill={`url(#${svgAttrsNames.gradientName})`}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
+        onPointerDown={onPointerDown}
+        filter={`url(#${filterName})`}
+        fill={`url(#${gradientName})`}
       />
     </g>
   );
 };
 
 type CreateDefsProps = {
-  svgAttrsNames: {
-    gradientName: string;
-    filterName: string;
-  };
+  gradientName: string;
+  filterName: string;
 };
 
 /**
  * Componente que define el gradiente lineal y el filtro (glow) para los elementos SVG.
  */
-const CreateDefs: React.FC<CreateDefsProps> = ({ svgAttrsNames }) => {
+const CreateDefs: React.FC<CreateDefsProps> = memo(({ gradientName, filterName }) => {
   const { contextConfig } = useNeonContext();
 
   // Se calcula un color intermedio mezclando los dos colores base
@@ -262,7 +280,7 @@ const CreateDefs: React.FC<CreateDefsProps> = ({ svgAttrsNames }) => {
   return (
     <defs>
       <linearGradient
-        id={svgAttrsNames.gradientName}
+        id={gradientName}
         x1="0"
         y1="0"
         x2="1"
@@ -300,12 +318,13 @@ const CreateDefs: React.FC<CreateDefsProps> = ({ svgAttrsNames }) => {
           />
         </stop>
       </linearGradient>
-      <CreateGaussianBlur filterName={svgAttrsNames.filterName} />
+      <CreateGaussianBlur filterName={filterName} />
     </defs>
   );
-};
+});
 
-const CreateGaussianBlur = ({ filterName }: { filterName: string }) => {
+CreateDefs.displayName = 'CreateDefs';
+const CreateGaussianBlur = React.memo(({ filterName }: { filterName: string }) => {
   const { contextConfig } = useNeonContext();
   return (
     <filter id={filterName} x="-50%" y="-200%" width="200%" height="500%">
@@ -320,7 +339,9 @@ const CreateGaussianBlur = ({ filterName }: { filterName: string }) => {
       </feMerge>
     </filter>
   );
-};
+});
+
+CreateGaussianBlur.displayName = 'CreateGaussianBlur';
 
 /* ================== COMPONENTES AUXILIARES PARA TEXTO ================== */
 

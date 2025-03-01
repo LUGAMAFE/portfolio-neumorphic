@@ -8,6 +8,7 @@ import {
   cloneElement,
   forwardRef,
   isValidElement,
+  memo,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -43,143 +44,145 @@ const NeumorphicWrapperWithProvider = forwardRef(
   }
 );
 
-const NeumorphicLogic = forwardRef(
-  <T extends HTMLElement | SVGElement>(
-    props: PropsWithChildren<NeumorphicProps>,
-    ref: ForwardedRef<T>
-  ) => {
-    const {
-      children,
-      surfaceColor,
-      depth = DEFAULT_CONFIG.depth,
-      lightSource = DEFAULT_CONFIG.lightSource,
-      concavity = DEFAULT_CONFIG.concavity,
-      softness = DEFAULT_CONFIG.softness,
-      intensity = DEFAULT_CONFIG.intensity,
-      ...rest
-    } = props;
+const NeumorphicLogic = memo(
+  forwardRef(
+    <T extends HTMLElement | SVGElement>(
+      props: PropsWithChildren<NeumorphicProps>,
+      ref: ForwardedRef<T>
+    ) => {
+      const {
+        children,
+        surfaceColor,
+        depth = DEFAULT_CONFIG.depth,
+        lightSource = DEFAULT_CONFIG.lightSource,
+        concavity = DEFAULT_CONFIG.concavity,
+        softness = DEFAULT_CONFIG.softness,
+        intensity = DEFAULT_CONFIG.intensity,
+        ...rest
+      } = props;
 
-    // 1. Get the context
-    const { contextConfig, setContextConfig, setDimensions, measureDimensions, computedStyles } =
-      useNeumorphicContext();
-    const elementRef = useRef<HTMLElement | SVGElement | null>(null);
+      // 1. Get the context
+      const { contextConfig, setContextConfig, setDimensions, measureDimensions, computedStyles } =
+        useNeumorphicContext();
+      const elementRef = useRef<HTMLElement | SVGElement | null>(null);
 
-    // Merge refs to maintain compatibility with Floating UI
-    const mergedRef = useMergeRefs([elementRef, ref ?? null]);
+      // Merge refs to maintain compatibility with Floating UI
+      const mergedRef = useMergeRefs([elementRef, ref ?? null]);
 
-    // Usar el hook de validación
-    const { validateProps } = useNeumorphicValidation({
-      surfaceColor,
-      depth,
-      lightSource,
-      concavity,
-      softness,
-      intensity,
-    });
-
-    // Memoizar la medición de dimensiones
-    const measureElement = useCallback(() => {
-      if (elementRef.current) {
-        const { width, height } = elementRef.current.getBoundingClientRect();
-        setDimensions(width, height);
-      }
-    }, [setDimensions]);
-
-    useEffect(() => {
-      measureElement();
-    }, [measureElement]);
-
-    useImperativeHandle(
-      measureDimensions,
-      () => ({
-        measure: measureElement,
-      }),
-      [measureElement]
-    );
-
-    /**
-     * 2. Build the "propsConfig" object using
-     */
-    const finalConfig = useMemo(
-      () => ({
+      // Usar el hook de validación
+      const { validateProps } = useNeumorphicValidation({
         surfaceColor,
         depth,
         lightSource,
         concavity,
         softness,
         intensity,
-      }),
-      [surfaceColor, depth, lightSource, concavity, softness, intensity]
-    );
+      });
 
-    useDeepCompareEffect(() => {
-      setContextConfig({ ...finalConfig });
-    }, [finalConfig]);
+      // Memoizar la medición de dimensiones
+      const measureElement = useCallback(() => {
+        if (elementRef.current) {
+          const { width, height } = elementRef.current.getBoundingClientRect();
+          setDimensions(width, height);
+        }
+      }, [setDimensions]);
 
-    /**
-     * 5. When rendering, ***ALWAYS*** use `contextConfig`.
-     *    This allows reflecting changes made by the tooltip
-     *    (or any other) in the context.
-     */
-    const finalStyle = useMemo(() => {
-      if (!computedStyles) {
+      useEffect(() => {
+        measureElement();
+      }, [measureElement]);
+
+      useImperativeHandle(
+        measureDimensions,
+        () => ({
+          measure: measureElement,
+        }),
+        [measureElement]
+      );
+
+      /**
+       * 2. Build the "propsConfig" object using
+       */
+      const finalConfig = useMemo(
+        () => ({
+          surfaceColor,
+          depth,
+          lightSource,
+          concavity,
+          softness,
+          intensity,
+        }),
+        [surfaceColor, depth, lightSource, concavity, softness, intensity]
+      );
+
+      useDeepCompareEffect(() => {
+        setContextConfig({ ...finalConfig });
+      }, [finalConfig]);
+
+      /**
+       * 5. When rendering, ***ALWAYS*** use `contextConfig`.
+       *    This allows reflecting changes made by the tooltip
+       *    (or any other) in the context.
+       */
+      const finalStyle = useMemo(() => {
+        if (!computedStyles) {
+          return {
+            cssVars: {} as CSSProperties,
+            dynamicClasses: styles.softShadow,
+          };
+        }
+
+        const { colors, gradientStyles, lightPosition } = computedStyles;
+        const { darkColor, lightColor, mainColor } = colors;
+        const { firstGradientColor, secondGradientColor, isPressed } = gradientStyles;
+        const { positionX, positionY, angle } = lightPosition;
+
+        const cssVars = {
+          '--positionX': `${positionX}px`,
+          '--positionXOpposite': `${-positionX}px`,
+          '--positionY': `${positionY}px`,
+          '--positionYOpposite': `${-positionY}px`,
+          '--angle': `${angle}deg`,
+          '--blur': `${contextConfig.softness}px`,
+          '--textColor': getContrast(mainColor),
+          '--textColorOpposite': mainColor,
+          '--mainColor': mainColor,
+          '--darkColor': darkColor,
+          '--lightColor': lightColor,
+          '--firstGradientColor': firstGradientColor,
+          '--secondGradientColor': secondGradientColor,
+        } as CSSProperties;
+
         return {
-          cssVars: {} as CSSProperties,
-          dynamicClasses: styles.softShadow,
+          cssVars,
+          dynamicClasses: isPressed ? `${styles.softShadow} ${styles.pressed}` : styles.softShadow,
         };
+      }, [contextConfig, computedStyles]);
+
+      // Merge class and style
+      const mergedClass = useMemo(
+        () => `neuElement ${finalStyle.dynamicClasses}`,
+        [finalStyle.dynamicClasses]
+      );
+
+      const mergedStyle = useMemo(() => ({ ...finalStyle.cssVars }), [finalStyle.cssVars]);
+
+      validateProps();
+
+      // Verificar que children sea un elemento React válido
+      if (!isValidElement(children)) {
+        console.error('NeumorphicWrapper: children must be a valid React element');
+        return null;
       }
 
-      const { colors, gradientStyles, lightPosition } = computedStyles;
-      const { darkColor, lightColor, mainColor } = colors;
-      const { firstGradientColor, secondGradientColor, isPressed } = gradientStyles;
-      const { positionX, positionY, angle } = lightPosition;
-
-      const cssVars = {
-        '--positionX': `${positionX}px`,
-        '--positionXOpposite': `${-positionX}px`,
-        '--positionY': `${positionY}px`,
-        '--positionYOpposite': `${-positionY}px`,
-        '--angle': `${angle}deg`,
-        '--blur': `${contextConfig.softness}px`,
-        '--textColor': getContrast(mainColor),
-        '--textColorOpposite': mainColor,
-        '--mainColor': mainColor,
-        '--darkColor': darkColor,
-        '--lightColor': lightColor,
-        '--firstGradientColor': firstGradientColor,
-        '--secondGradientColor': secondGradientColor,
-      } as CSSProperties;
-
-      return {
-        cssVars,
-        dynamicClasses: isPressed ? `${styles.softShadow} ${styles.pressed}` : styles.softShadow,
-      };
-    }, [contextConfig, computedStyles]);
-
-    // Merge class and style
-    const mergedClass = useMemo(
-      () => `neuElement ${finalStyle.dynamicClasses}`,
-      [finalStyle.dynamicClasses]
-    );
-
-    const mergedStyle = useMemo(() => ({ ...finalStyle.cssVars }), [finalStyle.cssVars]);
-
-    validateProps();
-
-    // Verificar que children sea un elemento React válido
-    if (!isValidElement(children)) {
-      console.error('NeumorphicWrapper: children must be a valid React element');
-      return null;
+      // Ahora TypeScript sabe que children es un ReactElement
+      return cloneElement(children, {
+        ...rest,
+        ref: mergedRef,
+        className: clsx(mergedClass, children.props?.className),
+        style: { ...mergedStyle, ...children.props?.style },
+      });
     }
-
-    // Ahora TypeScript sabe que children es un ReactElement
-    return cloneElement(children, {
-      ...rest,
-      ref: mergedRef,
-      className: clsx(mergedClass, children.props?.className),
-      style: { ...mergedStyle, ...children.props?.style },
-    });
-  }
+  )
 );
 
 // Asignar displayNames para DevTools

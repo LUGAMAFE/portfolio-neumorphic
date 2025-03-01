@@ -2,7 +2,7 @@ import { ThemePreset } from '@/providers/AppProviders';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { NeonElement } from '../NeonElement';
 import { NeumorphicElement } from '../NeumorphicElement/NeumorphicElement';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -38,24 +38,32 @@ export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {
     );
   };
 
-  const neumorphicOptionsContainer =
-    currentTheme.name === ThemePreset.LIGHT
-      ? {
-          depth: 0,
-          concavity: 0,
-          lightSource: 3,
-          softness: 1,
-        }
-      : {
-          depth: 0.42,
-          lightSource: 3,
-          concavity: 0.5,
-          softness: 40,
-        };
-  const colors =
-    currentTheme.name === ThemePreset.DARK
-      ? ['#ffffff', '#ffffff']
-      : [neonColors.firstGradientColor, neonColors.secondGradientColor];
+  const neumorphicOptionsContainer = useMemo(
+    () =>
+      currentTheme.name === ThemePreset.LIGHT
+        ? {
+            depth: 0,
+            concavity: 0,
+            lightSource: 3,
+            softness: 1,
+          }
+        : {
+            depth: 0.42,
+            lightSource: 3,
+            concavity: 0.5,
+            softness: 40,
+          },
+    [currentTheme.name]
+  );
+
+  const colors = useMemo(
+    () =>
+      currentTheme.name === ThemePreset.DARK
+        ? ['#ffffff', '#ffffff']
+        : [neonColors.firstGradientColor, neonColors.secondGradientColor],
+    [currentTheme.name, neonColors]
+  );
+
   return (
     <NeumorphicElement.div
       className={style.Navbar}

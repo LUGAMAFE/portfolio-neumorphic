@@ -3,8 +3,10 @@ import {
   PropsWithChildren,
   SetStateAction,
   createContext,
+  memo,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from 'react';
 import { NeonOptions } from '../types';
@@ -20,7 +22,7 @@ interface NeonState {
 
 const NeonContext = createContext<NeonState | undefined>(undefined);
 
-export const NeonProvider = ({ children }: PropsWithChildren) => {
+export const NeonProvider = memo(({ children }: PropsWithChildren) => {
   const [contextConfig, setContextConfig] = useState<NeonOptions>({});
 
   const updateContextConfigProp = useCallback(
@@ -30,21 +32,20 @@ export const NeonProvider = ({ children }: PropsWithChildren) => {
         [property]: value,
       }));
     },
-    []
+    [setContextConfig]
   );
 
-  return (
-    <NeonContext.Provider
-      value={{
-        contextConfig,
-        setContextConfig,
-        updateContextConfigProp,
-      }}
-    >
-      {children}
-    </NeonContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      contextConfig,
+      setContextConfig,
+      updateContextConfigProp,
+    }),
+    [contextConfig, setContextConfig, updateContextConfigProp]
   );
-};
+
+  return <NeonContext.Provider value={contextValue}>{children}</NeonContext.Provider>;
+});
 
 export const useNeonContext = () => {
   const Neon = useContext(NeonContext);

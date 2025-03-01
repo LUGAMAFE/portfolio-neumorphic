@@ -7,11 +7,13 @@
     "dev": "concurrently \"npm run gen-types\" \"next dev --turbopack\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "million": "next dev"
   },
   "dependencies": {
     "@floating-ui/react": "0.24.0",
     "@gsap/react": "^2.0.2",
+    "@million/lint": "^1.0.14",
     "@tanstack/react-ranger": "^0.0.4",
     "@types/lodash": "^4.17.14",
     "chroma-js": "^3.1.2",
