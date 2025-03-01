@@ -1,7 +1,6 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import Draggable from 'gsap-trial/Draggable';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useMemo, useRef } from 'react';
 
 import { NeonElement } from '@/components/NeonElement';
@@ -13,7 +12,7 @@ import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider
 import chroma from 'chroma-js';
 import style from './ImageComparator.module.scss';
 
-gsap.registerPlugin(ScrollTrigger, Draggable);
+gsap.registerPlugin(Draggable);
 
 // Utility function to synchronize image rotation with the parent circle
 const syncImagesWithRotation = (selector: string) => {
@@ -94,6 +93,7 @@ export const ImageComparator = () => {
 
       // Timeline animation
       const timeline = gsap.timeline({
+        delay: 1,
         onComplete: () => {
           Draggable.create(draggerElement, {
             type: 'x',
