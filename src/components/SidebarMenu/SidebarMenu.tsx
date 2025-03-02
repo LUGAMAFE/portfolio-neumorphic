@@ -289,3 +289,5 @@ export const SidebarMenu = memo(({ isOpen, setIsOpen }: SidebarMenuProps) => {
     </div>
   );
 });
+
+SidebarMenu.displayName = 'SidebarMenu';

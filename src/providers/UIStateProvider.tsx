@@ -17,7 +17,7 @@ interface UIStateContextValue {
 }
 
 export const UIStateContext = createContext<UIStateContextValue | undefined>(undefined);
-
+UIStateContext.displayName = 'UIStateContext';
 export const UIStateProvider = ({ children }: PropsWithChildren) => {
   const [editorMode, setEditorMode] = useState(false);
   const [ctrlButton, setCtrlButton] = useState(true);

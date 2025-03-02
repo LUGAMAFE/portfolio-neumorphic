@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useNeumorphicContext } from '../../../providers/NeumorphicProvider';
 import { FormShape } from '../../../types';
@@ -250,4 +250,4 @@ const Configuration = () => {
   );
 };
 
-export default Configuration;
+export default memo(Configuration);

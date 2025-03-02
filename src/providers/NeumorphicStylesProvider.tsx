@@ -35,6 +35,8 @@ export const NeumorphicStylesContext = createContext<NeumorphicStylesContextValu
   undefined
 );
 
+NeumorphicStylesContext.displayName = 'NeumorphicStylesContext';
+
 interface NeumorphicStylesProviderProps {
   /**
    * Mapa con varios temas. Ejemplo:

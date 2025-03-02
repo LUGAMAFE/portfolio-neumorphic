@@ -16,6 +16,8 @@ interface NeonColorsContextValue {
 
 export const NeonColorsContext = createContext<NeonColorsContextValue | undefined>(undefined);
 
+NeonColorsContext.displayName = 'NeonColorsContext';
+
 export const NeonColorsProvider = ({ children }: PropsWithChildren) => {
   // Guarda el valor inicial de la variable CSS --main-color-neon
   const [currentNeonColor, setCurrentNeonColor] = useState('');

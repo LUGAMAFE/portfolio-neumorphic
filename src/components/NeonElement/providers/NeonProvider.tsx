@@ -21,7 +21,7 @@ interface NeonState {
 }
 
 const NeonContext = createContext<NeonState | undefined>(undefined);
-
+NeonContext.displayName = 'NeonContext';
 export const NeonProvider = memo(({ children }: PropsWithChildren) => {
   const [contextConfig, setContextConfig] = useState<NeonOptions>({});
 
@@ -46,6 +46,8 @@ export const NeonProvider = memo(({ children }: PropsWithChildren) => {
 
   return <NeonContext.Provider value={contextValue}>{children}</NeonContext.Provider>;
 });
+
+NeonProvider.displayName = 'NeonProvider';
 
 export const useNeonContext = () => {
   const Neon = useContext(NeonContext);

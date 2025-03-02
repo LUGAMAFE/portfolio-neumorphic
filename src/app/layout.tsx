@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -10,9 +11,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Check if we're running in scan mode
+  const isScanMode = process.env.NEXT_PUBLIC_REACT_SCAN === 'true';
+
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {isScanMode && (
+          <Script
+            src="https://unpkg.com/react-scan/dist/auto.global.js"
+            strategy="beforeInteractive"
+          />
+        )}
+        {children}
+      </body>
     </html>
   );
 }

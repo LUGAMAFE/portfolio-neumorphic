@@ -2,7 +2,7 @@ import { ThemePreset } from '@/providers/AppProviders';
 import { useNeonColorsContext } from '@/providers/NeonColorsProvider';
 import { useNeumorphicStylesContext } from '@/providers/NeumorphicStylesProvider';
 import Image from 'next/image';
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { NeonElement } from '../NeonElement';
 import { NeumorphicElement } from '../NeumorphicElement/NeumorphicElement';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -10,7 +10,7 @@ import style from './navbar.module.scss';
 import { ThemeColorSwitcher } from './ThemeColorSwitcher';
 
 interface NavbarProps {
-  setIsSidebarMenuOpen: Dispatch<SetStateAction<boolean>>;
+  setIsSidebarMenuOpen: (value: boolean) => void;
 }
 
 export const Navbar = ({ setIsSidebarMenuOpen }: NavbarProps) => {

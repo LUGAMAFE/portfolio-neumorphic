@@ -2,7 +2,7 @@
 import { CustomCursor } from '@/components/CustomCursor';
 import { AppProviders } from '@/providers/AppProviders';
 import '@/styles/sass/style.scss';
-import { useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { IntroSection } from './IntroSection';
 import { Navbar } from './Navbar';
 import { SectionPoints } from './SectionPoints';
@@ -11,18 +11,20 @@ import { SidebarMenu } from './SidebarMenu';
 export const Portfolio = () => {
   const [isSidebarMenuOpen, setIsSidebarMenuOpen] = useState(false);
 
-  const memoizedCustomCursor = useMemo(() => <CustomCursor />, []);
-  const memoizedSectionPoints = useMemo(() => <SectionPoints />, []);
-  const memoizedIntroSection = useMemo(() => <IntroSection />, []);
+  const toggleSidebar = useCallback((value: boolean) => {
+    setIsSidebarMenuOpen(value);
+  }, []);
 
   return (
     <AppProviders>
-      {memoizedCustomCursor}
-      <Navbar setIsSidebarMenuOpen={setIsSidebarMenuOpen} />
-      {memoizedSectionPoints}
-      <SidebarMenu isOpen={isSidebarMenuOpen} setIsOpen={setIsSidebarMenuOpen} />
+      <CustomCursor />
+      <Navbar setIsSidebarMenuOpen={toggleSidebar} />
+      <SectionPoints />
+      <SidebarMenu isOpen={isSidebarMenuOpen} setIsOpen={toggleSidebar} />
       <div id="smooth-wrapper">
-        <div id="smooth-content">{memoizedIntroSection}</div>
+        <div id="smooth-content">
+          <IntroSection />
+        </div>
       </div>
     </AppProviders>
   );

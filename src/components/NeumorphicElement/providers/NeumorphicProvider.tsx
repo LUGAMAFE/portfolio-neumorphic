@@ -41,7 +41,7 @@ interface NeumorphicState {
 }
 
 const NeumorphicContext = createContext<NeumorphicState | undefined>(undefined);
-
+NeumorphicContext.displayName = 'NeumorphicContext';
 export const NeumorphicProvider = memo(({ children }: PropsWithChildren) => {
   const [contextConfig, setContext] = useState<NeumorphicOptions>({});
   const [dimensions, setDimensionsState] = useState<{ width: number; height: number }>({
